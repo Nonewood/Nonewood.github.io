@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="如下, 待完善123456789101112131415161718#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name SparCC">
+<meta name="description" content="如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name">
 <meta name="keywords" content="集群,pythton">
 <meta property="og:type" content="article">
 <meta property="og:title" content="集群上使用 SparCC">
 <meta property="og:url" content="http://nonewood.com/2019/09/05/集群上使用SparCC/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
-<meta property="og:description" content="如下, 待完善123456789101112131415161718#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name SparCC">
+<meta property="og:description" content="如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-05T03:07:37.088Z">
+<meta property="og:updated_time" content="2019-09-05T03:25:25.200Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="集群上使用 SparCC">
-<meta name="twitter:description" content="如下, 待完善123456789101112131415161718#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name SparCC">
+<meta name="twitter:description" content="如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name">
 
 
 
@@ -336,7 +336,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  175 字
+                  194 字
                 </span>
               
 
@@ -373,13 +373,14 @@
       
 
       
-        <h2 id="如下-待完善"><a href="#如下-待完善" class="headerlink" title="如下, 待完善"></a>如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCE</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br></pre></td></tr></table></figure>
+        <h2 id="如下-待完善"><a href="#如下-待完善" class="headerlink" title="如下, 待完善"></a>如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCE</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br><span class="line"></span><br><span class="line"><span class="comment">#退出虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> deactivate</span><br></pre></td></tr></table></figure>
 
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
 <li><a href="https://bitbucket.org/yonatanf/sparcc" target="_blank" rel="noopener">SparCC_bitbucket</a></li>
 <li><a href="https://github.com/hallamlab/utilities/wiki/SparCC" target="_blank" rel="noopener">SparCC · hallamlab/utilities Wiki · GitHub</a></li>
-<li><a href="https://github.com/zdk123/SpiecEasi" target="_blank" rel="noopener">GitHub - zdk123/SpiecEasi: Sparse InversE Covariance estimation for Ecological Association and Statistical Inference</a></li>
+<li><a href="https://bitbucket.org/yonatanf/sparcc/issues/18/error-tuple-index-out-of-range" target="_blank" rel="noopener">yonatanf / SparCC   / issues   / #18 - Error: tuple index out of range — Bitbucket</a></li>
 <li><a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687" target="_blank" rel="noopener">Inferring Correlation Networks from Genomic Survey Data</a></li>
+<li><a href="https://github.com/zdk123/SpiecEasi" target="_blank" rel="noopener">GitHub - zdk123/SpiecEasi: Sparse InversE Covariance estimation for Ecological Association and Statistical Inference</a></li>
 </ol>
 
       
@@ -611,7 +612,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">381</span>
+    <span title="Site words total count">400</span>
   
 </div>
 
