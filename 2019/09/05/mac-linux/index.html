@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="皮肤微生物,">
+  <meta name="keywords" content="shell,linux,Mac,">
 
 
 
@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="皮肤微生物设计 如何取获得足够的生物量并且避免污染How to Design a Skin Microbiome Study, Part I: Sampling  选取测序策略，讨论了 v1-3 以及 v4https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing">
-<meta name="keywords" content="皮肤微生物">
+<meta name="description" content="包含三部分, 1.终端的配置; 2.集群免密登陆; 3.本地集群免密文件传输;  1. 终端配置推荐使用配方： iTerm2 + Oh my zsh + zsh，教程网上有一大堆，优点也不在赘述，下边是一个参考链接: Mac下iTerm 2语法高亮配置及附带美化 - 简书 2.集群免密登陆好处是不用每次都属于 IP 和密码，个人感觉比 Putty 什么的好用很多; 123456789101112">
+<meta name="keywords" content="shell,linux,Mac">
 <meta property="og:type" content="article">
-<meta property="og:title" content="皮肤微生物设计">
-<meta property="og:url" content="http://nonewood.com/2019/09/05/皮肤微生物设计/index.html">
+<meta property="og:title" content="Mac 下远程使用终端">
+<meta property="og:url" content="http://nonewood.com/2019/09/05/mac-linux/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
-<meta property="og:description" content="皮肤微生物设计 如何取获得足够的生物量并且避免污染How to Design a Skin Microbiome Study, Part I: Sampling  选取测序策略，讨论了 v1-3 以及 v4https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing">
+<meta property="og:description" content="包含三部分, 1.终端的配置; 2.集群免密登陆; 3.本地集群免密文件传输;  1. 终端配置推荐使用配方： iTerm2 + Oh my zsh + zsh，教程网上有一大堆，优点也不在赘述，下边是一个参考链接: Mac下iTerm 2语法高亮配置及附带美化 - 简书 2.集群免密登陆好处是不用每次都属于 IP 和密码，个人感觉比 Putty 什么的好用很多; 123456789101112">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-05T02:21:05.371Z">
+<meta property="og:updated_time" content="2019-09-05T15:50:52.108Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="皮肤微生物设计">
-<meta name="twitter:description" content="皮肤微生物设计 如何取获得足够的生物量并且避免污染How to Design a Skin Microbiome Study, Part I: Sampling  选取测序策略，讨论了 v1-3 以及 v4https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing">
+<meta name="twitter:title" content="Mac 下远程使用终端">
+<meta name="twitter:description" content="包含三部分, 1.终端的配置; 2.集群免密登陆; 3.本地集群免密文件传输;  1. 终端配置推荐使用配方： iTerm2 + Oh my zsh + zsh，教程网上有一大堆，优点也不在赘述，下边是一个参考链接: Mac下iTerm 2语法高亮配置及附带美化 - 简书 2.集群免密登陆好处是不用每次都属于 IP 和密码，个人感觉比 Putty 什么的好用很多; 123456789101112">
 
 
 
@@ -120,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://nonewood.com/2019/09/05/皮肤微生物设计/">
+  <link rel="canonical" href="http://nonewood.com/2019/09/05/mac-linux/">
 
 
 
 
 
-  <title>皮肤微生物设计 | 朝简单处想 往认真处行</title>
+  <title>Mac 下远程使用终端 | 朝简单处想 往认真处行</title>
   
 
 
@@ -253,7 +253,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.com/2019/09/05/皮肤微生物设计/">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.com/2019/09/05/mac-linux/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Nonewood">
@@ -270,7 +270,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">皮肤微生物设计</h1>
+          <h1 class="post-title" itemprop="name headline">Mac 下远程使用终端</h1>
         
 
         <div class="post-meta">
@@ -282,7 +282,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T10:19:25+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T23:37:21+08:00">
                 2019-09-05
               </time>
             
@@ -305,8 +305,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
-                    <span itemprop="name">metagenomics</span>
+                  <a href="/categories/Mac/" itemprop="url" rel="index">
+                    <span itemprop="name">Mac</span>
                   </a>
                 </span>
 
@@ -336,7 +336,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  59 字
+                  503 字
                 </span>
               
 
@@ -352,7 +352,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  2 分钟
                 </span>
               
             </div>
@@ -373,10 +373,16 @@
       
 
       
-        <h2 id="皮肤微生物设计"><a href="#皮肤微生物设计" class="headerlink" title="皮肤微生物设计"></a>皮肤微生物设计</h2><ol>
-<li>如何取获得足够的生物量并且避免污染<br><a href="https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-sampling" target="_blank" rel="noopener">How to Design a Skin Microbiome Study, Part I: Sampling</a> </li>
-<li>选取测序策略，讨论了 v1-3 以及 v4<br><a href="https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing" target="_blank" rel="noopener">https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing</a> </li>
-</ol>
+        <blockquote>
+<p>包含三部分, 1.终端的配置; 2.集群免密登陆; 3.本地集群免密文件传输;</p>
+</blockquote>
+<h3 id="1-终端配置"><a href="#1-终端配置" class="headerlink" title="1. 终端配置"></a>1. 终端配置</h3><p>推荐使用配方： iTerm2 + Oh my zsh + zsh，教程网上有一大堆，优点也不在赘述，下边是一个参考链接: <a href="https://www.jianshu.com/p/2fe658fd9d94" target="_blank" rel="noopener">Mac下iTerm 2语法高亮配置及附带美化 - 简书</a></p>
+<h3 id="2-集群免密登陆"><a href="#2-集群免密登陆" class="headerlink" title="2.集群免密登陆"></a>2.集群免密登陆</h3><p>好处是不用每次都属于 IP 和密码，个人感觉比 Putty 什么的好用很多;</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 1. 首先写一个 expect 脚本, 用于自动交互, 以 login.expect 为例</span></span><br><span class="line"><span class="comment"># login.expect </span></span><br><span class="line"><span class="comment">#!/usr/bin/expect -f</span></span><br><span class="line">  <span class="built_in">set</span> user account  <span class="comment">## 集群账号</span></span><br><span class="line">  <span class="built_in">set</span> host IP  <span class="comment">## 集群 IP</span></span><br><span class="line">  <span class="built_in">set</span> password xxxx <span class="comment">##  xxxx 为集群登陆密码</span></span><br><span class="line">  <span class="built_in">set</span> timeout -1</span><br><span class="line"></span><br><span class="line">  spawn ssh <span class="variable">$user</span>@<span class="variable">$host</span></span><br><span class="line">  expect <span class="string">"*assword:*"</span></span><br><span class="line">  send <span class="string">"<span class="variable">$password</span>\r"</span></span><br><span class="line">  interact</span><br><span class="line">  expect eof</span><br><span class="line"></span><br><span class="line"><span class="comment">## 2. 然后命令行使用 expect login.expect 登陆即可；</span></span><br><span class="line"><span class="comment">#如果嫌麻烦的话，可以在 .zshrc (或者 .bashrc） 文件里设置如下：</span></span><br><span class="line"><span class="built_in">alias</span> lg=<span class="string">"expect login.expect"</span> </span><br><span class="line"><span class="comment">#这样每次输入 lg 即可登陆，同理多个 IP 可设置多个脚本来配置运行；</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-本地-lt-gt-集群文件免密文件传输"><a href="#3-本地-lt-gt-集群文件免密文件传输" class="headerlink" title="3.本地 &lt;=&gt; 集群文件免密文件传输"></a>3.本地 &lt;=&gt; 集群文件免密文件传输</h3><p>如果喜欢界面交互的话，可以使用一些现成的软件，比如  <a href="https://filezilla-project.org/" target="_blank" rel="noopener">FileZilla - The free FTP solution</a><br>如果喜欢命令行的话，也可以通过脚本来传输，方法和上边类似；</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 1. 首先写一个 expect 脚本, 以 scp.expect 为例</span></span><br><span class="line"><span class="comment"># scp.expect </span></span><br><span class="line"><span class="comment">#!/usr/bin/expect -f</span></span><br><span class="line">  <span class="built_in">set</span> src_file [lindex <span class="variable">$argv</span> 0] <span class="comment">#用于外接参数</span></span><br><span class="line">  <span class="built_in">set</span> dest_dir [lindex <span class="variable">$argv</span> 1] <span class="comment">#用于外接参数</span></span><br><span class="line">  <span class="built_in">set</span> user account <span class="comment">#集群账号</span></span><br><span class="line">  <span class="built_in">set</span> host IP <span class="comment">#集群 IP</span></span><br><span class="line">  <span class="built_in">set</span> password xxxx <span class="comment">#集群密码</span></span><br><span class="line">  <span class="built_in">set</span> timeout -1</span><br><span class="line"></span><br><span class="line">  spawn scp -r <span class="variable">$user</span>@<span class="variable">$host</span>:<span class="variable">$src_file</span> <span class="variable">$dest_dir</span> <span class="comment">#集群到本地</span></span><br><span class="line"><span class="comment">#  spawn scp -r $src_file $user@$host:$dest_dir #本地到集群</span></span><br><span class="line"><span class="comment">#  spawn rsync -avl $user@$host:$src_file $dest_dir  # 使用 rsync 传输</span></span><br><span class="line">  expect <span class="string">"*assword:"</span></span><br><span class="line">  send <span class="string">"<span class="variable">$password</span>\r"</span></span><br><span class="line">  expect <span class="string">"100%"</span></span><br><span class="line">  expect eof</span><br><span class="line"></span><br><span class="line"><span class="comment">## 2. 然后命令行使用 expect scp.expect 登陆即可；</span></span><br><span class="line"><span class="comment">#如果嫌麻烦的话，可以在 .zshrc (或者 .bashrc） 文件里设置如下：</span></span><br><span class="line"><span class="built_in">alias</span> scp=<span class="string">"expect scp.expect"</span> </span><br><span class="line"><span class="comment">#这样每次输入 scp 即可登陆，同理多个 IP 可设置多个脚本来配置运行；</span></span><br></pre></td></tr></table></figure>
+
 
       
     </div>
@@ -418,7 +424,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/皮肤微生物/" rel="tag"># 皮肤微生物</a>
+            <a href="/tags/shell/" rel="tag"># shell</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/Mac/" rel="tag"># Mac</a>
           
         </div>
       
@@ -431,8 +441,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/08/29/脑肠轴/" rel="next" title="脑肠轴">
-                <i class="fa fa-chevron-left"></i> 脑肠轴
+              <a href="/2019/09/05/集群上使用SparCC/" rel="next" title="集群上使用 SparCC">
+                <i class="fa fa-chevron-left"></i> 集群上使用 SparCC
               </a>
             
           </div>
@@ -440,10 +450,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/09/05/集群上使用SparCC/" rel="prev" title="集群上使用 SparCC">
-                集群上使用 SparCC <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -575,7 +581,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#皮肤微生物设计"><span class="nav-number">1.</span> <span class="nav-text">皮肤微生物设计</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-终端配置"><span class="nav-number">1.</span> <span class="nav-text">1. 终端配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-集群免密登陆"><span class="nav-number">2.</span> <span class="nav-text">2.集群免密登陆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-本地-lt-gt-集群文件免密文件传输"><span class="nav-number">3.</span> <span class="nav-text">3.本地 &lt;=&gt; 集群文件免密文件传输</span></a></li></ol></div>
             
 
           </div>

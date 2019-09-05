@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name">
+<meta name="description" content="因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;  脚本如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs">
 <meta name="keywords" content="集群,pythton">
 <meta property="og:type" content="article">
 <meta property="og:title" content="集群上使用 SparCC">
 <meta property="og:url" content="http://nonewood.com/2019/09/05/集群上使用SparCC/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
-<meta property="og:description" content="如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name">
+<meta property="og:description" content="因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;  脚本如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-09-05T03:25:25.200Z">
+<meta property="og:updated_time" content="2019-09-05T15:49:39.784Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="集群上使用 SparCC">
-<meta name="twitter:description" content="如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs_dirs yourPathexport PATH=condaPath:$PATH #到 bin 即可#然后进行安装conda create --name">
+<meta name="twitter:description" content="因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;  脚本如下, 待完善123456789101112131415161718192021#设置 conda 默认虚拟环境安装路径conda config  --add envs_dirs yourPathconda config  --add pkgs">
 
 
 
@@ -336,7 +336,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  194 字
+                  258 字
                 </span>
               
 
@@ -373,7 +373,10 @@
       
 
       
-        <h2 id="如下-待完善"><a href="#如下-待完善" class="headerlink" title="如下, 待完善"></a>如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCE</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br><span class="line"></span><br><span class="line"><span class="comment">#退出虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> deactivate</span><br></pre></td></tr></table></figure>
+        <blockquote>
+<p>因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;</p>
+</blockquote>
+<h2 id="脚本如下-待完善"><a href="#脚本如下-待完善" class="headerlink" title="脚本如下, 待完善"></a>脚本如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCE</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br><span class="line"></span><br><span class="line"><span class="comment">#退出虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> deactivate</span><br></pre></td></tr></table></figure>
 
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
 <li><a href="https://bitbucket.org/yonatanf/sparcc" target="_blank" rel="noopener">SparCC_bitbucket</a></li>
@@ -447,6 +450,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/09/05/mac-linux/" rel="prev" title="Mac 下远程使用终端">
+                Mac 下远程使用终端 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -523,7 +530,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -534,7 +541,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -545,7 +552,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">7</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -578,7 +585,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如下-待完善"><span class="nav-number">1.</span> <span class="nav-text">如下, 待完善</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">2.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#脚本如下-待完善"><span class="nav-number">1.</span> <span class="nav-text">脚本如下, 待完善</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">2.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>
@@ -612,7 +619,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">400</span>
+    <span title="Site words total count">967</span>
   
 </div>
 
