@@ -251,6 +251,198 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/08/Lasso/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/08/Lasso/" itemprop="url">Lasso与宏基因组</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-08T12:23:12+08:00">
+                2019-12-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
+                    <span itemprop="name">metagenomics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  754 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>因为项目需要，去了解了一下LASSO【The Least Absolute Shrinkage and Selection Operator】，又译最小绝对值收敛和选择算子、套索算法。鼓捣了几天下来，我也没有弄太懂，但是大概知道了怎么使用，特此记录一下。</p>
+<ol>
+<li><p>首先是知乎的介绍：<br><a href="https://zhuanlan.zhihu.com/p/42122611" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/42122611</a></p>
+</li>
+<li><p>另外查的过程中发现，LASSO并不产生P值，并且不建议去计算P值，虽然原理没弄大懂，但是可以记住结论。同样，附上参考链接：<br><a href="https://www.reddit.com/r/statistics/comments/8jizat/are_p_values_generally_reported_in_lasso/" target="_blank" rel="noopener">Are p values generally reported in LASSO regressions? : statistics</a></p>
+</li>
+<li><p>如果要计算P值的话，得通过另外一种回归计算：<br><a href="https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression" target="_blank" rel="noopener">https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression</a><br>而我看到的一篇文章里是用有序回归（ordinal regression）计算的P值。<br>Chen, D. Q. et al. Identification of serum metabolites associating with chronic kidney disease progression and anti-fibrotic effect of 5-methoxytryptophan. Nat. Commun. 10, 1–15 (2019).</p>
+</li>
+<li><p>怎么是使用LASSO分析微生物的数据：<br>参考了这个脚本，该脚本只适用于二元分组的数据，并且接入的是 Biom 格式的文件：<a href="https://github.com/alifar76/MicrobeNets" target="_blank" rel="noopener">https://github.com/alifar76/MicrobeNets</a></p>
+</li>
+</ol>
+<p>同样因为项目需要，我基于该脚本按照我的理解修改成接入普通文件以及多组的情况，组别文件需要将字符型变量转化成数值型变量，脚本如下，不一定准确，仅供参考：<br>Biom 格式的也是类似的，只不过需要处理文件的最后一列的物种注释信息。</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">## 用于非biom 格式文件, Genus</span></span><br><span class="line">intable &lt;- <span class="string">"Genus_abundance.xls"</span> <span class="comment"># 丰度文件</span></span><br><span class="line">mapfile &lt;- <span class="string">"Sample_Group.txt"</span> <span class="comment"># 分组文件，需要转化成数值型</span></span><br><span class="line">outfile &lt;- “Genus_lasso_output.xls<span class="string">" </span></span><br><span class="line"><span class="string">measuretype &lt;- "</span>deviance” <span class="comment">#这些设置的说明可以参考上边github的脚本</span></span><br><span class="line">famaliy &lt;- <span class="string">"multinomial"</span> <span class="comment">#同上</span></span><br><span class="line"></span><br><span class="line">otutab &lt;- read.table(intable,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>)</span><br><span class="line">group &lt;- read.table(mapfile,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>, comment.char= <span class="string">""</span>)</span><br><span class="line">otutab &lt;- subset(as.matrix(otutab),select=rownames(group))</span><br><span class="line">otutab &lt;- t(otutab)</span><br><span class="line"> </span><br><span class="line">fitted = glmnet(as.matrix(otutab), group[,<span class="number">1</span>],standardize=<span class="literal">FALSE</span>,alpha=<span class="number">1</span>)<span class="comment"># 1 mean lasso</span></span><br><span class="line"><span class="comment">#plot(fitted,xvar = "lambda", label = TRUE)</span></span><br><span class="line"></span><br><span class="line">cv.dat = cv.glmnet(data.matrix(otutab),group[,<span class="number">1</span>],grouped=<span class="literal">FALSE</span>,nfolds=<span class="number">10</span>,alpha = <span class="number">1</span>,parallel=<span class="literal">TRUE</span>,type.measure=<span class="string">"deviance"</span>,family=<span class="string">"multinomial"</span>) <span class="comment">#输出的时候会有 warning, 据我测试是和nfold有关；</span></span><br><span class="line"><span class="comment">#plot(cv.dat,main=paste("cv_",compid,"_",methodtype,sep=""))</span></span><br><span class="line">coefval &lt;- coef(cv.dat)</span><br><span class="line"></span><br><span class="line"><span class="comment">### 输出</span></span><br><span class="line">write.table(as.matrix(t(c(<span class="string">"Tax"</span>,<span class="string">"coefficient"</span>))),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:length(row.names(coefval[[<span class="number">1</span>]])))&#123; </span><br><span class="line">    rowName = row.names(coefval[[<span class="number">1</span>]])[i]</span><br><span class="line">    all_dat &lt;- c()</span><br><span class="line">    <span class="keyword">if</span> (rowName != <span class="string">"(Intercept)"</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> (coefval[[<span class="number">1</span>]][i] != <span class="number">0</span>)&#123;</span><br><span class="line">            all_dat &lt;- c(rowName, coefval[[<span class="number">1</span>]][i])</span><br><span class="line">            write.table(as.matrix(t(all_dat)),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p>效果如何?<br>就我的结果来看，不是很理想。我另外使用MaAsLin2做了测试，发现后者的结果更加好一些。两种方法的重叠物种也不多。个人经验和意见，仅供参考。<br><a href="https://bitbucket.org/biobakery/maaslin2" target="_blank" rel="noopener">MaAsLin2</a></p>
+</li>
+<li><p>Python如何实现LASSO？<br>使用了该方法的文章以及脚本：<br>Wilmanski, T. /et al./ Blood metabolome predicts gut microbiome α-diversity in humans. /Nat. Biotechnol./ doi:10.1038/s41587-019-0233-9<br><a href="https://github.com/PriceLab/ShannonMets" target="_blank" rel="noopener">GitHub - PriceLab/ShannonMets: ** Blood metabolome predicts gut microbiome α-diversity in humans**</a></p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/07/excerpt/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2020,182 +2212,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/09/05/skin-microbiome-design/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/05/skin-microbiome-design/" itemprop="url">皮肤微生物设计</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T10:19:25+08:00">
-                2019-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
-                    <span itemprop="name">metagenomics</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  59 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="皮肤微生物设计"><a href="#皮肤微生物设计" class="headerlink" title="皮肤微生物设计"></a>皮肤微生物设计</h2><ol>
-<li>如何取获得足够的生物量并且避免污染<br><a href="https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-sampling" target="_blank" rel="noopener">How to Design a Skin Microbiome Study, Part I: Sampling</a></li>
-<li>选取测序策略，讨论了 v1-3 以及 v4<br><a href="https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing" target="_blank" rel="noopener">https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2246,7 +2262,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2268,7 +2284,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">18</span>
+                  <span class="site-state-item-count">20</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2319,7 +2335,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">9.4k</span>
+    <span title="Site words total count">10.1k</span>
   
 </div>
 
