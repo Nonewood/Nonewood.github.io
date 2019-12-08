@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Lasso与宏基因组</title>
+    <url>/2019/12/08/Lasso/</url>
+    <content><![CDATA[<p>因为项目需要，去了解了一下LASSO【The Least Absolute Shrinkage and Selection Operator】，又译最小绝对值收敛和选择算子、套索算法。鼓捣了几天下来，我也没有弄太懂，但是大概知道了怎么使用，特此记录一下。</p>
+<ol>
+<li><p>首先是知乎的介绍：<br><a href="https://zhuanlan.zhihu.com/p/42122611" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/42122611</a></p>
+</li>
+<li><p>另外查的过程中发现，LASSO并不产生P值，并且不建议去计算P值，虽然原理没弄大懂，但是可以记住结论。同样，附上参考链接：<br><a href="https://www.reddit.com/r/statistics/comments/8jizat/are_p_values_generally_reported_in_lasso/" target="_blank" rel="noopener">Are p values generally reported in LASSO regressions? : statistics</a></p>
+</li>
+<li><p>如果要计算P值的话，得通过另外一种回归计算：<br><a href="https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression" target="_blank" rel="noopener">https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression</a><br>而我看到的一篇文章里是用有序回归（ordinal regression）计算的P值。<br>Chen, D. Q. et al. Identification of serum metabolites associating with chronic kidney disease progression and anti-fibrotic effect of 5-methoxytryptophan. Nat. Commun. 10, 1–15 (2019).</p>
+</li>
+<li><p>怎么是使用LASSO分析微生物的数据：<br>参考了这个脚本，该脚本只适用于二元分组的数据，并且接入的是 Biom 格式的文件：<a href="https://github.com/alifar76/MicrobeNets" target="_blank" rel="noopener">https://github.com/alifar76/MicrobeNets</a></p>
+</li>
+</ol>
+<p>同样因为项目需要，我基于该脚本按照我的理解修改成接入普通文件以及多组的情况，组别文件需要将字符型变量转化成数值型变量，脚本如下，不一定准确，仅供参考：<br>Biom 格式的也是类似的，只不过需要处理文件的最后一列的物种注释信息。</p>
+<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="comment">## 用于非biom 格式文件, Genus</span></span><br><span class="line">intable &lt;- <span class="string">"Genus_abundance.xls"</span> <span class="comment"># 丰度文件</span></span><br><span class="line">mapfile &lt;- <span class="string">"Sample_Group.txt"</span> <span class="comment"># 分组文件，需要转化成数值型</span></span><br><span class="line">outfile &lt;- “Genus_lasso_output.xls<span class="string">" </span></span><br><span class="line"><span class="string">measuretype &lt;- "</span>deviance” <span class="comment">#这些设置的说明可以参考上边github的脚本</span></span><br><span class="line">famaliy &lt;- <span class="string">"multinomial"</span> <span class="comment">#同上</span></span><br><span class="line"></span><br><span class="line">otutab &lt;- read.table(intable,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>)</span><br><span class="line">group &lt;- read.table(mapfile,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>, comment.char= <span class="string">""</span>)</span><br><span class="line">otutab &lt;- subset(as.matrix(otutab),select=rownames(group))</span><br><span class="line">otutab &lt;- t(otutab)</span><br><span class="line"> </span><br><span class="line">fitted = glmnet(as.matrix(otutab), group[,<span class="number">1</span>],standardize=<span class="literal">FALSE</span>,alpha=<span class="number">1</span>)<span class="comment"># 1 mean lasso</span></span><br><span class="line"><span class="comment">#plot(fitted,xvar = "lambda", label = TRUE)</span></span><br><span class="line"></span><br><span class="line">cv.dat = cv.glmnet(data.matrix(otutab),group[,<span class="number">1</span>],grouped=<span class="literal">FALSE</span>,nfolds=<span class="number">10</span>,alpha = <span class="number">1</span>,parallel=<span class="literal">TRUE</span>,type.measure=<span class="string">"deviance"</span>,family=<span class="string">"multinomial"</span>) <span class="comment">#输出的时候会有 warning, 据我测试是和nfold有关；</span></span><br><span class="line"><span class="comment">#plot(cv.dat,main=paste("cv_",compid,"_",methodtype,sep=""))</span></span><br><span class="line">coefval &lt;- coef(cv.dat)</span><br><span class="line"></span><br><span class="line"><span class="comment">### 输出</span></span><br><span class="line">write.table(as.matrix(t(c(<span class="string">"Tax"</span>,<span class="string">"coefficient"</span>))),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:length(row.names(coefval[[<span class="number">1</span>]])))&#123; </span><br><span class="line">    rowName = row.names(coefval[[<span class="number">1</span>]])[i]</span><br><span class="line">    all_dat &lt;- c()</span><br><span class="line">    <span class="keyword">if</span> (rowName != <span class="string">"(Intercept)"</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> (coefval[[<span class="number">1</span>]][i] != <span class="number">0</span>)&#123;</span><br><span class="line">            all_dat &lt;- c(rowName, coefval[[<span class="number">1</span>]][i])</span><br><span class="line">            write.table(as.matrix(t(all_dat)),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p>效果如何?<br>就我的结果来看，不是很理想。我另外使用MaAsLin2做了测试，发现后者的结果更加好一些。两种方法的重叠物种也不多。个人经验和意见，仅供参考。<br><a href="https://bitbucket.org/biobakery/maaslin2" target="_blank" rel="noopener">MaAsLin2</a></p>
+</li>
+<li><p>Python如何实现LASSO？<br>使用了该方法的文章以及脚本：<br>Wilmanski, T. /et al./ Blood metabolome predicts gut microbiome α-diversity in humans. /Nat. Biotechnol./ doi:10.1038/s41587-019-0233-9<br><a href="https://github.com/PriceLab/ShannonMets" target="_blank" rel="noopener">GitHub - PriceLab/ShannonMets: ** Blood metabolome predicts gut microbiome α-diversity in humans**</a></p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>lasso</tag>
+        <tag>R</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>郭鹤年自传</title>
+    <url>/2019/12/07/excerpt/</url>
+    <content><![CDATA[<p>两天时间左右看完了这本书，只记录，不评价，放上来一些我认为还不错的部分，基本按照书的顺序来的；</p>
+<blockquote>
+<p>即使父母亲吵得最厉害的时候，母亲也会提醒我们，她与父亲的争吵是夫妻之间的事，不应该影响到我们对父亲的孝心。换句话说，我们和父亲之间的是父子情，孝道就是孝道。母亲就是如此睿智和关顾他人。所以，就连父亲直律街的店员一旦遇到工作或个人问题时也会跑来找她。她于1995年辞世前，一直展现出伟大的领导特质。</p>
+</blockquote>
+<blockquote>
+<p>我一生坚信忙碌是一种治疗。人必须工作，工作能将身体和心灵结合起来，一并治疗。一个有工作的人会比别人早起，晚上又因为需要恢复体力而比别人早睡，这样不会浪费生命。感谢上帝，庆幸我们那时没有电视、没有愚蠢的电子游戏、没有现在报摊上那些琳琅满目的恶俗杂志，那都只为了迎合人类低下和庸俗的本质。</p>
+</blockquote>
+<blockquote>
+<p>当时的情景至今仍然历历在目。午饭后，我内心有点激动，因为母亲的信确实也触动了我。那天真倒楣，碰巧父亲心情也很差。我泊了车，走入店内，看见父亲一张难看的嘴脸。我略带粗鲁地说：“哎，看看母亲的来信。”我记得当时甚至并没有叫他。他只扫了一眼，用同样粗鲁的方式把信搁在一边。</p>
+<p>顷刻间，我像火山爆发一样，对着父亲吼叫，差点没揍他顿。我当时25岁，年少气盛。我说：“去你的！你一直没有善待母亲，你现在还这样对她！ 你这个人渣！他瞪着我，试图用眼神阻止我说下去。店里的两三个堂兄走过来尝试稳定我的情绪。我不管一切，夺门离去。</p>
+<p> 一周后，父亲心脏病发进了医院，之后便再也没有出院。三周后，他再度心脏病发，于1948年12月26日死于冠状动脉血栓。</p>
+<p>当时，我并不知道父亲的健康已出现问题。但显然，我跟他大吵之后，他的情况便急剧恶化。有时我会想，我是否加速了他的离世。</p>
+</blockquote>
+<blockquote>
+<p>银行家只奉行简单信条：把钱借给不需要借钱的人。当你身无分文时，银行视你如麻疯病人，避而远之。这真是世间一大讽刺。我不完全责怪银行家。我只是认为银行业是一个无情的行业。我常说：“银行家不是我的朋友。只是在我的朋友当中，碰巧有一些银行家。”</p>
+</blockquote>
+<blockquote>
+<p>在我创业时驱使我努力赚钱的首要原动力就是银行家对我的羞辱。除非你能奋力爬到岩礁顶部，否则便有被淹没的危险。我心想，该死！难道这就是商界？这就是资本主义？如果这还不能激励我们进取之努力赚钱，向那些银行家还以颜色，还有什么更能鞭策你向前呢？</p>
+</blockquote>
+<blockquote>
+<p>当时的我充满自信，热血沸腾。我鄙视殖民统治者在马来亚和新加坡的种族主义行为。我记得一家叫夏巴·义利( Harper，Gilfillan)的洋行在其收款单上赫然印着：“欧洲职员签署后，收据方为有效”。我想，如果他们能这样毫无廉耻，公然侮辱其余的95%员工，他们不是疯了，就是要自取灭亡。如果我是他们其中一个本地员工，我一定会在公司内部捣乱。试想，公司不是鼓励员工“努力工作，换取回报”，而是鼓吹白人永远高人一等，所凭借的就只单单那生而有之的肤色！</p>
+</blockquote>
+<blockquote>
+<p>当我受骗时我不会大发雷霆，我只会记在心里。我自已犯错失足踩入洞中，扭伤脚踝，甚或骨折，那又可怎样！我只能等待伤痛自愈，继续前行。</p>
+</blockquote>
+<blockquote>
+<p>我也曾被带去过这些俱乐部。那里有麻将牌局，酒吧区摆放着许多椅子和沙发。男人四处游走，年轻女子围坐身边。表面上充满玩乐，但内里却有很多不为人知的事在发生。</p>
+<p>吉隆坡有很多华商每晚都光顾这些场所，形成一种腐败的文化。他们会以灌下一整瓶白兰地来炫耀，这真是再愚蠢不过。</p>
+<p>我想这真是天助我也。当他们沉迷玩乐时，我却专注于构思生意大计。而且，随着英国殖民体系的瓦解，给予英国人或其他白人公司的优惠正逐渐减少。</p>
+<p>年轻时，除了努力工作，我一直心无旁骛。我会花尽心思去构想一个既富诚信、又能赚钱的商业大计，然后不遗余力地去实践和推进。为此我每天工作不少于12个小时。除了1947年与碧蓉去香港度蜜月和1951年跟母亲一起去欧洲6个月之外，我从来没有休息过一天。我每一天都在工作，包括星期天在内。那时，我的体重大约只有100磅(45公斤)，骨瘦如柴，但我一心只顾工作、无时无刻鞭策着自己向前。</p>
+</blockquote>
+<blockquote>
+<p>我从来都是一个专心聆听的人，这是我与生俱来的特性。</p>
+</blockquote>
+<blockquote>
+<p>生命中最糟糕的不是没有食物，而是没有做人的尊严。</p>
+</blockquote>
+<blockquote>
+<p>大米贸易并不是特别有利可图，但交易量很大。每当市场有混乱时，价格便会飞涨。如果你不是晚上到夜总会豪饮至被酒精冲昏头脑，又能一早爬起床的话，你便能在米价飞涨前打电话到曼谷赶紧入货。</p>
+</blockquote>
+<blockquote>
+<p>我不断扩阔视野，就如磨砺自己的武器。我每天清晨七点半到八点便开始工作，一直到晚上十点到十二点才收工。我不断从旁观摩他们的办事方式，观察他们哪些地方犯错，并发誓不要让自己犯同样的错误。</p>
+</blockquote>
+<blockquote>
+<p>我总觉得智慧就在我们的身边，俯拾皆是。能有系统地学习固然是好，但其实只要你愿意学习，你便能如呼吸一样，萃取到智慧。不过，要做到这点，你必须先提升自己的感官，听得更细心嗅得更深入、看得更敏锐，然后便可以如呼吸空气般地从周遭汲取到智慧。</p>
+</blockquote>
+<blockquote>
+<p>一天的时间是有限的。每天醒来，你必须专注在自己的人生目标上。很多年轻人浪费时间追逐最酷的跑车和其他物欲。但我很早就意识到，这些只是奢侈享乐的象征，只会引诱你偏离重要的事情，忘记了生活的真谛。于我而言，我专注于赚钱，但渴望追求的并不是钱本身，而是希望从汇聚造王者和决策者的商业世界中崛起，并且登上云端。</p>
+</blockquote>
+<blockquote>
+<p>由于没有人从旁教导，所以我去伦敦时便不断观察英国人如何做交易，并不时询问一些有关运作机制的问题。为了试水我有时会做5或10批货的单(每批货为55公吨)。若亏蚀了，也不会招致大损失；若赚了，也没什么大不了。我就是透过这种方式去学习，并从中去开始感应市场的脉搏。</p>
+</blockquote>
+<blockquote>
+<p>只有中国人才懂得这种行之有效的公关技巧 — 自已省吃俭用，却对朋友慷慨大方。</p>
+</blockquote>
+<blockquote>
+<p>如果罗伊·泰敏说：“我会买进。”我就跟风买进。这种方法四次有三次都奏效。我会在当日。选取我认为有良好直觉和最佳判断力的人，然后支持他。</p>
+</blockquote>
+<blockquote>
+<p>人真得要生逢其时。</p>
+</blockquote>
+<blockquote>
+<p>一切统计资料尽在脑中，并且不断更新。当台风弗洛拉袭击古巴时，我运用智慧去推测市场反应。你不能在大家买入时跟着买，也不能待大家都抛售时才出货。你必须比别人走快两三步，快一步都还不够。</p>
+</blockquote>
+<blockquote>
+<p>我发现，只有一种方法能进行遥距贸易，就是“节奏交易”—这是我自创的一个词。在学跳探戈或桑巴舞时，你就会知道跳得好全靠节奏。老师会告诉你，现在左脚往后、往后、往前、侧步。而且节奏出错，你就必须专注去听音乐，再重新找回平衡。千万不要让任何人，包括坐在身边的至爱对你说：“罗伯特，伸出右脚。”旁观者越介入，你就越糊涂。所以，即使你时间掌握不好出了错，只要注意节奏，你是会重新跟上的。在交易中，如果我感觉节奏出了偏差，我就会减少交易量，以降低风险在我的商业生涯中，节奏是一个至为关键的概念。</p>
+</blockquote>
+<blockquote>
+<p>你要知道，信息俯拾皆是，关键在于你能否在芸芸众多资料中抓出亮点。</p>
+</blockquote>
+<blockquote>
+<p>在我的工作生涯中，经营食糖让我最为忙碌。从1958年起之后整整35年间，我一直都没有真正放松过。自1963年起，我每年去两三趟欧洲和美国，还有日本，偶尔也去一下澳大利亚，加上短暂停留东南亚各国，我在家好像没有待过一周以上。可以说，我几乎没有亲眼看着我最大的五个孩子成长。</p>
+</blockquote>
+<blockquote>
+<p>酒店业跟其他行业一样，聘用员工最重要看三点，才能，品德和勤奋程度。三者缺一不可。</p>
+</blockquote>
+<blockquote>
+<p>其他商人可能要到法院去起诉这个家伙。但我想，人生中能退则退。生活本来就有很多不合理的地方。你不能把所有人都想成是通情达理的，你必须面对现实，并假设所有人都不近情理。毕竟，我还挣到了一半兑换外汇的利润。我拿回自己的钱退得一干二净。我甚至不想去谈那块地皮的增值。</p>
+</blockquote>
+<blockquote>
+<p>但很快我就发现，这是一个不讨好的任务。自马来西亚独立以来，许多国家级的项目开始时都有很好的目标，但后来便会慢慢被扭曲，直至最终结果与初衷大相径庭。理念的推行者启动项目却不会跟进落实。</p>
+</blockquote>
+<blockquote>
+<p>任何生意都有艰辛的一面，否则傻子也成富翁了。</p>
+</blockquote>
+<blockquote>
+<p>母亲头脑清晰，思维敏捷，判断客观。她博览群书，对各国发展了如指掌。无论是马来西亚、新加坡、中国或世界其他地区，所以每当我遇到难题时，我就会去找她。有时，我只是跟她闲聊，没有直接提出问题，只是旁敲侧击地听听她的意见，便能从中获得足够的智慧，知道该如何行事。如果我和同事之间相处得不愉快，我也会去见她，因为我有时也需要一个肩膀让我好好地哭一场。听罢我的倾诉后，她寥寥数语便能让我平静下来。</p>
+</blockquote>
+<blockquote>
+<p>这种骨肉相残的争斗持续了两年或三年。我在尽力管理生意，鹤青的孩子们到处散布关于我的恶意谣言。我不能为此去咨询母亲的意见。有一次我去探望她，正想提起这件事，我看见母亲脸上掠过一丝极度痛苦的表情。她的回应，大意是：“年，他们也是我的孩子。你必须自己解决这个问题。我在这件事上不能表态。”她眼见家族不和，痛心疾首，但作为长者，她必须不偏不倚不愿置评。</p>
+</blockquote>
+<blockquote>
+<p>每个成功的商人必须建立自己的一套原则，时刻记在心中。我不相信通过学习便能成为出色的商人。我认为观察自然规律胜于听从别人的忠告。我在父亲的身上看到精明，在他的商业关系中看到一些非常人性化的素质。母亲则用她的智慧深深影响着我。除此之外，没有其他人能真正影响我。事实上，我在其他人身上首先看到的是弱点，然后我再从反面去学习。我一旦观察到他人的弱点，就会告诚自已千方不要那样。</p>
+</blockquote>
+<blockquote>
+<p>我在学校读书时很少能考进前五名。即使这样，打从很年轻时我就明白，前五名的学生在实际生活中都不会出类拔萃。他们往往自视过高，他们当中大多数的价值观和想法都是错误的。我想：“现实生活可是截然不同的。”在学业上考取高分的学生总是被大多数同学所羡慕。但他们一旦获得成功，常常会冲昏头脑。如果你去研究他们一生的轨迹你会发现，他们后来往往都很失败。因为自大悄悄然占据了他们，而且总是发生在最为危险的年纪。</p>
+</blockquote>
+<blockquote>
+<p>我聘请员工或与人做生意时，我很注意对方是否有虚荣心。我发现，对于大多数人而言，最难的一件事就是承认错误。你如果去恭维他们，他们就会加速自我膨胀。恭维是最廉价的贿赂。你会惊讶地发现大部分人都很爱虚荣。而事实上，无论男或女要成功，其中一个最重要的因素就是谦逊。人必须保持谦虚低调因为无论今天你有多强，总有一天会有人比你更强。无论你有多少物质财富，都要紧记，人不是孤立生活的，我们永远都是社会的一分子。</p>
+</blockquote>
+<blockquote>
+<p>但我在多年的商业生涯中，得到一个结论，就是把这句格言反过来说，或许更能反映现今社会真实的一面，就是成功及失败之母”，因为成功会使人骄傲、轻率。</p>
+</blockquote>
+<blockquote>
+<p>你身边的人，在你成功时还能看清大局地对你说：“注意啊！ 我认为事情不是这样的。”你可能会对此置之不理。但反过来当你身处困境时，不断挣扎奋斗的时候就会要求他：“把话再说一遍。”并且会加倍地聆听别人的忠告。所以，紧记要保持谦虚。谦虚只会让你加分绝不会减分。而且还不用花分文便能得到。</p>
+</blockquote>
+<blockquote>
+<p>同样地，我相信人应该通过努力工作去积累财富。渐进致富让人学懂节俭和守护财富。他会更懂得关注社会和身边的贫苦大众。因为他自己一生都在辛勤工作，与社会各阶层的人士摩肩接踵，让他更能深切地体恤弱势群体的需求。</p>
+</blockquote>
+<blockquote>
+<p>中国人非常勤劳。无论在哪里，他们都尝试自食其力。一些移民到当地做车夫，所以当地居民就把中国人与汗臭味连起来，说他们是一群可怜虫。我从来没有理会过这些废话。生活中，人要学会分辨形式和本质。如果我们的眼睛总是盯着形式，那么我对你此生是否有成功的可能存有怀疑。</p>
+</blockquote>
+<blockquote>
+<p>十有八九，我下次再去时，比方说一年后，那个人已被免职，有更好的人接替了他。我开始对自己、对别人说：在东南亚，坏蛋得以晋升但在中国，坏人都被免职。</p>
+</blockquote>
+<blockquote>
+<p>我们入座后，他的第一句话就是感谢并夸赞海外华人对新中国诞生所作出的贡献，以及他们在中国经济腾飞中持续起到的重要作用。接下来，他说的几件事让我至今记忆犹新。一件事是“30年后，中国将会成为亚洲最重要最强大的国家，而亚洲将成为全球最强大的地区。”邓的语调中并无傲慢，他像是一个年老的圣贤看着能预测未来的水晶球，描述着他看见的一切。他说这些话的时候很谦逊，然后他补充道：“我不可能活着看到这一天了，但我可以肯定，这一切都会成真。”（说话的时候是1990年..+.+）</p>
+<p>他还说：“郭先生，大家都说，是我给中国带来了如此巨大、快速的发展。他们错了。我实施中国对外开放时大家都在后面推动我。至今，大家仍然在推动我。”他并不是用以退为进的方式来邀功，他只是在陈述事实。人民都渴望经济发展。</p>
+</blockquote>
+<blockquote>
+<p>成功之路总会经历不断的挑战，人们应以柔韧面对每次失败和试炼。如果你在追寻目标时，选择了一条艰辛的道路，你必须以柔韧、客观的态度走下去，焦虑从来都不是解决问题的方达，事实上焦虑只会使问题恶化，它弱化大脑，最终击垮身体，使人们死于挫败感，并对失败产生忧虑。</p>
+</blockquote>
+<blockquote>
+<p>不要把问题视为一堵砖墙。人可以穿越问题。穿透去另一侧，忘记问题，再重新开始生活。也许你需要从零开始，但生活中总有重生的机会。我们不一定都会成功，但至少我们有机会。</p>
+</blockquote>
+<blockquote>
+<p>退休的事就不提了吧。</p>
+</blockquote>
+<blockquote>
+<p>母亲对自己极其严格，她完全拒绝生活中的享乐。她跟我说了无数遍这样的话：“人是为了受苦才降生到这个世界的，而不是为了过奢侈的生活或享乐。”</p>
+</blockquote>
+<blockquote>
+<p>我是由一些特殊材料构造而成的。孩提时代，我常有缺乏物资和挨饿的经历。如果家佣在厨房里打破了杯子，母亲也会责怪她。当我看到家佣脸上忧愁的表情时，我会被一个问题困扰着，我们怎么才能摆脱贫困?答案是：获取财富。钱财是好是环，我并非裁判，但既然财富是社会的组成部分，我就不得不投身这竞技场。</p>
+</blockquote>
+<blockquote>
+<p>即使最甜蜜的物质享乐也不过是过眼云烟。</p>
+</blockquote>
+<blockquote>
+<p>母亲的话很有道理：“子女如你，他们就不需要从你那里继承财产；子女若不如你，你的遗产对他们又有仕么用呢?”</p>
+</blockquote>
+<blockquote>
+<p>拉丁箴言：品德高，体自康。</p>
+</blockquote>
+<blockquote>
+<p>我活在这个世界上已经快一个世纪了。回顾从商的75年。我意识到要在漫长的商业生涯中取胜或逆境求存，关键是要有个强健的体魄和健康的心灵。我一直很欣赏一句拉丁文：“mens sana in corpore sano”（健康的心灵存在于键康的身体），这正是我早年学校的座右铭。现在每个见到我的人都会问我如何在93岁还能保持健康，而我的答案—在身体和心理上过简单朴素的生活是良好健康的黄金法则。</p>
+</blockquote>
+<blockquote>
+<p>拥有健康的价值观亦很重要。为了一个快乐及满足的人生，我相信每个人都应该培养几项重要的生活习惯：第一是抑制妒忌，第二是抑制贪念。</p>
+</blockquote>
+<blockquote>
+<p>我相信每个人天生都有好运和恶运的配额，过着道德的生活能够打开好运的源头，失德败行则会阻塞流向你的好运。</p>
+</blockquote>
+<blockquote>
+<p>无可否认，有些人天生就拥有比他人更强的能力和好运。如果你属于这幸运的一群，并将你所拥有的与身边的人分享，这会给你无比的快乐。有着喜乐和满足的人自然会活得长寿。</p>
+</blockquote>
+<blockquote>
+<p>人应学会谦卑。真正的谦卑须发自内心，对人要怀着慈悲之心。我发现大部分人都会愿意为真正谦卑的人效力，而一个自大傲慢的人在20个“朋友”中可能勉强能找到2人愿意向他伸出援手。</p>
+</blockquote>
+<blockquote>
+<p>我希望年轻人能反省人类在这地球上的真正意义。不要将物质上的满足与快乐混为一谈，金钱并不能带给你一切要懂得分辨真实和幻想。学会过着简单朴实的生活并在有能力的情况下将财富和他人分享。我们在这世界上并非孑然一身。古代的圣人留下了无尽的智慧，如老子就教导我们—人若要过知足的生，就应放弃贪念、尽力过一个与大自然和谐共融的简单朴素的生活。</p>
+</blockquote>
+<p>结束语：</p>
+<ol>
+<li>就这些，道理就是这些道理，实实在在的道理，至于能领悟多少，又能实践多少，效果又如何，全看个人造化，知行合一是一辈子要做的事情。</li>
+<li>另外，我发现一种现象，分明有很多和诸如上边这位伟大的老头做朋友的机会，但是我却会在当下的互联网时代，从所谓的各种自己也并没有熟透的自媒体中寻求认同感，并且有时还会沉溺其中，有种丢了西瓜捡芝麻的感觉。我并不是说要脱离实际，而是有些东西显然从这些更有经验的「好朋友」中汲取，然后加以实践是更好的选择。以此为戒。</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>书摘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mac 下两步验证免密，免验证码登陆, 传输文件</title>
+    <url>/2019/10/25/Mac-Authenticator-md/</url>
+    <content><![CDATA[<h2 id="出发点"><a href="#出发点" class="headerlink" title="出发点"></a>出发点</h2><p>公司的集群前段时间需要两步验证登陆，每次登陆以及传输文件都得拿起手机，看验证码，输入验证码，今天实在觉得这么「繁琐」的步骤无法忍受，就想去查一下有没有可以在桌面端获取验证码的方式，结果还真有：</p>
+<p><a href="https://www.cnblogs.com/jasondan/p/6508249.html" target="_blank" rel="noopener">https://www.cnblogs.com/jasondan/p/6508249.html</a></p>
+<p><a href="https://github.com/stanzhai/GoldenPassport" target="_blank" rel="noopener">GitHub - stanzhai/GoldenPassport: A native implementation of Google Authenticator for Mac based on Swift</a></p>
+<p>作者的想法和目的简直和我的一模一样，而且自己动手，丰衣足食，解决了问题，果然知识才是生产力啊。</p>
+<p>既然有了现成的工具，我也直接优化我之前的脚本，实现即使有两步验证，也能无需输入密码验证码登陆以及传输文件的过程。脚本如下：</p>
+<h2 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!/usr/bin/expect -f</span><br><span class="line">#  set user P_bc_medea</span><br><span class="line">  set user xxxx # xxxx is your account</span><br><span class="line">  set host IP  # your IP address</span><br><span class="line">  set password xxxx # xxxx is your passsword</span><br><span class="line">  set code [exec sh -c &#123;curl -s &quot;http://localhost:17304&quot; |grep -Eo &quot;\d&#123;6&#125;&quot;&#125;] # get the verfication code from the local host; 在 expect 脚本里边使用 shell 命令； grep 捕获变量；</span><br><span class="line">  set timeout -1</span><br><span class="line"></span><br><span class="line">  spawn ssh $user@$host</span><br><span class="line">  expect &quot;*assword:*&quot;</span><br><span class="line">  send &quot;$password\r&quot;</span><br><span class="line">  expect &quot;*erification code:*&quot;</span><br><span class="line">  send &quot;$code\r&quot;</span><br><span class="line">  interact</span><br><span class="line">  expect eof</span><br></pre></td></tr></table></figure>
+
+<h2 id="传输文件"><a href="#传输文件" class="headerlink" title="传输文件"></a>传输文件</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">#!/usr/bin/expect -f</span><br><span class="line">  set src_file [lindex $argv 0] # the file need scp </span><br><span class="line">  set dest_dir [lindex $argv 1] # the target directory </span><br><span class="line">  set user xxxx # xxxx is your account</span><br><span class="line">  set host IP  # your IP address</span><br><span class="line">  set password xxxx # xxxx is your passsword</span><br><span class="line">  set code [exec sh -c &#123;curl -s &quot;http://localhost:17304&quot; |grep -Eo &quot;\d&#123;6&#125;&quot;&#125;]</span><br><span class="line">  set timeout -1</span><br><span class="line"></span><br><span class="line">  spawn scp -r $user@$host:$src_file $dest_dir</span><br><span class="line">  expect &quot;*assword:&quot;</span><br><span class="line">  send &quot;$password\r&quot;</span><br><span class="line">  expect &quot;*erification code:*&quot;</span><br><span class="line">  send &quot;$code\r&quot;</span><br><span class="line">  expect &quot;100%&quot;</span><br><span class="line">  expect eof</span><br></pre></td></tr></table></figure>
+
+<p>点击一下，完结撒花~</p>
+]]></content>
+      <categories>
+        <category>Mac</category>
+      </categories>
+      <tags>
+        <tag>Mac</tag>
+        <tag>Google Authenticator</tag>
+        <tag>GoldenPassport</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mac 下安装 Windows 虚拟机，以及 Trados</title>
+    <url>/2019/10/25/Mac-windows/</url>
+    <content><![CDATA[<p>因为需要安装一个只能在 Windows 系统下使用的软件，所以花时间尝试了在 Mac 下安装虚拟机以及安装软件，记录一下</p>
+<p>首先尝试了 VirtualBox<br><a href="https://www.jianshu.com/p/4271b6bf6d2c" target="_blank" rel="noopener">Mac用VirtualBox虚拟机安装win10教程 - 简书</a><br>结果不论是安装 Win7 还是 Win10，都失败了，而且界面看起来很奇怪</p>
+<p>然后尝试了通过 ParallelsDesktop 安装<br><a href="https://www.jianshu.com/p/94192b744421" target="_blank" rel="noopener">MAC安装Windows虚拟机 - 简书</a></p>
+<p>文档里的百度网盘链接下载太慢，可以另外找载源下载</p>
+<p>Win10 破解 <a href="http://www.ylmfwin100.com/ylmf/8643.html" target="_blank" rel="noopener">http://www.ylmfwin100.com/ylmf/8643.html</a><br>但是我这种方法也失败了，可以重新网上找序列码即可</p>
+<p>后边再安装 Trados 就可以，随便搜一搜就有现成的</p>
+<p>个人感觉  ParallelsDesktop 要比 VirtualBox 好用很多，有钱的话还是多多支持付费软件:)</p>
+]]></content>
+      <categories>
+        <category>Mac</category>
+      </categories>
+      <tags>
+        <tag>Mac</tag>
+        <tag>Windows</tag>
+        <tag>Trados</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Literature</title>
+    <url>/2019/09/26/literature/</url>
+    <content><![CDATA[<h1 id="人类肠道细菌分离培养物种库-纵向多组学数据促进微生物组机制研究"><a href="#人类肠道细菌分离培养物种库-纵向多组学数据促进微生物组机制研究" class="headerlink" title="人类肠道细菌分离培养物种库 + 纵向多组学数据促进微生物组机制研究"></a>人类肠道细菌分离培养物种库 + 纵向多组学数据促进微生物组机制研究</h1><p>A library of human gut bacterial isolates paired with longitudinal multiomics data enables mechanistic microbiome research</p>
+<blockquote>
+<p>打算采用『如何阅读一本书』里提及的方法，用于阅读文献，理论指导实践，看看效果</p>
+</blockquote>
+<h2 id="一、文章-书大体上是在谈什么？"><a href="#一、文章-书大体上是在谈什么？" class="headerlink" title="一、文章\书大体上是在谈什么？"></a>一、文章\书大体上是在谈什么？</h2><h3 id="按照种类和主题分类"><a href="#按照种类和主题分类" class="headerlink" title="按照种类和主题分类"></a>按照种类和主题分类</h3><p>肠道微生物；宏基因组；数据库；</p>
+<h3 id="用最简短的句子说出整本书-文献在谈什么"><a href="#用最简短的句子说出整本书-文献在谈什么" class="headerlink" title="用最简短的句子说出整本书/文献在谈什么"></a>用最简短的句子说出整本书/文献在谈什么</h3><p>构建了一个微生物数据库，包含 7758 个肠道菌株，以及相应的 3632 个基因组，同时包含了部分纵向对组学的数据。结果发现：</p>
+<ol>
+<li>在个体之内和之间微生物物种维持稳定数量；</li>
+<li>天的平均数据的多组学研究方法更加可靠；</li>
+<li>体内的肠道代谢物变化和氨基酸水平相关；</li>
+<li>不同个体（人群）之间的差异和胆汁酸差异有关；</li>
+<li>基因组变化可用于推测个体内菌株共进化动态和体内的选择压力（个体内的菌株）；</li>
+</ol>
+<h3 id="按照顺序和关系，列出全书的重要部分。将全书的纲要拟出来以后，再将各个部分的纲要也一一列出来"><a href="#按照顺序和关系，列出全书的重要部分。将全书的纲要拟出来以后，再将各个部分的纲要也一一列出来" class="headerlink" title="按照顺序和关系，列出全书的重要部分。将全书的纲要拟出来以后，再将各个部分的纲要也一一列出来"></a>按照顺序和关系，列出全书的重要部分。将全书的纲要拟出来以后，再将各个部分的纲要也一一列出来</h3><h4 id="1-分离培养大量肠道细菌用于体外或者体内验证机制假说"><a href="#1-分离培养大量肠道细菌用于体外或者体内验证机制假说" class="headerlink" title="1. 分离培养大量肠道细菌用于体外或者体内验证机制假说"></a>1. 分离培养大量肠道细菌用于体外或者体内验证机制假说</h4><p>Isolation of  an extensive collection of gut bacterial isolates for in vitro and in vivo testing of mechanistic hypotheses</p>
+<h5 id="1-1-从-OpenBiome-供体提取构建分离培养物种库，以覆盖肠道细菌的多样性"><a href="#1-1-从-OpenBiome-供体提取构建分离培养物种库，以覆盖肠道细菌的多样性" class="headerlink" title="1.1 从 OpenBiome 供体提取构建分离培养物种库，以覆盖肠道细菌的多样性"></a>1.1 从 OpenBiome 供体提取构建分离培养物种库，以覆盖肠道细菌的多样性</h5><p>Building a library of isolates that cover the diversity of gut bacteria from OpenBiome donors</p>
+<h5 id="1-2-BIO-ML-包含多种和人类健康相关的物种"><a href="#1-2-BIO-ML-包含多种和人类健康相关的物种" class="headerlink" title="1.2 BIO-ML 包含多种和人类健康相关的物种"></a>1.2 BIO-ML 包含多种和人类健康相关的物种</h5><p>The BIO-ML contains diverse taxa associated with human health</p>
+<h4 id="2-从分离培养的基因组中推测生态学和进化多态性"><a href="#2-从分离培养的基因组中推测生态学和进化多态性" class="headerlink" title="2. 从分离培养的基因组中推测生态学和进化多态性"></a>2. 从分离培养的基因组中推测生态学和进化多态性</h4><p>Ecology and evolutionary dynamics inferred from isolate genomes</p>
+<h5 id="2-1-BIO-ML-分离培养基因组的质量和多样性"><a href="#2-1-BIO-ML-分离培养基因组的质量和多样性" class="headerlink" title="2.1 BIO-ML 分离培养基因组的质量和多样性"></a>2.1 BIO-ML 分离培养基因组的质量和多样性</h5><p>Quality and diversity of BIO-ML isolate genomes</p>
+<h5 id="2-2-对乙醇的抗性比之前认为的更加广泛（物种），而且不限于孢子形成物种"><a href="#2-2-对乙醇的抗性比之前认为的更加广泛（物种），而且不限于孢子形成物种" class="headerlink" title="2.2 对乙醇的抗性比之前认为的更加广泛（物种），而且不限于孢子形成物种"></a>2.2 对乙醇的抗性比之前认为的更加广泛（物种），而且不限于孢子形成物种</h5><p>Resistance to ethanol (乙醇) is more widespread than previously thought and not restricted to spore-formers</p>
+<h5 id="2-3-分类培养基因组的大量取样揭示了肠道共生菌长期和短期的进化"><a href="#2-3-分类培养基因组的大量取样揭示了肠道共生菌长期和短期的进化" class="headerlink" title="2.3 分类培养基因组的大量取样揭示了肠道共生菌长期和短期的进化"></a>2.3 分类培养基因组的大量取样揭示了肠道共生菌长期和短期的进化</h5><p>Extensive sampling of isolate genomes reveals the long- and short-term evolution of gut commensal bacteria.</p>
+<h4 id="3-FMT-供体的高精度基因组时间序列"><a href="#3-FMT-供体的高精度基因组时间序列" class="headerlink" title="3. FMT 供体的高精度基因组时间序列"></a>3. FMT 供体的高精度基因组时间序列</h4><p>High-resolution genomic time series from FMT donors</p>
+<h4 id="4-基于宏基因组和-16S-的时间序列数据改善了丰度估计和生态学推测"><a href="#4-基于宏基因组和-16S-的时间序列数据改善了丰度估计和生态学推测" class="headerlink" title="4. 基于宏基因组和 16S 的时间序列数据改善了丰度估计和生态学推测"></a>4. 基于宏基因组和 16S 的时间序列数据改善了丰度估计和生态学推测</h4><p>Time-series data improve abundance estimations and ecological inferences from metagenomic and 16S data</p>
+<h4 id="5-个体内细菌基因组的多样化和生活-历史特征与肠道生态系统的生态稳定性和扰乱相关"><a href="#5-个体内细菌基因组的多样化和生活-历史特征与肠道生态系统的生态稳定性和扰乱相关" class="headerlink" title="5. 个体内细菌基因组的多样化和生活-历史特征与肠道生态系统的生态稳定性和扰乱相关"></a>5. 个体内细菌基因组的多样化和生活-历史特征与肠道生态系统的生态稳定性和扰乱相关</h4><p>Bacterial genomic diversification within individuals and life-history traits are associated with ecological stability and disturbance of the gut ecosystem</p>
+<h4 id="6-个体间粪便代谢组的胆汁酸谱有差异，而个体内的变化大部分是氨基酸导致的"><a href="#6-个体间粪便代谢组的胆汁酸谱有差异，而个体内的变化大部分是氨基酸导致的" class="headerlink" title="6. 个体间粪便代谢组的胆汁酸谱有差异，而个体内的变化大部分是氨基酸导致的"></a>6. 个体间粪便代谢组的胆汁酸谱有差异，而个体内的变化大部分是氨基酸导致的</h4><p>Donor fecal metabolomes can be distinguished by their bile- acid profiles, while within-donor variation is driven largely by amino acids.</p>
+<h3 id="作者在问的问题或者想要解决的问题"><a href="#作者在问的问题或者想要解决的问题" class="headerlink" title="作者在问的问题或者想要解决的问题"></a>作者在问的问题或者想要解决的问题</h3><p>肠道微生物和人类宿主的相互作用研究受限于缺乏纵向队列研究数据（探索其稳定性和动态变化），而且分离培养的菌株太少无法用于验证机制假说</p>
+<h2 id="二、文章-书📚的详细内容是什么？是如何写出来的？"><a href="#二、文章-书📚的详细内容是什么？是如何写出来的？" class="headerlink" title="二、文章/书📚的详细内容是什么？是如何写出来的？"></a>二、文章/书📚的详细内容是什么？是如何写出来的？</h2><blockquote>
+<p>由于好多地方没大看懂… 所以这部分先略过吧…. hhhhh； 我大概只做到了检视阅读吧…<br>属于我不擅长的阅读内容</p>
+</blockquote>
+<h2 id="三、这是真实的吗？有意义吗？像是沟通知识一样的评论一本书"><a href="#三、这是真实的吗？有意义吗？像是沟通知识一样的评论一本书" class="headerlink" title="三、这是真实的吗？有意义吗？像是沟通知识一样的评论一本书"></a>三、这是真实的吗？有意义吗？像是沟通知识一样的评论一本书</h2><blockquote>
+<p>还没有到这种水平… (⇀‸↼‶) </p>
+</blockquote>
+<hr>
+<p>To be continued…</p>
+]]></content>
+      <tags>
+        <tag>metagenomics</tag>
+        <tag>文献</tag>
+        <tag>阅读</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>碎碎念</title>
+    <url>/2019/09/24/self-talking/</url>
+    <content><![CDATA[<h2 id="大爷"><a href="#大爷" class="headerlink" title="大爷"></a>大爷</h2><p>北京的太阳如此晃眼<br>以至于<br>我分不清<br>捡破烂的大爷<br>和<br>打麻将的大爷<br>哪个才是<br>真正的大爷…</p>
+<p>20190924 读大爷收租有感, 以及太阳晃眼也是真的…</p>
+]]></content>
+      <tags>
+        <tag>生活</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>摘录文献阅读时的一些句子</title>
+    <url>/2019/09/18/English-writing/</url>
+    <content><![CDATA[<ol>
+<li><p>::Averaging multiple timepoints:: may be ::optimal for precisely quantifying:: abundances of bacterial taxa and functions within individuals. However, there has not been a ::quantitative assessment:: of ::how much improvement:: is possible, or of ::how many samples:: are needed.</p>
+</li>
+<li><p>Using our longitudinal dataset, we found that each person ::harbored a stable and unique microbiome structure::, both ::in terms of taxa and broad functional categories:: </p>
+</li>
+<li><p>However, we found that the relative abundance of a given ASV (equivalent to 100% OTUs) and of a given clusters of orthologous groups (COG) category ::fluctuated substantially from day-to-day::, but the median relative abundance ::remained relatively constant::</p>
+</li>
+<li><p>The number of bacterial genes encoded within the human gut ::vastly outnumber:: the total complement of genes in Homo sapiens, ::endowing the gut microbiome with enormous potential:: for the production of a range of functionally active metabolites.</p>
+</li>
+<li><p>::The mechanisms linking:: gut microbiota to cardiovascular disease (CVD) are ::multifaceted::, and include ::direct effects of microbial metabolites on:: atherosclerosis and thrombosis development, as well as ::immune modulation by bacteria and their products::.</p>
+</li>
+<li><p>::Across:: &gt;8,000 measured metabolite features, we identified chemicals and chemical classes that were ::differentially abundant:: in IBD, ::including enrichments for:: sphingolipids and bile acids, ::and depletions for:: triacylglycerols and tetrapyrroles.</p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>写作</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>微生物研究资讯</title>
+    <url>/2019/09/18/M-news/</url>
+    <content><![CDATA[<h2 id="The-intestinal-microbiota-programs-diurnal-rhythms-in-host-metabolism-through-histone-deacetylase-3"><a href="#The-intestinal-microbiota-programs-diurnal-rhythms-in-host-metabolism-through-histone-deacetylase-3" class="headerlink" title="The intestinal microbiota programs diurnal rhythms in host metabolism through histone deacetylase 3"></a>The intestinal microbiota programs diurnal rhythms in host metabolism through histone deacetylase 3</h2><blockquote>
+<p>Science, 27 Sep 2019 | IF:  41<br><a href="https://science.sciencemag.org/content/365/6460/1428" target="_blank" rel="noopener">The intestinal microbiota programs diurnal rhythms in host metabolism through histone deacetylase 3</a></p>
+</blockquote>
+<p><a href="https://www.nature.com/articles/s41579-019-0285-3" target="_blank" rel="noopener">Microbial conductors</a><br>微生物指挥家<br>宿主因素，肠道微生物和宿主代谢昼夜节律调节有关。<br>『生物钟和肠道微生物之间的对话』</p>
+<p>Circadian rhythmicity is a defining feature of mammalian metabolism that synchronizes metabolic processes to day-night light cycles.<br>昼夜节律（circadian rhythmicity）是哺乳动物代谢的典型（defining）特征，能够让新陈代谢过程和昼夜光照周期同步（synchronizes）。</p>
+<p>Here, we show that the intestinal microbiota programs diurnal metabolic rhythms in the mouse small intestine through histone deacetylase 3 (HDAC3).<br>我们的研究表明肠道微生物通过组蛋白脱乙酰基酶编程小鼠小肠中的昼夜代谢节律。</p>
+<p>更新时间: 2019年10月8日 </p>
+<hr>
+<h2 id="Vaginal-microbiome-transplantation-in-women-with-intractable-bacterial-vaginosis"><a href="#Vaginal-microbiome-transplantation-in-women-with-intractable-bacterial-vaginosis" class="headerlink" title="Vaginal microbiome transplantation in women with intractable bacterial vaginosis"></a>Vaginal microbiome transplantation in women with intractable bacterial vaginosis</h2><blockquote>
+<p>Nature medicine  IF:  30.64  | Date: 2019-10-07<br><a href="https://www.nature.com/articles/s41591-019-0600-6" target="_blank" rel="noopener">Vaginal microbiome transplantation in women with intractable bacterial vaginosis</a></p>
+</blockquote>
+<p>首次探索性研究测试阴道微生物移植（vaginal microbiome transplantation, VMT），研究者将健康供体的阴道微生物移植给患有症状性，顽固性和复发性细菌性阴道病的患者 (ClinicalTrials.gov  <a href="https://clinicaltrials.gov/ct2/show/NCT02236429" target="_blank" rel="noopener">NCT02236429</a> )。</p>
+<p>总共五名患者接受治疗，在 VMT 的 5-21 个月随访问后，<br>四名患者得到长期缓解（full long-term remission），具体表现为症状， Amsel标准，镜检结果的显著改善。同时伴随着以乳杆菌为主的阴道微生物重构。<br>而一名患者的临床和实验室特征尚未完全缓解。</p>
+<p>在五名妇女中没有发现副作用。</p>
+<p>值得注意的是，三名患者需要（necessitated） 重复性的 VMT 才能恢复（其中一名的供体还发生了改变），以引起（elicit）长期的（long-standing）临床反应。</p>
+<p>VMT 在顽固性（intractable）和复发性的（recurrent ）细菌性阴道病的治疗效果需要进一步在随机，安慰剂对照的临床实验加以确定（determined）。</p>
+<p>LG：五例就可以发到 Nature Medicine…<br>更新时间: 2019年10月8日 </p>
+<hr>
+<h2 id="The-gut-microbiome-regulates-host-glucose-homeostasis-via-peripheral-serotonin"><a href="#The-gut-microbiome-regulates-host-glucose-homeostasis-via-peripheral-serotonin" class="headerlink" title="The gut microbiome regulates host glucose homeostasis via peripheral serotonin"></a>The gut microbiome regulates host glucose homeostasis via peripheral serotonin</h2><blockquote>
+<p>PNAS | September 16, 2019 | IF: 9.58 </p>
+</blockquote>
+<p>大脑中的血清素被称作是“快乐激素”；实际上，90%以上的血清素源自于胃肠道。<br>2019年9月16日，美国国家科学院院刊《PANS》上一项研究，首次揭示了肠道细菌是如何与产生血清素的细胞合作，对包括宿主血糖水平在内的新陈代谢进行负面调控的。</p>
+<p>一项新研究（🐭）表明肠道如何通过细菌产生血清素从而影响宿主血糖水平；</p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://www.pnas.org/content/early/2019/09/10/1909311116" target="_blank" rel="noopener">The gut microbiome regulates host glucose homeostasis via peripheral serotonin</a> </li>
+<li><a href="https://mp.weixin.qq.com/s/5VKrY-5BwBMj-Z0jHj6Bfg" target="_blank" rel="noopener">快乐激素不快乐 | 首次发现肠道菌+血清素，会升高血糖，负向影响宿主代谢</a></li>
+</ol>
+<hr>
+<h2 id="Stunted-microbiota-and-opportunistic-pathogen-colonization-in-caesarean-section-birth"><a href="#Stunted-microbiota-and-opportunistic-pathogen-colonization-in-caesarean-section-birth" class="headerlink" title="Stunted microbiota and opportunistic pathogen colonization in caesarean-section birth"></a>Stunted microbiota and opportunistic pathogen colonization in caesarean-section birth</h2><blockquote>
+<p>Nature | Date:2019-09-18 | IF: 43.07 </p>
+</blockquote>
+<ol>
+<li>该研究是目前为止最大的新生儿队列研究 596 个英国的孩子，1,679 的肠道菌群的样品（多个时间点）</li>
+<li>剖腹产的婴儿缺乏健康儿童和成年人的关键肠道细菌（/Bacteroides/ strains），而且定植着医院常见的有害微生物（包括 /Enterococcus/, /Enterobacter/ 和 /Klebsiella/ species）; 这些影响在使用抗生素的妈妈阴道分娩的孩子，以及刚出生不吃早餐的孩子也能发现，不过程度较小；</li>
+<li>差异如此显著，以至于『仅从某个孩子的一个样品就能以很高的确定性知道其分娩方式』；</li>
+</ol>
+<h2 id="One-more-thing"><a href="#One-more-thing" class="headerlink" title="One more thing"></a>One more thing</h2><ol>
+<li>我竟然是从微博上第一时间看到这个消息，虽然之前就知道不同的分娩方式会造成影响；</li>
+<li>不过之前看到，即使分娩方式不同，在成长一段时间后似乎就没有差异了（忘记了出处..）；</li>
+</ol>
+<h2 id="参考链接-1"><a href="#参考链接-1" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://www.nature.com/articles/s41586-019-1560-1" target="_blank" rel="noopener">Stunted microbiota and opportunistic pathogen colonization in caesarean-section birth</a></li>
+<li><a href="https://www.nature.com/articles/d41586-019-02807-x?utm_source=Nature+Briefing&utm_campaign=9cccfcc954-briefing-dy-20190919&utm_medium=email&utm_term=0_c9dfd39373-9cccfcc954-44380949" target="_blank" rel="noopener">C-section babies are missing key microbes</a></li>
+<li><a href="https://www.mr-gut.cn/papers/read/1096721383?kf=daily_email" target="_blank" rel="noopener">Nature：剖腹产对新生儿肠道菌群的不良影响</a></li>
+</ol>
+<hr>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>微生物</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Mac 下远程使用终端</title>
+    <url>/2019/09/05/mac-linux/</url>
+    <content><![CDATA[<blockquote>
+<p>包含三部分, 1.终端的配置; 2.集群免密登陆; 3.本地集群免密文件传输;</p>
+</blockquote>
+<h3 id="1-终端配置"><a href="#1-终端配置" class="headerlink" title="1. 终端配置"></a>1. 终端配置</h3><p>推荐使用配方： iTerm2 + Oh my zsh + zsh，教程网上有一大堆，优点也不再赘述，下边是一个参考链接: <a href="https://www.jianshu.com/p/2fe658fd9d94" target="_blank" rel="noopener">Mac下iTerm 2语法高亮配置及附带美化 - 简书</a></p>
+<h3 id="2-集群免密登陆"><a href="#2-集群免密登陆" class="headerlink" title="2. 集群免密登陆"></a>2. 集群免密登陆</h3><p>好处是不用每次都输入 IP 和密码，个人感觉比 Putty 什么的好用很多;</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">## 1. 首先写一个 expect 脚本, 用于自动交互, 以 login.expect 为例</span><br><span class="line"># login.expect </span><br><span class="line">#!/usr/bin/expect -f</span><br><span class="line">  set user account  ## 集群账号</span><br><span class="line">  set host IP  ## 集群 IP</span><br><span class="line">  set password xxxx ##  xxxx 为集群登陆密码</span><br><span class="line">  set timeout -1</span><br><span class="line"></span><br><span class="line">  spawn ssh $user@$host</span><br><span class="line">  expect &quot;*assword:*&quot;</span><br><span class="line">  send &quot;$password\r&quot;</span><br><span class="line">  interact</span><br><span class="line">  expect eof</span><br><span class="line"></span><br><span class="line">## 2. 然后命令行使用 expect login.expect 登陆即可；</span><br><span class="line">#如果嫌麻烦的话，可以在 .zshrc (或者 .bashrc） 文件里设置如下：</span><br><span class="line">alias lg=&quot;expect login.expect&quot; </span><br><span class="line">#这样每次输入 lg 即可登陆，同理多个 IP 可设置多个脚本来配置运行；</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-本地-lt-gt-集群文件免密文件传输"><a href="#3-本地-lt-gt-集群文件免密文件传输" class="headerlink" title="3. 本地 &lt;=&gt; 集群文件免密文件传输"></a>3. 本地 &lt;=&gt; 集群文件免密文件传输</h3><p>如果喜欢界面交互的话，可以使用一些现成的软件，比如  <a href="https://filezilla-project.org/" target="_blank" rel="noopener">FileZilla - The free FTP solution</a><br>如果喜欢命令行的话，也可以通过脚本来传输，方法和上边类似；</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">## 1. 首先写一个 expect 脚本, 以 scp.expect 为例</span><br><span class="line"># scp.expect </span><br><span class="line">#!/usr/bin/expect -f</span><br><span class="line">  set src_file [lindex $argv 0] #用于外接参数</span><br><span class="line">  set dest_dir [lindex $argv 1] #用于外接参数</span><br><span class="line">  set user account #集群账号</span><br><span class="line">  set host IP #集群 IP</span><br><span class="line">  set password xxxx #集群密码</span><br><span class="line">  set timeout -1</span><br><span class="line"></span><br><span class="line">  spawn scp -r $user@$host:$src_file $dest_dir #集群到本地</span><br><span class="line">#  spawn scp -r $src_file $user@$host:$dest_dir #本地到集群</span><br><span class="line">#  spawn rsync -avl $user@$host:$src_file $dest_dir  # 使用 rsync 传输</span><br><span class="line">  expect &quot;*assword:&quot;</span><br><span class="line">  send &quot;$password\r&quot;</span><br><span class="line">  expect &quot;100%&quot;</span><br><span class="line">  expect eof</span><br><span class="line"></span><br><span class="line">## 2. 然后命令行使用 expect scp.expect 登陆即可；</span><br><span class="line">#如果嫌麻烦的话，可以在 .zshrc (或者 .bashrc） 文件里设置如下：</span><br><span class="line">alias scp=&quot;expect scp.expect&quot; </span><br><span class="line">#这样每次输入 scp 即可登陆，同理多个 IP 可设置多个脚本来配置运行；</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>Mac</category>
+      </categories>
+      <tags>
+        <tag>Mac</tag>
+        <tag>shell</tag>
+        <tag>linux</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>集群上使用 SparCC</title>
+    <url>/2019/09/05/SparCC-cluster/</url>
+    <content><![CDATA[<blockquote>
+<p>因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;</p>
+</blockquote>
+<h2 id="脚本如下-待完善"><a href="#脚本如下-待完善" class="headerlink" title="脚本如下, 待完善"></a>脚本如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCE</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br><span class="line"></span><br><span class="line"><span class="comment">#退出虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> deactivate</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://bitbucket.org/yonatanf/sparcc" target="_blank" rel="noopener">SparCC_bitbucket</a></li>
+<li><a href="https://github.com/hallamlab/utilities/wiki/SparCC" target="_blank" rel="noopener">SparCC · hallamlab/utilities Wiki · GitHub</a></li>
+<li><a href="https://bitbucket.org/yonatanf/sparcc/issues/18/error-tuple-index-out-of-range" target="_blank" rel="noopener">yonatanf / SparCC   / issues   / #18 - Error: tuple index out of range — Bitbucket</a></li>
+<li><a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687" target="_blank" rel="noopener">Inferring Correlation Networks from Genomic Survey Data</a></li>
+<li><a href="https://github.com/zdk123/SpiecEasi" target="_blank" rel="noopener">GitHub - zdk123/SpiecEasi: Sparse InversE Covariance estimation for Ecological Association and Statistical Inference</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>集群</tag>
+        <tag>pythton</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>皮肤微生物设计</title>
+    <url>/2019/09/05/skin-microbiome-design/</url>
+    <content><![CDATA[<h2 id="皮肤微生物设计"><a href="#皮肤微生物设计" class="headerlink" title="皮肤微生物设计"></a>皮肤微生物设计</h2><ol>
+<li>如何取获得足够的生物量并且避免污染<br><a href="https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-sampling" target="_blank" rel="noopener">How to Design a Skin Microbiome Study, Part I: Sampling</a></li>
+<li>选取测序策略，讨论了 v1-3 以及 v4<br><a href="https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing" target="_blank" rel="noopener">https://blog.microbiomeinsights.com/design-skin-microbiome-study-part-ii-amplicon-sequencing</a></li>
+</ol>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>皮肤微生物</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>脑肠轴</title>
+    <url>/2019/08/29/brain-gut/</url>
+    <content><![CDATA[<h2 id="Brain-gut-connection-explains-why-integrative-treatments-can-help-relieve-digestive-ailments"><a href="#Brain-gut-connection-explains-why-integrative-treatments-can-help-relieve-digestive-ailments" class="headerlink" title="Brain-gut connection explains why integrative treatments can help relieve digestive ailments"></a>Brain-gut connection explains why integrative treatments can help relieve digestive ailments</h2><p><a href="https://www.health.harvard.edu/blog/brain-gut-connection-explains-why-integrative-treatments-can-help-relieve-digestive-ailments-2019041116411?utm_content=buffer4545c&utm_medium=social&utm_source=twitter&utm_campaign=buffer" target="_blank" rel="noopener">Brain-gut connection explains why integrative treatments can help relieve digestive ailments - Harvard Health Blog - Harvard Health Publishing</a></p>
+<p>脑肠轴解释为什么联合治疗能够缓消化疾病<br>总结：肠道和大脑可以相互作用，因此生病的时候保持好心情非常重要，饮食也很重要；<br>压力和抑郁等能够通过交感神经影响肠道运动以及内容物，使得消化系统对疼痛更加敏感，改变肠道通透性，影响免疫系统，增加炎症，改变肠道微生物组成。</p>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>脑肠轴</tag>
+      </tags>
+  </entry>
+</search>
