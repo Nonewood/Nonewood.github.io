@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Next主题如何让网站被谷歌/百度检索到，并且投放谷歌广告</title>
+    <url>/2019/12/09/ads-google/</url>
+    <content><![CDATA[<h2 id="Next主题如何让网站被谷歌-百度检索到，并且投放谷歌广告，"><a href="#Next主题如何让网站被谷歌-百度检索到，并且投放谷歌广告，" class="headerlink" title="Next主题如何让网站被谷歌/百度检索到，并且投放谷歌广告，"></a>Next主题如何让网站被谷歌/百度检索到，并且投放谷歌广告，</h2><p>分为三步骤：</p>
+<ol>
+<li><p>让谷歌或者百度收录网站，参考链接（一搜一大把，就不自己写了，下同）：<br><a href="http://duansm.top/2018/08/08/hexo-sitemap/" target="_blank" rel="noopener">Hexo+github搭建个人博客（五）：百度和谷歌收录博客 | duansm</a><br><a href="https://blog.csdn.net/qq_32454537/article/details/79482914" target="_blank" rel="noopener">https://blog.csdn.net/qq_32454537/article/details/79482914</a><br><a href="https://bytename.github.io/2018/10/14/github-pages-%E5%A6%82%E4%BD%95%E8%A2%ABgoogle%E6%94%B6%E5%BD%95/" target="_blank" rel="noopener">github pages 如何被google收录 | Byte的博客</a></p>
+</li>
+<li><p>接入谷歌广告<br><a href="http://www.darylliu.cn/archives/6a1f6623.html" target="_blank" rel="noopener">hexo个人next主题博客接入谷歌广告 | Daryl’s Blog</a><br><a href="http://codewithzhangyi.com/2019/11/06/google-adsense/" target="_blank" rel="noopener">Hexo接入谷歌广告 Google AdSense | Zhang Yi</a><br>我发现好多人的文案一样，也不知道谁抄谁的…<br>我个人不喜欢在文中插入广告，就只选择放在侧边栏和评论区…<br>Tips：中间有一步是添加 ads.txt ，在 Google Adsense 中下载后放在 source 目录下即可（网上其他答案说和_config.yml文件放在同级目录下是有问题的，我试了半天…），判断是否成功的依据是，能够打开 <a href="http://nonewood.github.io/ads.txt">http://nonewood.github.io/ads.txt</a> 。<br>ads.txt 前边的是你的网址。</p>
+</li>
+<li><p>等待广告接入，刚开始广告的位置可能会有空白，多等一会儿就会好；<br>另外按照其他人的说法，别做一些刻意点击广告的行为，会被封 =.=<br>这个也可以查到… </p>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>hexo</tag>
+        <tag>广告</tag>
+        <tag>google</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Lasso与宏基因组</title>
     <url>/2019/12/08/Lasso/</url>
     <content><![CDATA[<p>因为项目需要，去了解了一下LASSO【The Least Absolute Shrinkage and Selection Operator】，又译最小绝对值收敛和选择算子、套索算法。鼓捣了几天下来，我也没有弄太懂，但是大概知道了怎么使用，特此记录一下。</p>
