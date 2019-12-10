@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Immune recognition of microbial metabolites</title>
+    <url>/2019/12/10/metabolites/</url>
+    <content><![CDATA[<h2 id="微生物代谢物的免疫识别"><a href="#微生物代谢物的免疫识别" class="headerlink" title="微生物代谢物的免疫识别"></a>微生物代谢物的免疫识别</h2><p>时间关系，只记录一些重点：</p>
+<ol>
+<li>细菌产生的丁酸和丙酮酸可以刺激 CX3CR1+  单核吞噬细胞释放树突过程并且在肠腔中取样（GPR31 依赖的方式）；</li>
+<li>丁酸可以通过 FFAR2 和 FFAR3 刺激 GPR8+ 记忆 T 细胞；</li>
+<li>丁酸也可以刺激巨噬细胞的抗菌功能；</li>
+<li>丙酸和乙酸信号通过  FFAR2 促进结肠 IL3s 的扩大和功能（行使）；</li>
+<li>肠道屏障衍生的核黄素抗原引导胸腺中的 MAIT 细胞发育（在其迁移到其他组织或者表面之前）；</li>
+<li>皮肤的 MAIT 细胞活跃地参与组织修复，可以被环境因素（cues），细胞因子和细菌代谢物衍生的抗原激活（有抗原递呈细胞传递）；</li>
+</ol>
+<p><a href="https://www.nature.com/articles/s41577-019-0252-2" target="_blank" rel="noopener">Immune recognition of microbial metabolites</a></p>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>immune</tag>
+        <tag>microbe</tag>
+        <tag>metabolites</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Next主题如何让网站被谷歌/百度检索到，并且投放谷歌广告</title>
     <url>/2019/12/09/ads-google/</url>
     <content><![CDATA[<h2 id="分为三步骤："><a href="#分为三步骤：" class="headerlink" title="分为三步骤："></a>分为三步骤：</h2><ol>
