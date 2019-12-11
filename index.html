@@ -259,6 +259,185 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/11/barplot-by-multigroup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/11/barplot-by-multigroup/" itemprop="url">如何展示多种比较情况下富集情况 ？</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-11T16:05:05+08:00">
+                2019-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
+                    <span itemprop="name">metagenomics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  343 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="🌰（嗷呜，吃-），如何实现这篇论文-1-里的-Fig-6-和-Fig-7-。"><a href="#🌰（嗷呜，吃-），如何实现这篇论文-1-里的-Fig-6-和-Fig-7-。" class="headerlink" title="🌰（嗷呜，吃 ），如何实现这篇论文[1]里的 Fig 6 和 Fig 7 。"></a>🌰（嗷呜，<del>吃</del> ），如何实现这篇论文[1]里的 Fig 6 和 Fig 7 。</h2><ol>
+<li>Jie, Z. <em>et al.</em> The gut microbiome in atherosclerotic cardiovascular disease. <em>Nat. Commun.</em> 8, 845 (2017).</li>
+</ol>
+<p>Talk cheap, show code ：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">'ggplot2'</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">'reshape2'</span>)</span><br><span class="line">dt = read.table(‘inputfile<span class="string">', header = T, sep = '</span>\t<span class="string">') #输入格式是：map\tGroup1\tGroup2…\tLevel; map 是小类，Level 是大类，去看论文里的例子，就能明白</span></span><br><span class="line"><span class="string">dt_melt = melt(dt, id.vars = c('</span>map<span class="string">', '</span>Level<span class="string">'))</span></span><br><span class="line"><span class="string">#order = c('</span>Lipid metabolism<span class="string">', '</span>Amino acid metabolism<span class="string">', '</span>Carbohydrate metabolism<span class="string">', '</span>Metabolism of cofactors and vitamins<span class="string">', '</span>Xenobiotics biodegradation and metabolism<span class="string">',  '</span>Antimicrobial resistance<span class="string">', '</span>Membrane transport<span class="string">', '</span>Cell motility<span class="string">', '</span>Glycan biosynthesis and metabolism<span class="string">', '</span>Metabolism of terpenoids and polyketides<span class="string">', '</span>Energy metabolism<span class="string">') #自定义排序</span></span><br><span class="line"><span class="string">dt_melt$Level =  factor(dt$Level,levels = order)</span></span><br><span class="line"><span class="string">pdf('</span>output.pdf<span class="string">', width = 6, height = 6) </span></span><br><span class="line"><span class="string">ggplot(dt_melt, aes(y = value, x = map, fill = value&gt;0)) +</span></span><br><span class="line"><span class="string">    geom_bar(stat = "identity") + </span></span><br><span class="line"><span class="string">    scale_fill_manual(values= c('</span><span class="comment">#24af2d','#e80211')) + </span></span><br><span class="line">    geom_hline(aes(yintercept = <span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>, color = <span class="string">'grey'</span>) +  <span class="comment">#设置阈值线，1.65 是单尾的 95% 置信区间；也可以看到论文里有 1.96 ，是双尾的值。 </span></span><br><span class="line">    geom_hline(aes(yintercept = -<span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>,  color = <span class="string">'grey'</span>) + </span><br><span class="line">    coord_flip() + </span><br><span class="line">    labs(x=<span class="string">"Pathway"</span>,y=<span class="string">"Pathway report score"</span>) + </span><br><span class="line">    facet_grid(Level ~ variable, scales = <span class="string">"free"</span>, space = <span class="string">"free_y"</span>) +  <span class="comment">#控制图形的各种间距，可以自己注释掉观察效果</span></span><br><span class="line">    theme_bw() +</span><br><span class="line">    theme(axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">6</span>),</span><br><span class="line">          axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">          panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">0.6</span>),</span><br><span class="line">          <span class="comment">#legend.key = element_blank(),</span></span><br><span class="line">          <span class="comment">#legend.text = element_text(size = 8),</span></span><br><span class="line">          panel.grid =element_blank(),</span><br><span class="line">          legend.title = element_blank(), legend.position=<span class="string">'none'</span>,</span><br><span class="line">          plot.margin = unit(c(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))  </span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+
+<p>碎碎念：好多写脚本时候的想到的点现在完全都忘记了…果然还是需要多记录呀 +.+<br>完结撒花~</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/10/metabolites/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1976,224 +2155,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/09/18/M-news/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/18/M-news/" itemprop="url">微生物研究资讯</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-18T09:26:52+08:00">
-                2019-09-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
-                    <span itemprop="name">metagenomics</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  984 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="The-intestinal-microbiota-programs-diurnal-rhythms-in-host-metabolism-through-histone-deacetylase-3"><a href="#The-intestinal-microbiota-programs-diurnal-rhythms-in-host-metabolism-through-histone-deacetylase-3" class="headerlink" title="The intestinal microbiota programs diurnal rhythms in host metabolism through histone deacetylase 3"></a>The intestinal microbiota programs diurnal rhythms in host metabolism through histone deacetylase 3</h2><blockquote>
-<p>Science, 27 Sep 2019 | IF:  41<br><a href="https://science.sciencemag.org/content/365/6460/1428" target="_blank" rel="noopener">The intestinal microbiota programs diurnal rhythms in host metabolism through histone deacetylase 3</a></p>
-</blockquote>
-<p><a href="https://www.nature.com/articles/s41579-019-0285-3" target="_blank" rel="noopener">Microbial conductors</a><br>微生物指挥家<br>宿主因素，肠道微生物和宿主代谢昼夜节律调节有关。<br>『生物钟和肠道微生物之间的对话』</p>
-<p>Circadian rhythmicity is a defining feature of mammalian metabolism that synchronizes metabolic processes to day-night light cycles.<br>昼夜节律（circadian rhythmicity）是哺乳动物代谢的典型（defining）特征，能够让新陈代谢过程和昼夜光照周期同步（synchronizes）。</p>
-<p>Here, we show that the intestinal microbiota programs diurnal metabolic rhythms in the mouse small intestine through histone deacetylase 3 (HDAC3).<br>我们的研究表明肠道微生物通过组蛋白脱乙酰基酶编程小鼠小肠中的昼夜代谢节律。</p>
-<p>更新时间: 2019年10月8日 </p>
-<hr>
-<h2 id="Vaginal-microbiome-transplantation-in-women-with-intractable-bacterial-vaginosis"><a href="#Vaginal-microbiome-transplantation-in-women-with-intractable-bacterial-vaginosis" class="headerlink" title="Vaginal microbiome transplantation in women with intractable bacterial vaginosis"></a>Vaginal microbiome transplantation in women with intractable bacterial vaginosis</h2><blockquote>
-<p>Nature medicine  IF:  30.64  | Date: 2019-10-07<br><a href="https://www.nature.com/articles/s41591-019-0600-6" target="_blank" rel="noopener">Vaginal microbiome transplantation in women with intractable bacterial vaginosis</a></p>
-</blockquote>
-<p>首次探索性研究测试阴道微生物移植（vaginal microbiome transplantation, VMT），研究者将健康供体的阴道微生物移植给患有症状性，顽固性和复发性细菌性阴道病的患者 (ClinicalTrials.gov  <a href="https://clinicaltrials.gov/ct2/show/NCT02236429" target="_blank" rel="noopener">NCT02236429</a> )。</p>
-<p>总共五名患者接受治疗，在 VMT 的 5-21 个月随访问后，<br>四名患者得到长期缓解（full long-term remission），具体表现为症状， Amsel标准，镜检结果的显著改善。同时伴随着以乳杆菌为主的阴道微生物重构。<br>而一名患者的临床和实验室特征尚未完全缓解。</p>
-<p>在五名妇女中没有发现副作用。</p>
-<p>值得注意的是，三名患者需要（necessitated） 重复性的 VMT 才能恢复（其中一名的供体还发生了改变），以引起（elicit）长期的（long-standing）临床反应。</p>
-<p>VMT 在顽固性（intractable）和复发性的（recurrent ）细菌性阴道病的治疗效果需要进一步在随机，安慰剂对照的临床实验加以确定（determined）。</p>
-<p>LG：五例就可以发到 Nature Medicine…<br>更新时间: 2019年10月8日 </p>
-<hr>
-<h2 id="The-gut-microbiome-regulates-host-glucose-homeostasis-via-peripheral-serotonin"><a href="#The-gut-microbiome-regulates-host-glucose-homeostasis-via-peripheral-serotonin" class="headerlink" title="The gut microbiome regulates host glucose homeostasis via peripheral serotonin"></a>The gut microbiome regulates host glucose homeostasis via peripheral serotonin</h2><blockquote>
-<p>PNAS | September 16, 2019 | IF: 9.58 </p>
-</blockquote>
-<p>大脑中的血清素被称作是“快乐激素”；实际上，90%以上的血清素源自于胃肠道。<br>2019年9月16日，美国国家科学院院刊《PANS》上一项研究，首次揭示了肠道细菌是如何与产生血清素的细胞合作，对包括宿主血糖水平在内的新陈代谢进行负面调控的。</p>
-<p>一项新研究（🐭）表明肠道如何通过细菌产生血清素从而影响宿主血糖水平；</p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://www.pnas.org/content/early/2019/09/10/1909311116" target="_blank" rel="noopener">The gut microbiome regulates host glucose homeostasis via peripheral serotonin</a> </li>
-<li><a href="https://mp.weixin.qq.com/s/5VKrY-5BwBMj-Z0jHj6Bfg" target="_blank" rel="noopener">快乐激素不快乐 | 首次发现肠道菌+血清素，会升高血糖，负向影响宿主代谢</a></li>
-</ol>
-<hr>
-<h2 id="Stunted-microbiota-and-opportunistic-pathogen-colonization-in-caesarean-section-birth"><a href="#Stunted-microbiota-and-opportunistic-pathogen-colonization-in-caesarean-section-birth" class="headerlink" title="Stunted microbiota and opportunistic pathogen colonization in caesarean-section birth"></a>Stunted microbiota and opportunistic pathogen colonization in caesarean-section birth</h2><blockquote>
-<p>Nature | Date:2019-09-18 | IF: 43.07 </p>
-</blockquote>
-<ol>
-<li>该研究是目前为止最大的新生儿队列研究 596 个英国的孩子，1,679 的肠道菌群的样品（多个时间点）</li>
-<li>剖腹产的婴儿缺乏健康儿童和成年人的关键肠道细菌（/Bacteroides/ strains），而且定植着医院常见的有害微生物（包括 /Enterococcus/, /Enterobacter/ 和 /Klebsiella/ species）; 这些影响在使用抗生素的妈妈阴道分娩的孩子，以及刚出生不吃早餐的孩子也能发现，不过程度较小；</li>
-<li>差异如此显著，以至于『仅从某个孩子的一个样品就能以很高的确定性知道其分娩方式』；</li>
-</ol>
-<h2 id="One-more-thing"><a href="#One-more-thing" class="headerlink" title="One more thing"></a>One more thing</h2><ol>
-<li>我竟然是从微博上第一时间看到这个消息，虽然之前就知道不同的分娩方式会造成影响；</li>
-<li>不过之前看到，即使分娩方式不同，在成长一段时间后似乎就没有差异了（忘记了出处..）；</li>
-</ol>
-<h2 id="参考链接-1"><a href="#参考链接-1" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://www.nature.com/articles/s41586-019-1560-1" target="_blank" rel="noopener">Stunted microbiota and opportunistic pathogen colonization in caesarean-section birth</a></li>
-<li><a href="https://www.nature.com/articles/d41586-019-02807-x?utm_source=Nature+Briefing&utm_campaign=9cccfcc954-briefing-dy-20190919&utm_medium=email&utm_term=0_c9dfd39373-9cccfcc954-44380949" target="_blank" rel="noopener">C-section babies are missing key microbes</a></li>
-<li><a href="https://www.mr-gut.cn/papers/read/1096721383?kf=daily_email" target="_blank" rel="noopener">Nature：剖腹产对新生儿肠道菌群的不良影响</a></li>
-</ol>
-<hr>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2251,7 +2212,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-count">15</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2331,7 +2292,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">10.7k</span>
+    <span title="Site words total count">11k</span>
   
 </div>
 
