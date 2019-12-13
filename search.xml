@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>表型文件处理缺失值</title>
+    <url>/2019/12/12/phenotype/</url>
+    <content><![CDATA[<p>想法来源于 MaAslin2 的官方文档<br><a href="https://bitbucket.org/biobakery/biobakery/wiki/maaslin2" target="_blank" rel="noopener">biobakery / biobakery / wiki / maaslin2 — Bitbucket</a></p>
+<blockquote>
+<p>MaAsLin2 will generally accommodate missing values (which typically occur only in metadata, not in microbial community features), but you may get better results if you impute them, even using something very simple like a median value.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 处理表型信息中的 Na 值用于 CCA 分析</span></span><br><span class="line"><span class="comment"># 如果缺失值的数目大于 20% 的样品，则剔除该指标，如果小于，则用该组的均值（也可以选择用中位数）替换</span></span><br><span class="line">dt = pd.read_table(<span class="string">'phenotype.xls'</span>, index_col=<span class="number">0</span>) <span class="comment"># 行名样品 ID, 列名表型信息</span></span><br><span class="line">group = pd.read_table(<span class="string">'Mapping.txt'</span>, index_col = <span class="number">0</span>) <span class="comment">#行名样品ID, 列名组名，组别信息的列名默认是 "Description" </span></span><br><span class="line"></span><br><span class="line">dt_merge = pd.concat([dt, group], axis =<span class="number">1</span>)</span><br><span class="line">dt_mean = dt_merge.groupby(<span class="string">'Description'</span>).mean() <span class="comment">#按照组别计算均值，用于 impute, 这里计算的均值会把 NaN 值剔除，不计数 </span></span><br><span class="line"></span><br><span class="line">dt_left = dt.loc[:,dt.isnull().sum() &lt; dt.shape[<span class="number">0</span>]*<span class="number">0.2</span>] <span class="comment">#剔除缺失值太多的指标20%</span></span><br><span class="line">dt_left.is_copy = <span class="literal">False</span> <span class="comment"># 目的在于取消 A value is trying to be set on a copy of a slice from a DataFrame 这个警告</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> var <span class="keyword">in</span> dt_left.columns:</span><br><span class="line">    temp = dt.loc[dt[var].isnull()]</span><br><span class="line">    <span class="keyword">for</span> ID <span class="keyword">in</span> temp.index:</span><br><span class="line">        dt_left[var][ID] = dt_mean[var][group[<span class="string">'Description'</span>][ID]]</span><br><span class="line">        </span><br><span class="line">dt_left.to_csv(<span class="string">'impute_phenotype.xls'</span>, sep = <span class="string">'\t'</span>)</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>读书笔记-科技写作与讲演</title>
     <url>/2019/12/12/Rosetta-Stone/</url>
     <content><![CDATA[<p>目前只记录写作部分，因为是刚需。<br>所内容均按照我个人兴趣，摘自《科技写作与讲演-科学的罗塞塔石碑》，供自己学习进步使用。</p>
