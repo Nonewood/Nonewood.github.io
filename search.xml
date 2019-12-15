@@ -1,173 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>CCA with ggplot2</title>
-    <url>/2019/12/13/cca/</url>
-    <content><![CDATA[<h2 id="CCA-简介"><a href="#CCA-简介" class="headerlink" title="CCA 简介"></a>CCA 简介</h2><p><a href="https://www.cnblogs.com/pinard/p/6288716.html" target="_blank" rel="noopener">典型关联分析(CCA)原理总结</a><br>文章是专业的描述，我按照我的理解简单写一下：<br>CCA 可以将高维的数据（比如丰度数据和表型数据）降维，然后进行相关性分析，降维的标准是降维后两组数据的相关系数最大，大概知道这么一个结论就可以了。</p>
-<p>折腾了好久时间，本来是用 vegan 包的结果来画，结果发现如果这样的话, 个性化调整图片很难（比如将中间文件转用 ggplot2 画），查着查着就发现只用 ggplot2 也可以画，用的是 ggvegan 这个包。最后花了一段时间用来调整图片的细节问题，比如给个体代表的点按照组别上色，是否画物种以及如何加物种标签（结果发现物种多的时候，会显得很乱… 于是就暂时放弃了），接下来是代码：</p>
-<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">"ggvegan"</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">"ggrepel"</span>)</span><br><span class="line"></span><br><span class="line">taxdata &lt;- read.table(<span class="string">'All.taxonomy_percent.xls'</span>, header=<span class="literal">T</span>, check.names=<span class="literal">F</span>, sep=<span class="string">'\t'</span>, row.names = <span class="number">1</span>, comment.char = <span class="string">""</span>)   <span class="comment">#实测将低丰度的物种合并为 others 对结果的影响比较大，而且合并以后的效果更好;   </span></span><br><span class="line">env &lt;- read.table(<span class="string">'impute_phenotype.xls'</span>, header=<span class="literal">T</span>, check.names=<span class="literal">F</span>, sep=<span class="string">'\t'</span>, row.names = <span class="number">1</span>)</span><br><span class="line">taxdata &lt;- t(taxdata)</span><br><span class="line">vare.cca &lt;- cca(taxdata, env)</span><br><span class="line"><span class="comment">#autoplot(vare.cca,  geom = c("point","text"), layers = c("species", "sites", "biplot", "centroids")) #自动输出</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ford = fortify(vare.cca) <span class="comment">#提取 CCA 的元数据</span></span><br><span class="line">ford &lt;- fortify(ford, axes = <span class="number">1</span>:<span class="number">2</span>)  <span class="comment"># fortify the ordination</span></span><br><span class="line">take &lt;- c(<span class="string">'CCA1'</span>, <span class="string">'CCA2'</span>)  <span class="comment"># which columns contain the scores we want</span></span><br><span class="line">arrows &lt;- subset(ford, Score == <span class="string">'biplot'</span>)  <span class="comment"># take only biplot arrow scores</span></span><br><span class="line"><span class="comment">## multiplier for arrows to scale them to the plot range</span></span><br><span class="line">mul &lt;- ggvegan:::arrowMul(arrows[, take],</span><br><span class="line">                          subset(ford, select = take, Score == <span class="string">'sites'</span>))</span><br><span class="line">arrows[, take] &lt;- arrows[, take] * mul  <span class="comment"># scale biplot arrows</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 加入组别信息以及颜色</span></span><br><span class="line">group = read.table(<span class="string">'Mapping.txt'</span>, comment.char = <span class="string">""</span>, row.names = <span class="number">1</span>, header = <span class="literal">T</span>) <span class="comment">#ID\tGroup</span></span><br><span class="line">sample = subset(ford, Score == <span class="string">'sites'</span>)</span><br><span class="line">rownames(sample) = sample$Label</span><br><span class="line">merge_dt = merge(sample, group, by = <span class="string">"row.names"</span>)</span><br><span class="line"></span><br><span class="line">group_list = <span class="string">"A:B:C"</span> <span class="comment">#设定组别以及下边的颜色</span></span><br><span class="line">color_list = <span class="string">"24af2d:ea5e74:aa75b3"</span> </span><br><span class="line">legend_list = c(unlist(strsplit(group_list, <span class="string">":"</span>)))</span><br><span class="line">color_var = unlist(strsplit(color_list, <span class="string">":"</span>))</span><br><span class="line">color_var = c(paste(<span class="string">"#"</span>,color_var,sep=<span class="string">""</span>))</span><br><span class="line">merge_dt$Group &lt;-factor(merge_dt$Description, legend_list)</span><br><span class="line"></span><br><span class="line">pdf(<span class="string">"CCA.pdf"</span>, width=<span class="number">5</span>, height=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">ggplot() +</span><br><span class="line">  geom_point(data = merge_dt, size = <span class="number">2</span>, </span><br><span class="line">             mapping = aes(x = CCA1, y = CCA2, color = Group,)) +  scale_color_manual(values = color_var) +  <span class="comment">#个体</span></span><br><span class="line"> <span class="comment"># geom_point(data = subset(ford, Score == 'species'), size = 1,  shape = 1,</span></span><br><span class="line"> <span class="comment">#            mapping = aes(x = CCA1, y = CCA2)) +  #这是物种</span></span><br><span class="line"> <span class="comment"># geom_label_repel(data = subset(ford, Score == 'species'), mapping = aes(x = CCA1, y = CCA2, label = Label), </span></span><br><span class="line"> <span class="comment">#               #  box.padding   = 0, </span></span><br><span class="line">                 <span class="comment"># point.padding = 0,</span></span><br><span class="line"> <span class="comment">#                 segment.color = 'grey50') +    #物种标签，注释掉是因为会显得很乱</span></span><br><span class="line">  geom_segment(data = arrows,</span><br><span class="line">               mapping = aes(x = <span class="number">0</span>, y = <span class="number">0</span>, xend = CCA1, yend = CCA2),</span><br><span class="line">               arrow = arrow(length = unit(<span class="number">0.01</span>, <span class="string">"npc"</span>))) +  <span class="comment">#临床表型的箭头</span></span><br><span class="line">  geom_text(data = arrows,</span><br><span class="line">            mapping = aes(label = Label, x = CCA1, y = CCA2, hjust = <span class="number">0.5</span>*(<span class="number">1</span> - sign(CCA1)), vjust = <span class="number">0.5</span>*(<span class="number">1</span>-sign(CCA2)))) + <span class="comment">#临床表型的标签</span></span><br><span class="line">  coord_fixed() + </span><br><span class="line">  scale_x_continuous(expand = c(<span class="number">.1</span>, <span class="number">.1</span>)) +</span><br><span class="line">  scale_y_continuous(expand = c(<span class="number">.1</span>, <span class="number">.1</span>)) + </span><br><span class="line">  theme_bw() +</span><br><span class="line">  theme(</span><br><span class="line">      axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">12</span>), </span><br><span class="line">      axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">      panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">1</span>),</span><br><span class="line">      panel.grid =element_blank(), </span><br><span class="line">      legend.key = element_blank(),</span><br><span class="line">      legend.text = element_text(size = <span class="number">10</span>), </span><br><span class="line">      legend.title = element_blank(), </span><br><span class="line">      <span class="comment">#legend.position=c(0.1,0.1), </span></span><br><span class="line">      legend.position=<span class="string">'none'</span>, </span><br><span class="line">      plot.margin = unit(c(<span class="number">0.2</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))</span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
-
-<p>物种可以取丰度前 10 的进行分析（得看项目的具体情况）<br><a href="https://mp.weixin.qq.com/s/urMdWn5Jf2Ia8CdK9jEsgA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/urMdWn5Jf2Ia8CdK9jEsgA</a></p>
+    <title>书摘-学习方法</title>
+    <url>/2019/12/15/study/</url>
+    <content><![CDATA[<p>写在开头：<br>书常看常新，为了能更好地实践，必须要将某些观点整理，铭记在心，这是我做书摘，写读书笔记的根本目的所在。</p>
+<p>以下的观点来自李涛老师著写的《数码摄影后期-高手之路》。<br>书的概述部分中，关于学习方法的一些观点我个人比较喜欢，而且觉得适用于任何方面的学习，特做摘录。</p>
+<h2 id="学习体系里面有三个重要指标："><a href="#学习体系里面有三个重要指标：" class="headerlink" title="学习体系里面有三个重要指标："></a>学习体系里面有三个重要指标：</h2><p>1、取法乎上，寻师经典<br>2、物先大体，鉴必穷源<br>3、诚心正意，自证良知</p>
+<p>下边是部分详细解释：</p>
+<h3 id="1-取法乎上，寻师经典"><a href="#1-取法乎上，寻师经典" class="headerlink" title="1.取法乎上，寻师经典"></a>1.取法乎上，寻师经典</h3><p>原句出自唐太宗的《帝范》：</p>
 <blockquote>
-<p>上图的CCA分析结果图，图中箭头代表不同的环境因子，红色的代表不同的微生物，绿色的代表不同的样本（当然这个图可以只展示样本和和环境因子2种）。<br>环境因子的箭头的长度代表相应的环境因子与研究对象（样品，微生物）相关程度的大小，越长代表其对所研究对象（样品，微生物）的分布影响越大。箭头连线之间的夹角的代表其相关性，为锐角是说明2个环境因子之间是正相关，钝角是负相关。</p>
+<p>取法乎上，仅得其中。</p>
 </blockquote>
-<p>表型因子也可以进行提前筛选<br><a href="https://mp.weixin.qq.com/s/Mn12azkNPNEHSK9tjiFYng" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/Mn12azkNPNEHSK9tjiFYng</a></p>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://stackoverflow.com/questions/28682405/r-visualize-cca-plot-in-ggplot" target="_blank" rel="noopener">https://stackoverflow.com/questions/28682405/r-visualize-cca-plot-in-ggplot</a><br><a href="https://rdrr.io/github/gavinsimpson/ggvegan/man/autoplot.cca.html" target="_blank" rel="noopener">https://rdrr.io/github/gavinsimpson/ggvegan/man/autoplot.cca.html</a><br><a href="https://github.com/gavinsimpson/ggvegan/issues/9" target="_blank" rel="noopener">https://github.com/gavinsimpson/ggvegan/issues/9</a><br><a href="https://stackoverflow.com/questions/15624656/label-points-in-geom-point" target="_blank" rel="noopener">r - Label points in geom_point - Stack Overflow</a></p>
-]]></content>
-      <categories>
-        <category>metagenomics</category>
-      </categories>
-      <tags>
-        <tag>R</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>how to deal with the missing values of phenotype</title>
-    <url>/2019/12/12/phenotype/</url>
-    <content><![CDATA[<p>The idea comes from the the document of MaAslin2<br><a href="https://bitbucket.org/biobakery/biobakery/wiki/maaslin2" target="_blank" rel="noopener">biobakery / biobakery / wiki / maaslin2 — Bitbucket</a></p>
+<p>《孙子兵法》里边也有类似的表达：</p>
 <blockquote>
-<p>MaAsLin2 will generally accommodate missing values (which typically occur only in metadata, not in microbial community features), but you may get better results if you impute them, even using something very simple like a median value.</p>
+<p>求其上，得其中；求其中，得其下；求其下，必败。</p>
 </blockquote>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 处理表型信息中的 Na 值用于 CCA 分析</span></span><br><span class="line"><span class="comment"># 如果缺失值的数目大于 20% 的样品，则剔除该指标，如果小于，则用该组的均值（也可以选择用中位数）替换</span></span><br><span class="line">dt = pd.read_table(<span class="string">'phenotype.xls'</span>, index_col=<span class="number">0</span>) <span class="comment"># 行名样品 ID, 列名表型信息</span></span><br><span class="line">group = pd.read_table(<span class="string">'Mapping.txt'</span>, index_col = <span class="number">0</span>) <span class="comment">#行名样品ID, 列名组名，组别信息的列名默认是 "Description" </span></span><br><span class="line"></span><br><span class="line">dt_merge = pd.concat([dt, group], axis =<span class="number">1</span>)</span><br><span class="line">dt_mean = dt_merge.groupby(<span class="string">'Description'</span>).mean() <span class="comment">#按照组别计算均值，用于 impute, 这里计算的均值会把 NaN 值剔除，不计数 </span></span><br><span class="line"></span><br><span class="line">dt_left = dt.loc[:,dt.isnull().sum() &lt; dt.shape[<span class="number">0</span>]*<span class="number">0.2</span>] <span class="comment">#剔除缺失值太多的指标20%</span></span><br><span class="line">dt_left.is_copy = <span class="literal">False</span> <span class="comment"># 目的在于取消 A value is trying to be set on a copy of a slice from a DataFrame 这个警告</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> var <span class="keyword">in</span> dt_left.columns:</span><br><span class="line">    temp = dt.loc[dt[var].isnull()]</span><br><span class="line">    <span class="keyword">for</span> ID <span class="keyword">in</span> temp.index:</span><br><span class="line">        dt_left[var][ID] = dt_mean[var][group[<span class="string">'Description'</span>][ID]]</span><br><span class="line">        </span><br><span class="line">dt_left.to_csv(<span class="string">'impute_phenotype.xls'</span>, sep = <span class="string">'\t'</span>)</span><br></pre></td></tr></table></figure>
-
-]]></content>
-      <categories>
-        <category>metagenomics</category>
-      </categories>
-      <tags>
-        <tag>python</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>读书笔记-科技写作与讲演</title>
-    <url>/2019/12/12/Rosetta-Stone/</url>
-    <content><![CDATA[<p>目前只记录写作部分，因为是刚需。<br>所内容均按照我个人兴趣，摘自《科技写作与讲演-科学的罗塞塔石碑》，供自己学习进步使用。</p>
+<p>意思很明了，不详细解释。</p>
+<p>既然要决定学习，那如何选取学习的榜样或者老师？<br>自然是去选最顶级的老师，而且还要追问他的老师是谁，他的灵感怎么来的，这样你才能学到最好的东西。关于摄影方面，书中引用了安塞尔·亚当斯的例子，提及除了父亲和音乐老师，还有保罗·斯特兰对他的影响。而且还可以进一步追溯，比如去考究绘画对摄影的影响。这就是「取法乎上，寻师经典」。</p>
 <blockquote>
-<p>罗塞塔石碑（Rosetta Stone）简介：<br>制作于公元前 196 年，发现于 1799 年，上面镌刻着三段用古希腊语，象形文字和古埃及通俗文字表达的文字。发现后 24 年，语言学家完成对文字的破译，解读出失传千年的埃及象形文字的意义和结构，成为今日研究古埃及和历史的重要里程碑，也因此被誉为解决难题或谜语的关键线索或工具。</p>
+<p>路过：我自己是联想到了巴菲特和格雷厄姆的例子，还有芒格，富兰克林以及书单。</p>
 </blockquote>
-<h2 id="1-创建模板（相当于好词好句数据库）"><a href="#1-创建模板（相当于好词好句数据库）" class="headerlink" title="1.创建模板（相当于好词好句数据库）"></a>1.创建模板（相当于好词好句数据库）</h2><h3 id="1-1-模板来源文章需要包含三个前提条件："><a href="#1-1-模板来源文章需要包含三个前提条件：" class="headerlink" title="1.1 模板来源文章需要包含三个前提条件："></a>1.1 模板来源文章需要包含三个前提条件：</h3><p>1）必须发表在国际知名期刊；<br>2）必须在近 3~5 年发表；<br>3）至少有一位英语母语作者；</p>
-<h3 id="1-2-所选文章还需要包含三个特点："><a href="#1-2-所选文章还需要包含三个特点：" class="headerlink" title="1.2 所选文章还需要包含三个特点："></a>1.2 所选文章还需要包含三个特点：</h3><p>1）科学要求直接叙述；<br>2）成功的文章是用尽可能少的文字讲述生动的故事；<br>3）最重要的是，在所有的科学表达中，清晰是关键；</p>
-<h3 id="1-3-模板应该包含以下类型："><a href="#1-3-模板应该包含以下类型：" class="headerlink" title="1.3 模板应该包含以下类型："></a>1.3 模板应该包含以下类型：</h3><p>1）句子长度和句子结构的变化，包括介词短语的使用频率；<br>2）转接，直接叙述和间接暗指的使用；<br>3）动词的恰当选择；<br>4）动词时态；<br>5）文章怎样开始和结束；<br>6）如何以及何时提及其他研究人员的贡献；</p>
-<h2 id="2-写作"><a href="#2-写作" class="headerlink" title="2. 写作"></a>2. 写作</h2><h3 id="2-1-第一稿"><a href="#2-1-第一稿" class="headerlink" title="2.1 第一稿"></a>2.1 第一稿</h3><p>1）私人代码，即注释，以便后期修改；写作的过程中可以忽略语言问题，采用熟悉的语言写，中途不要停顿；<br>2）组织思路，动笔之前需要有个大概的框架，不然可能会出现重复；对于要表达的要点，可以使用「索引卡片」，将想法和事件排序，确定不会重复且有内在的逻辑；<br>3）第一稿不用太在意细节问题，比如词语的用法，时态等问题，觉得自己写的时候不恰当的地方可以做一下笔记标注一下。<br>4）写作第二稿之前需要休息一段时间，但是不要太长，以免忘记；</p>
-<h3 id="2-2-第二稿"><a href="#2-2-第二稿" class="headerlink" title="2.2 第二稿"></a>2.2 第二稿</h3><p>1）将第一稿转化为英文，利用模板，英文需要简单和直接，最终的目的是给别人传达你的思想，不用担心太简单，后边再修改；</p>
-<h3 id="2-3-最后一稿"><a href="#2-3-最后一稿" class="headerlink" title="2.3 最后一稿"></a>2.3 最后一稿</h3><h4 id="2-3-1-如何编辑？"><a href="#2-3-1-如何编辑？" class="headerlink" title="2.3.1 如何编辑？"></a>2.3.1 如何编辑？</h4><p>1）注意期刊的语言风格<br>2）稿件是产品，像是烘烤面包；需要学会反复编辑自己的稿件；<br>3）写作是社会活动，始终要记得你是在为读者写作，需要让他们明白；<br>4）寻求合作者，信任并且坦率；有能力；熟悉作者；熟悉期刊；</p>
-<h4 id="2-3-2-删除词语"><a href="#2-3-2-删除词语" class="headerlink" title="2.3.2 删除词语"></a>2.3.2 删除词语</h4><h5 id="1）重复与冗余"><a href="#1）重复与冗余" class="headerlink" title="1）重复与冗余"></a>1）重复与冗余</h5><p>一个观点只能被阐述一次，不管其如何重要，复杂以及创新，除非在结论里简单总结提及；</p>
-<h5 id="2）冗词"><a href="#2）冗词" class="headerlink" title="2）冗词"></a>2）冗词</h5><p>重复使用非科学性词语（尤其动词）会显得文章乏味，需要通过模板或者母语作者的文章进行替换，但是不要只是通过词典找一个同义词进行替换，应该在模板里找；<br>好的单词或者短语应该只出现一次，是文章的香料，好看但惹眼，应该放置好位置；</p>
-<h5 id="3）多余的解释或者描述"><a href="#3）多余的解释或者描述" class="headerlink" title="3）多余的解释或者描述"></a>3）多余的解释或者描述</h5><p>如背景部分过长，介绍了不必要的工作等；</p>
-<h5 id="4）介词短语"><a href="#4）介词短语" class="headerlink" title="4）介词短语"></a>4）介词短语</h5><p>注意观察高质量文章的用法；</p>
-<h4 id="2-3-3-被动语态"><a href="#2-3-3-被动语态" class="headerlink" title="2.3.3 被动语态"></a>2.3.3 被动语态</h4><p>1）改为主动语态，务求直截了当；<br>2）避免 there be  … 句型和 it is … 句型;</p>
-<h4 id="2-3-4-使用加强语以强调内容"><a href="#2-3-4-使用加强语以强调内容" class="headerlink" title="2.3.4 使用加强语以强调内容"></a>2.3.4 使用加强语以强调内容</h4><p>1）避免 really， actually truly 等词语；<br>2）避免 very， 太常见，滥用，而应该使用 extremely， highly，strongly 和 surprisingly 替代，但是请间或使用；<br>3）其他避免过度使用的词语，如 a lot  或者 many，应该使用更加具体的词语；避免包含判断的词语，如 good 或者 nice ，好的科学在于解释而非赞美；<br>4）避免使用感叹号；</p>
-<h4 id="2-3-5-陈腐语句"><a href="#2-3-5-陈腐语句" class="headerlink" title="2.3.5 陈腐语句"></a>2.3.5 陈腐语句</h4><p>没 get，暂不记录…</p>
-<h4 id="2-3-6-转接词"><a href="#2-3-6-转接词" class="headerlink" title="2.3.6 转接词"></a>2.3.6 转接词</h4><p>1）润滑剂，如 furthermore; in addition; in fact; in truth 等词语；<br>2）对比，需要呈现对照关系，比如 but; however; instead 等词语；<br>3）解释，用于提示原因和结果，比如 because; as a result; in general 等词语；</p>
-<h4 id="2-3-7-动词时态"><a href="#2-3-7-动词时态" class="headerlink" title="2.3.7 动词时态"></a>2.3.7 动词时态</h4><p>最常见的是一般现在时态。</p>
-<p>最后需要记牢记两点：</p>
+<h3 id="2-物先大体，鉴必穷源"><a href="#2-物先大体，鉴必穷源" class="headerlink" title="2.物先大体，鉴必穷源"></a>2.物先大体，鉴必穷源</h3><p>这句话出自《文心雕龙》，指的是写文章的时候首先要有大体的法则，借鉴和引用的内容必须找到源头出处。</p>
+<p>如果想要学习一套体系，那么就得先找一个大的框架，这个框架是你这一段时间发展的方向，创作的思路，然后在这个大的框架里面去找他的根源在什么地方，一点一点追问这个框架里都有什么内容，追根溯源。</p>
+<p>中国有句俗话，叫「打破砂锅问到底」，就是这个意思。一直追，追到头，彻底理解整个体系的来龙去脉，就清楚了。而不至于被不同人的不同说法所左右。因为无论他人怎么说，你都是知根知底的，知道这些东西是怎么来的，从而在学习道路上走得更加笃定（感觉这是所谓的练好内功？）。这就是「物先大体，鉴必穷源」。</p>
+<p>另外，书中还提到了除了根源，旁系和衍生也要深挖，这样所有的知识点会相互联系，会汇成一张网，知识点越密，知识结构越严谨，知识面越宽阔。</p>
 <blockquote>
-<p>作者如果忘记了读者就会自但风险；<br>稿件应该使用科学的语言来表达；</p>
+<p>路过：我似乎只在记单词的时候使用过这样的技能…. 哈哈哈哈 开玩笑。这里我是联想到了芒格所说的跨学科思维，世界是复杂的，如果把自己局限于单一学科，那自己的认知就必然会受限。这也是我花时间看书，多接触其他领域的原因之一。</p>
 </blockquote>
-<p>碎碎念：由于自己的写作和英文能力都很差，所以专门总结了这本书📚，一些建议我已经在尝试实践了，希望能够帮助到自己吧。<br>阅读原书风味更佳~</p>
-<p>待完善…</p>
-]]></content>
-      <categories>
-        <category>书</category>
-      </categories>
-      <tags>
-        <tag>写作; 读书</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>如何展示多种比较情况下富集情况 ？</title>
-    <url>/2019/12/11/barplot-by-multigroup/</url>
-    <content><![CDATA[<h2 id="🌰（吃-），如何实现下边这篇论文里的-Fig-6-和-Fig-7-。"><a href="#🌰（吃-），如何实现下边这篇论文里的-Fig-6-和-Fig-7-。" class="headerlink" title="🌰（吃 ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。"></a>🌰（<del>吃</del> ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。</h2><blockquote>
-<p>Jie, Z. <em>et al.</em> The gut microbiome in atherosclerotic cardiovascular disease. <em>Nat. Commun.</em> 8, 845 (2017).</p>
+<h3 id="3-诚心正意，自证良知"><a href="#3-诚心正意，自证良知" class="headerlink" title="3.诚心正意，自证良知"></a>3.诚心正意，自证良知</h3><p>诚心正意是指端正自己的学习态度，比如说上课时关掉手机，避免分散注意力。释家讲戒定慧[1]，戒就是聚焦，诚心正意只干一件事情。</p>
+<p>自证良知核心是「证」，就是要亲自去实践，只有实践才能够知道它和你的关系。书中李涛老师提到他十分信奉王阳明的知行合一 ，即理论需要实践，必须自己去证明这件事情，它才是良知。</p>
+<p>良知就是本能，没有太多的包装，你原始的本能判断就能知道这个东西是好的还是不好的，就是这么简单，不需要有人来干扰你（或者没人能干扰得了你？）</p>
+<blockquote>
+<p>路过：话说我现在很迷糊什么才算是好的东西，什么才是对的东西… 很困扰我，学生物的我知道有时候本能不一定是对的……</p>
 </blockquote>
-<p>Talk cheap, show code ：</p>
-<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">'ggplot2'</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">'reshape2'</span>)</span><br><span class="line">dt = read.table(<span class="string">'inputfile'</span>, header = <span class="literal">T</span>, sep = <span class="string">'\t'</span>) <span class="comment">#输入格式是：map\tGroup1\tGroup2…\tLevel; map 是小类，Level 是大类，去看论文里的例子，就能明白</span></span><br><span class="line">dt_melt = melt(dt, id.vars = c(<span class="string">'map'</span>, <span class="string">'Level'</span>))</span><br><span class="line"><span class="comment">#order = c('Lipid metabolism', 'Amino acid metabolism', 'Carbohydrate metabolism', 'Metabolism of cofactors and vitamins', 'Xenobiotics biodegradation and metabolism',  'Antimicrobial resistance', 'Membrane transport', 'Cell motility', 'Glycan biosynthesis and metabolism', 'Metabolism of terpenoids and polyketides', 'Energy metabolism') #自定义排序</span></span><br><span class="line">dt_melt$Level =  factor(dt$Level,levels = order)</span><br><span class="line">pdf(<span class="string">'output.pdf'</span>, width = <span class="number">6</span>, height = <span class="number">6</span>) </span><br><span class="line">ggplot(dt_melt, aes(y = value, x = map, fill = value&gt;<span class="number">0</span>)) +</span><br><span class="line">    geom_bar(stat = <span class="string">"identity"</span>) + </span><br><span class="line">    scale_fill_manual(values= c(<span class="string">'#24af2d'</span>,<span class="string">'#e80211'</span>)) + </span><br><span class="line">    geom_hline(aes(yintercept = <span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>, color = <span class="string">'grey'</span>) +  <span class="comment">#设置阈值线，1.65 是单尾的 95% 置信区间；也可以看到论文里有 1.96 ，是双尾的值。 </span></span><br><span class="line">    geom_hline(aes(yintercept = -<span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>,  color = <span class="string">'grey'</span>) + </span><br><span class="line">    coord_flip() + </span><br><span class="line">    labs(x=<span class="string">"Pathway"</span>,y=<span class="string">"Pathway report score"</span>) + </span><br><span class="line">    facet_grid(Level ~ variable, scales = <span class="string">"free"</span>, space = <span class="string">"free_y"</span>) +  <span class="comment">#控制图形的各种间距，可以自己注释掉观察效果</span></span><br><span class="line">    theme_bw() +</span><br><span class="line">    theme(axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">6</span>),</span><br><span class="line">          axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">          panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">0.6</span>),</span><br><span class="line">          <span class="comment">#legend.key = element_blank(),</span></span><br><span class="line">          <span class="comment">#legend.text = element_text(size = 8),</span></span><br><span class="line">          panel.grid =element_blank(),</span><br><span class="line">          legend.title = element_blank(), legend.position=<span class="string">'none'</span>,</span><br><span class="line">          plot.margin = unit(c(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))  </span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
-
-<p>碎碎念：好多写脚本时候的想到的点现在完全都忘记了…果然还是需要多记录呀 +.+<br>完结撒花~</p>
+<h4 id="知行合一："><a href="#知行合一：" class="headerlink" title="知行合一："></a>知行合一：</h4><p>是指客体顺应主体，<strong>知是指科学知识，行是指人的实践，知与行的合一，既不是以知来吞并行，认为知便是行，也不是以行来吞并知，认为行便是知。</strong>这是明朝思想家王守仁提出来的，谓认识事物的道理和在现实中运用此道理，是密不可分的一回事情。中国古代哲学家认为，不仅要认识（「知」），尤其应当实践（「行」），只有把「知」和「行」统一起来，才能称得上是「善」。致良知，知行合一，是阳明文化的核心。先有致良知（即在实际行动中实现良知），而后有知行合一。</p>
+<blockquote>
+<p>路过：抄着抄着，发现解决了我一直的一个困惑，火鸡的故事就是属于「行吞并知」的范畴，之前对于知行合一的想法只是觉得要将道理加以实践，却忽视了反过来的一点，就是行动必须让道理加以指导（纠正）才行。二者相辅相成，相互印证，缺一不可。</p>
+</blockquote>
+<h4 id="补充阅读"><a href="#补充阅读" class="headerlink" title="补充阅读"></a>补充阅读</h4><p>戒定慧三学，又称三无漏学：</p>
+<blockquote>
+<p>佛教认为世俗和其他宗教的学说，<strong>都不能让修学的人解脱三界生死轮回的烦恼，都是有所缺憾、苦乐夹杂的，现前虽然看似有益处，其本质都是无常变异的，随着因缘变迁，就会转变成烦恼显现苦相，所以称呼这些学问为“有漏”之学。</strong>“无漏”意指没有三界生死结䌸的缺憾，现世就可以为人们带来益处、止息烦恼。</p>
+</blockquote>
+<blockquote>
+<p>三无漏学包括了“持戒、禅定、智慧”三者，亦即“由戒生定，因定发慧，由慧起修”，分别对治人的“贪、瞋、痴”三毒。防非止恶即为戒，戒能伏贪爱心；息虑静缘即为定，定能伏嗔恚心；破恶证真叫做慧，慧能伏愚痴。所谓“摄心为戒、因戒生定、因定发慧”，最终可以令学人证得智慧解脱烦恼、究竟涅槃。三者彼此加强，相辅相成，缺一不可。只有精进修行正确的三无漏学，才可以达到最终的解脱之道。</p>
+</blockquote>
+<blockquote>
+<p>戒指戒律，定指禅定，慧指智慧<br> 戒定慧三学，持戒是根本，是保证，修定是基础，证是究竟。这三者的次第，我们通常是按持戒、修定、证慧的顺序排列的，所谓“由戒生定，由定发慧”。<strong>当修行到一定程度，这种顺序又可以倒过来，由于有智慧，有抉择力，你修定就会事半功倍；有了甚深禅定，那你持戒就能够不持而持，自自然然，亳不勉强，每时每刻，一言一行都在戒律中，但又不觉得有戒律的约束了。</strong></p>
+</blockquote>
+<p>碎碎念：<br>很惭愧，以上三点虽然知道，我一个都没有实践好…. 合不了一…<br>总结一下：找好老师，深挖学习，认真实践。<br>后来看书越多，经历越多，越喜欢慎言，保持缄默，于人于己不利的话，坚决不说。一来是你的想法本身不一定是正确的；二来是即使你是正确的，知和行有巨大的落差，你自己知道，却不一定能做得到；三来是即使你是对的，而且也行动了，也不一定能够得到有效的反馈。这三点（说到底还是可以归纳为知，行，知行合一能不能做到的问题）不论哪一点出了问题都会让自己觉得苦恼，难度颇高，所以还是不说也罢。</p>
 ]]></content>
-      <categories>
-        <category>metagenomics</category>
-      </categories>
       <tags>
-        <tag>R</tag>
+        <tag>书摘</tag>
       </tags>
   </entry>
   <entry>
-    <title>Immune recognition of microbial metabolites</title>
-    <url>/2019/12/10/metabolites/</url>
-    <content><![CDATA[<h2 id="微生物代谢物的免疫识别"><a href="#微生物代谢物的免疫识别" class="headerlink" title="微生物代谢物的免疫识别"></a>微生物代谢物的免疫识别</h2><p>时间关系，只记录一些重点（图）：</p>
-<ol>
-<li>细菌产生的丁酸和丙酮酸可以刺激 CX3CR1+  单核吞噬细胞释放树突过程并且在肠腔中取样（GPR31 依赖的方式）；</li>
-<li>丁酸可以通过 FFAR2 和 FFAR3 刺激 GPR8+ 记忆 T 细胞；</li>
-<li>丁酸也可以刺激巨噬细胞的抗菌功能；</li>
-<li>丙酸和乙酸信号通过  FFAR2 促进结肠 IL3s 的扩大和功能（行使）；</li>
-<li>肠道屏障衍生的核黄素抗原引导胸腺中的 MAIT 细胞发育（在其迁移到其他组织或者表面之前）；</li>
-<li>皮肤的 MAIT 细胞活跃地参与组织修复，可以被环境因素（cues），细胞因子和细菌代谢物衍生的抗原激活（有抗原递呈细胞传递）；</li>
-</ol>
-<p><a href="https://www.nature.com/articles/s41577-019-0252-2" target="_blank" rel="noopener">Immune recognition of microbial metabolites</a><br><a href="https://www.mr-gut.cn/papers/read/1043528380?kf=daily_email" target="_blank" rel="noopener">Nature Reviews：菌群代谢产物对免疫细胞的调控（年度回顾）-热心肠日报</a></p>
-]]></content>
-      <categories>
-        <category>metagenomics</category>
-      </categories>
-      <tags>
-        <tag>immune</tag>
-        <tag>microbe</tag>
-        <tag>metabolites</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Next主题如何让网站被谷歌/百度检索到，并且投放谷歌广告</title>
-    <url>/2019/12/09/ads-google/</url>
-    <content><![CDATA[<h2 id="分为三步骤："><a href="#分为三步骤：" class="headerlink" title="分为三步骤："></a>分为三步骤：</h2><ol>
-<li><p>让谷歌或者百度收录网站，参考链接（一搜一大把，就不自己写了，下同）：<br><a href="http://duansm.top/2018/08/08/hexo-sitemap/" target="_blank" rel="noopener">Hexo+github搭建个人博客（五）：百度和谷歌收录博客 | duansm</a><br><a href="https://blog.csdn.net/qq_32454537/article/details/79482914" target="_blank" rel="noopener">https://blog.csdn.net/qq_32454537/article/details/79482914</a><br><a href="https://bytename.github.io/2018/10/14/github-pages-%E5%A6%82%E4%BD%95%E8%A2%ABgoogle%E6%94%B6%E5%BD%95/" target="_blank" rel="noopener">github pages 如何被google收录 | Byte的博客</a></p>
-</li>
-<li><p>接入谷歌广告<br><a href="http://www.darylliu.cn/archives/6a1f6623.html" target="_blank" rel="noopener">hexo个人next主题博客接入谷歌广告 | Daryl’s Blog</a><br><a href="http://codewithzhangyi.com/2019/11/06/google-adsense/" target="_blank" rel="noopener">Hexo接入谷歌广告 Google AdSense | Zhang Yi</a><br>我发现好多人的文案一样，也不知道谁抄谁的…<br>我个人不喜欢在文中插入广告，就只选择放在侧边栏和评论区…<br>Tips：中间有一步是添加 ads.txt ，在 Google Adsense 中下载后放在 source 目录下即可（网上其他答案说和_config.yml文件放在同级目录下是有问题的，我试了半天…），判断是否成功的依据是，能够打开 <a href="http://nonewood.github.io/ads.txt">http://nonewood.github.io/ads.txt</a> 。<br>ads.txt 前边的是你的网址。</p>
-</li>
-<li><p>等待广告接入，刚开始广告的位置可能会有空白，多等一会儿就会好；<br>另外按照其他人的说法，别做一些刻意点击广告的行为，会被封 =.=<br>这个也可以查到… </p>
-</li>
-</ol>
-]]></content>
-      <tags>
-        <tag>广告</tag>
-        <tag>google</tag>
-        <tag>hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Lasso与宏基因组</title>
-    <url>/2019/12/08/Lasso/</url>
-    <content><![CDATA[<p>因为项目需要，去了解了一下LASSO【The Least Absolute Shrinkage and Selection Operator】，又译最小绝对值收敛和选择算子、套索算法。鼓捣了几天下来，我也没有弄太懂，但是大概知道了怎么使用，特此记录一下。</p>
-<ol>
-<li><p>首先是知乎的介绍：<br><a href="https://zhuanlan.zhihu.com/p/42122611" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/42122611</a></p>
-</li>
-<li><p>另外查的过程中发现，LASSO并不产生P值，并且不建议去计算P值，虽然原理没弄大懂，但是可以记住结论。同样，附上参考链接：<br><a href="https://www.reddit.com/r/statistics/comments/8jizat/are_p_values_generally_reported_in_lasso/" target="_blank" rel="noopener">Are p values generally reported in LASSO regressions? : statistics</a></p>
-</li>
-<li><p>如果要计算P值的话，得通过另外一种回归计算：<br><a href="https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression" target="_blank" rel="noopener">https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression</a><br>而我看到的一篇文章里是用有序回归（ordinal regression）计算的P值。<br>Chen, D. Q. et al. Identification of serum metabolites associating with chronic kidney disease progression and anti-fibrotic effect of 5-methoxytryptophan. Nat. Commun. 10, 1–15 (2019).</p>
-</li>
-<li><p>怎么是使用LASSO分析微生物的数据：<br>参考了这个脚本，该脚本只适用于二元分组的数据，并且接入的是 Biom 格式的文件：<a href="https://github.com/alifar76/MicrobeNets" target="_blank" rel="noopener">https://github.com/alifar76/MicrobeNets</a></p>
-</li>
-</ol>
-<p>同样因为项目需要，我基于该脚本按照我的理解修改成接入普通文件以及多组的情况，组别文件需要将字符型变量转化成数值型变量，脚本如下，不一定准确，仅供参考：<br>Biom 格式的也是类似的，只不过需要处理文件的最后一列的物种注释信息。</p>
-<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="comment">## 用于非biom 格式文件, Genus</span></span><br><span class="line">intable &lt;- <span class="string">"Genus_abundance.xls"</span> <span class="comment"># 丰度文件</span></span><br><span class="line">mapfile &lt;- <span class="string">"Sample_Group.txt"</span> <span class="comment"># 分组文件，需要转化成数值型</span></span><br><span class="line">outfile &lt;- “Genus_lasso_output.xls<span class="string">" </span></span><br><span class="line"><span class="string">measuretype &lt;- "</span>deviance” <span class="comment">#这些设置的说明可以参考上边github的脚本</span></span><br><span class="line">famaliy &lt;- <span class="string">"multinomial"</span> <span class="comment">#同上</span></span><br><span class="line"></span><br><span class="line">otutab &lt;- read.table(intable,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>)</span><br><span class="line">group &lt;- read.table(mapfile,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>, comment.char= <span class="string">""</span>)</span><br><span class="line">otutab &lt;- subset(as.matrix(otutab),select=rownames(group))</span><br><span class="line">otutab &lt;- t(otutab)</span><br><span class="line"> </span><br><span class="line">fitted = glmnet(as.matrix(otutab), group[,<span class="number">1</span>],standardize=<span class="literal">FALSE</span>,alpha=<span class="number">1</span>)<span class="comment"># 1 mean lasso</span></span><br><span class="line"><span class="comment">#plot(fitted,xvar = "lambda", label = TRUE)</span></span><br><span class="line"></span><br><span class="line">cv.dat = cv.glmnet(data.matrix(otutab),group[,<span class="number">1</span>],grouped=<span class="literal">FALSE</span>,nfolds=<span class="number">10</span>,alpha = <span class="number">1</span>,parallel=<span class="literal">TRUE</span>,type.measure=<span class="string">"deviance"</span>,family=<span class="string">"multinomial"</span>) <span class="comment">#输出的时候会有 warning, 据我测试是和nfold有关；</span></span><br><span class="line"><span class="comment">#plot(cv.dat,main=paste("cv_",compid,"_",methodtype,sep=""))</span></span><br><span class="line">coefval &lt;- coef(cv.dat)</span><br><span class="line"></span><br><span class="line"><span class="comment">### 输出</span></span><br><span class="line">write.table(as.matrix(t(c(<span class="string">"Tax"</span>,<span class="string">"coefficient"</span>))),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:length(row.names(coefval[[<span class="number">1</span>]])))&#123; </span><br><span class="line">    rowName = row.names(coefval[[<span class="number">1</span>]])[i]</span><br><span class="line">    all_dat &lt;- c()</span><br><span class="line">    <span class="keyword">if</span> (rowName != <span class="string">"(Intercept)"</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> (coefval[[<span class="number">1</span>]][i] != <span class="number">0</span>)&#123;</span><br><span class="line">            all_dat &lt;- c(rowName, coefval[[<span class="number">1</span>]][i])</span><br><span class="line">            write.table(as.matrix(t(all_dat)),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol start="5">
-<li><p>效果如何?<br>就我的结果来看，不是很理想。我另外使用MaAsLin2做了测试，发现后者的结果更加好一些。两种方法的重叠物种也不多。个人经验和意见，仅供参考。<br><a href="https://bitbucket.org/biobakery/maaslin2" target="_blank" rel="noopener">MaAsLin2</a></p>
-</li>
-<li><p>Python如何实现LASSO？<br>使用了该方法的文章以及脚本：<br>Wilmanski, T. /et al./ Blood metabolome predicts gut microbiome α-diversity in humans. /Nat. Biotechnol./ doi:10.1038/s41587-019-0233-9<br><a href="https://github.com/PriceLab/ShannonMets" target="_blank" rel="noopener">GitHub - PriceLab/ShannonMets: ** Blood metabolome predicts gut microbiome α-diversity in humans**</a></p>
-</li>
-</ol>
-]]></content>
-      <categories>
-        <category>metagenomics</category>
-      </categories>
-      <tags>
-        <tag>lasso</tag>
-        <tag>R</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>郭鹤年自传</title>
-    <url>/2019/12/07/excerpt/</url>
+    <title>书摘-郭鹤年自传</title>
+    <url>/2019/12/15/excerpt/</url>
     <content><![CDATA[<p>两天时间左右看完了这本书，只记录，不评价，放上来一些我认为还不错的部分，基本按照书的顺序来的；</p>
 <blockquote>
 <p>即使父母亲吵得最厉害的时候，母亲也会提醒我们，她与父亲的争吵是夫妻之间的事，不应该影响到我们对父亲的孝心。换句话说，我们和父亲之间的是父子情，孝道就是孝道。母亲就是如此睿智和关顾他人。所以，就连父亲直律街的店员一旦遇到工作或个人问题时也会跑来找她。她于1995年辞世前，一直展现出伟大的领导特质。</p>
@@ -337,6 +225,172 @@
 ]]></content>
       <tags>
         <tag>书摘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>CCA with ggplot2</title>
+    <url>/2019/12/13/cca/</url>
+    <content><![CDATA[<h2 id="CCA-简介"><a href="#CCA-简介" class="headerlink" title="CCA 简介"></a>CCA 简介</h2><p><a href="https://www.cnblogs.com/pinard/p/6288716.html" target="_blank" rel="noopener">典型关联分析(CCA)原理总结</a><br>文章是专业的描述，我按照我的理解简单写一下：<br>CCA 可以将高维的数据（比如丰度数据和表型数据）降维，然后进行相关性分析，降维的标准是降维后两组数据的相关系数最大，大概知道这么一个结论就可以了。</p>
+<p>折腾了好久时间，本来是用 vegan 包的结果来画，结果发现如果这样的话, 个性化调整图片很难（比如将中间文件转用 ggplot2 画），查着查着就发现只用 ggplot2 也可以画，用的是 ggvegan 这个包。最后花了一段时间用来调整图片的细节问题，比如给个体代表的点按照组别上色，是否画物种以及如何加物种标签（结果发现物种多的时候，会显得很乱… 于是就暂时放弃了），接下来是代码：</p>
+<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">"ggvegan"</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">"ggrepel"</span>)</span><br><span class="line"></span><br><span class="line">taxdata &lt;- read.table(<span class="string">'All.taxonomy_percent.xls'</span>, header=<span class="literal">T</span>, check.names=<span class="literal">F</span>, sep=<span class="string">'\t'</span>, row.names = <span class="number">1</span>, comment.char = <span class="string">""</span>)   <span class="comment">#实测将低丰度的物种合并为 others 对结果的影响比较大，而且合并以后的效果更好;   </span></span><br><span class="line">env &lt;- read.table(<span class="string">'impute_phenotype.xls'</span>, header=<span class="literal">T</span>, check.names=<span class="literal">F</span>, sep=<span class="string">'\t'</span>, row.names = <span class="number">1</span>)</span><br><span class="line">taxdata &lt;- t(taxdata)</span><br><span class="line">vare.cca &lt;- cca(taxdata, env)</span><br><span class="line"><span class="comment">#autoplot(vare.cca,  geom = c("point","text"), layers = c("species", "sites", "biplot", "centroids")) #自动输出</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ford = fortify(vare.cca) <span class="comment">#提取 CCA 的元数据</span></span><br><span class="line">ford &lt;- fortify(ford, axes = <span class="number">1</span>:<span class="number">2</span>)  <span class="comment"># fortify the ordination</span></span><br><span class="line">take &lt;- c(<span class="string">'CCA1'</span>, <span class="string">'CCA2'</span>)  <span class="comment"># which columns contain the scores we want</span></span><br><span class="line">arrows &lt;- subset(ford, Score == <span class="string">'biplot'</span>)  <span class="comment"># take only biplot arrow scores</span></span><br><span class="line"><span class="comment">## multiplier for arrows to scale them to the plot range</span></span><br><span class="line">mul &lt;- ggvegan:::arrowMul(arrows[, take],</span><br><span class="line">                          subset(ford, select = take, Score == <span class="string">'sites'</span>))</span><br><span class="line">arrows[, take] &lt;- arrows[, take] * mul  <span class="comment"># scale biplot arrows</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 加入组别信息以及颜色</span></span><br><span class="line">group = read.table(<span class="string">'Mapping.txt'</span>, comment.char = <span class="string">""</span>, row.names = <span class="number">1</span>, header = <span class="literal">T</span>) <span class="comment">#ID\tGroup</span></span><br><span class="line">sample = subset(ford, Score == <span class="string">'sites'</span>)</span><br><span class="line">rownames(sample) = sample$Label</span><br><span class="line">merge_dt = merge(sample, group, by = <span class="string">"row.names"</span>)</span><br><span class="line"></span><br><span class="line">group_list = <span class="string">"A:B:C"</span> <span class="comment">#设定组别以及下边的颜色</span></span><br><span class="line">color_list = <span class="string">"24af2d:ea5e74:aa75b3"</span> </span><br><span class="line">legend_list = c(unlist(strsplit(group_list, <span class="string">":"</span>)))</span><br><span class="line">color_var = unlist(strsplit(color_list, <span class="string">":"</span>))</span><br><span class="line">color_var = c(paste(<span class="string">"#"</span>,color_var,sep=<span class="string">""</span>))</span><br><span class="line">merge_dt$Group &lt;-factor(merge_dt$Description, legend_list)</span><br><span class="line"></span><br><span class="line">pdf(<span class="string">"CCA.pdf"</span>, width=<span class="number">5</span>, height=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">ggplot() +</span><br><span class="line">  geom_point(data = merge_dt, size = <span class="number">2</span>, </span><br><span class="line">             mapping = aes(x = CCA1, y = CCA2, color = Group,)) +  scale_color_manual(values = color_var) +  <span class="comment">#个体</span></span><br><span class="line"> <span class="comment"># geom_point(data = subset(ford, Score == 'species'), size = 1,  shape = 1,</span></span><br><span class="line"> <span class="comment">#            mapping = aes(x = CCA1, y = CCA2)) +  #这是物种</span></span><br><span class="line"> <span class="comment"># geom_label_repel(data = subset(ford, Score == 'species'), mapping = aes(x = CCA1, y = CCA2, label = Label), </span></span><br><span class="line"> <span class="comment">#               #  box.padding   = 0, </span></span><br><span class="line">                 <span class="comment"># point.padding = 0,</span></span><br><span class="line"> <span class="comment">#                 segment.color = 'grey50') +    #物种标签，注释掉是因为会显得很乱</span></span><br><span class="line">  geom_segment(data = arrows,</span><br><span class="line">               mapping = aes(x = <span class="number">0</span>, y = <span class="number">0</span>, xend = CCA1, yend = CCA2),</span><br><span class="line">               arrow = arrow(length = unit(<span class="number">0.01</span>, <span class="string">"npc"</span>))) +  <span class="comment">#临床表型的箭头</span></span><br><span class="line">  geom_text(data = arrows,</span><br><span class="line">            mapping = aes(label = Label, x = CCA1, y = CCA2, hjust = <span class="number">0.5</span>*(<span class="number">1</span> - sign(CCA1)), vjust = <span class="number">0.5</span>*(<span class="number">1</span>-sign(CCA2)))) + <span class="comment">#临床表型的标签</span></span><br><span class="line">  coord_fixed() + </span><br><span class="line">  scale_x_continuous(expand = c(<span class="number">.1</span>, <span class="number">.1</span>)) +</span><br><span class="line">  scale_y_continuous(expand = c(<span class="number">.1</span>, <span class="number">.1</span>)) + </span><br><span class="line">  theme_bw() +</span><br><span class="line">  theme(</span><br><span class="line">      axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">12</span>), </span><br><span class="line">      axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">      panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">1</span>),</span><br><span class="line">      panel.grid =element_blank(), </span><br><span class="line">      legend.key = element_blank(),</span><br><span class="line">      legend.text = element_text(size = <span class="number">10</span>), </span><br><span class="line">      legend.title = element_blank(), </span><br><span class="line">      <span class="comment">#legend.position=c(0.1,0.1), </span></span><br><span class="line">      legend.position=<span class="string">'none'</span>, </span><br><span class="line">      plot.margin = unit(c(<span class="number">0.2</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))</span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+
+<p>物种可以取丰度前 10 的进行分析（得看项目的具体情况）<br><a href="https://mp.weixin.qq.com/s/urMdWn5Jf2Ia8CdK9jEsgA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/urMdWn5Jf2Ia8CdK9jEsgA</a></p>
+<blockquote>
+<p>上图的CCA分析结果图，图中箭头代表不同的环境因子，红色的代表不同的微生物，绿色的代表不同的样本（当然这个图可以只展示样本和和环境因子2种）。<br>环境因子的箭头的长度代表相应的环境因子与研究对象（样品，微生物）相关程度的大小，越长代表其对所研究对象（样品，微生物）的分布影响越大。箭头连线之间的夹角的代表其相关性，为锐角是说明2个环境因子之间是正相关，钝角是负相关。</p>
+</blockquote>
+<p>表型因子也可以进行提前筛选<br><a href="https://mp.weixin.qq.com/s/Mn12azkNPNEHSK9tjiFYng" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/Mn12azkNPNEHSK9tjiFYng</a></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://stackoverflow.com/questions/28682405/r-visualize-cca-plot-in-ggplot" target="_blank" rel="noopener">https://stackoverflow.com/questions/28682405/r-visualize-cca-plot-in-ggplot</a><br><a href="https://rdrr.io/github/gavinsimpson/ggvegan/man/autoplot.cca.html" target="_blank" rel="noopener">https://rdrr.io/github/gavinsimpson/ggvegan/man/autoplot.cca.html</a><br><a href="https://github.com/gavinsimpson/ggvegan/issues/9" target="_blank" rel="noopener">https://github.com/gavinsimpson/ggvegan/issues/9</a><br><a href="https://stackoverflow.com/questions/15624656/label-points-in-geom-point" target="_blank" rel="noopener">r - Label points in geom_point - Stack Overflow</a></p>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>R</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>how to deal with the missing values of phenotype</title>
+    <url>/2019/12/12/phenotype/</url>
+    <content><![CDATA[<p>The idea comes from the the document of MaAslin2<br><a href="https://bitbucket.org/biobakery/biobakery/wiki/maaslin2" target="_blank" rel="noopener">biobakery / biobakery / wiki / maaslin2 — Bitbucket</a></p>
+<blockquote>
+<p>MaAsLin2 will generally accommodate missing values (which typically occur only in metadata, not in microbial community features), but you may get better results if you impute them, even using something very simple like a median value.</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 处理表型信息中的 Na 值用于 CCA 分析</span></span><br><span class="line"><span class="comment"># 如果缺失值的数目大于 20% 的样品，则剔除该指标，如果小于，则用该组的均值（也可以选择用中位数）替换</span></span><br><span class="line">dt = pd.read_table(<span class="string">'phenotype.xls'</span>, index_col=<span class="number">0</span>) <span class="comment"># 行名样品 ID, 列名表型信息</span></span><br><span class="line">group = pd.read_table(<span class="string">'Mapping.txt'</span>, index_col = <span class="number">0</span>) <span class="comment">#行名样品ID, 列名组名，组别信息的列名默认是 "Description" </span></span><br><span class="line"></span><br><span class="line">dt_merge = pd.concat([dt, group], axis =<span class="number">1</span>)</span><br><span class="line">dt_mean = dt_merge.groupby(<span class="string">'Description'</span>).mean() <span class="comment">#按照组别计算均值，用于 impute, 这里计算的均值会把 NaN 值剔除，不计数 </span></span><br><span class="line"></span><br><span class="line">dt_left = dt.loc[:,dt.isnull().sum() &lt; dt.shape[<span class="number">0</span>]*<span class="number">0.2</span>] <span class="comment">#剔除缺失值太多的指标20%</span></span><br><span class="line">dt_left.is_copy = <span class="literal">False</span> <span class="comment"># 目的在于取消 A value is trying to be set on a copy of a slice from a DataFrame 这个警告</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> var <span class="keyword">in</span> dt_left.columns:</span><br><span class="line">    temp = dt.loc[dt[var].isnull()]</span><br><span class="line">    <span class="keyword">for</span> ID <span class="keyword">in</span> temp.index:</span><br><span class="line">        dt_left[var][ID] = dt_mean[var][group[<span class="string">'Description'</span>][ID]]</span><br><span class="line">        </span><br><span class="line">dt_left.to_csv(<span class="string">'impute_phenotype.xls'</span>, sep = <span class="string">'\t'</span>)</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>读书笔记-科技写作与讲演</title>
+    <url>/2019/12/12/Rosetta-Stone/</url>
+    <content><![CDATA[<p>目前只记录写作部分，因为是刚需。<br>所内容均按照我个人兴趣，摘自《科技写作与讲演-科学的罗塞塔石碑》，供自己学习进步使用。</p>
+<blockquote>
+<p>罗塞塔石碑（Rosetta Stone）简介：<br>制作于公元前 196 年，发现于 1799 年，上面镌刻着三段用古希腊语，象形文字和古埃及通俗文字表达的文字。发现后 24 年，语言学家完成对文字的破译，解读出失传千年的埃及象形文字的意义和结构，成为今日研究古埃及和历史的重要里程碑，也因此被誉为解决难题或谜语的关键线索或工具。</p>
+</blockquote>
+<h2 id="1-创建模板（相当于好词好句数据库）"><a href="#1-创建模板（相当于好词好句数据库）" class="headerlink" title="1.创建模板（相当于好词好句数据库）"></a>1.创建模板（相当于好词好句数据库）</h2><h3 id="1-1-模板来源文章需要包含三个前提条件："><a href="#1-1-模板来源文章需要包含三个前提条件：" class="headerlink" title="1.1 模板来源文章需要包含三个前提条件："></a>1.1 模板来源文章需要包含三个前提条件：</h3><p>1）必须发表在国际知名期刊；<br>2）必须在近 3~5 年发表；<br>3）至少有一位英语母语作者；</p>
+<h3 id="1-2-所选文章还需要包含三个特点："><a href="#1-2-所选文章还需要包含三个特点：" class="headerlink" title="1.2 所选文章还需要包含三个特点："></a>1.2 所选文章还需要包含三个特点：</h3><p>1）科学要求直接叙述；<br>2）成功的文章是用尽可能少的文字讲述生动的故事；<br>3）最重要的是，在所有的科学表达中，清晰是关键；</p>
+<h3 id="1-3-模板应该包含以下类型："><a href="#1-3-模板应该包含以下类型：" class="headerlink" title="1.3 模板应该包含以下类型："></a>1.3 模板应该包含以下类型：</h3><p>1）句子长度和句子结构的变化，包括介词短语的使用频率；<br>2）转接，直接叙述和间接暗指的使用；<br>3）动词的恰当选择；<br>4）动词时态；<br>5）文章怎样开始和结束；<br>6）如何以及何时提及其他研究人员的贡献；</p>
+<h2 id="2-写作"><a href="#2-写作" class="headerlink" title="2. 写作"></a>2. 写作</h2><h3 id="2-1-第一稿"><a href="#2-1-第一稿" class="headerlink" title="2.1 第一稿"></a>2.1 第一稿</h3><p>1）私人代码，即注释，以便后期修改；写作的过程中可以忽略语言问题，采用熟悉的语言写，中途不要停顿；<br>2）组织思路，动笔之前需要有个大概的框架，不然可能会出现重复；对于要表达的要点，可以使用「索引卡片」，将想法和事件排序，确定不会重复且有内在的逻辑；<br>3）第一稿不用太在意细节问题，比如词语的用法，时态等问题，觉得自己写的时候不恰当的地方可以做一下笔记标注一下。<br>4）写作第二稿之前需要休息一段时间，但是不要太长，以免忘记；</p>
+<h3 id="2-2-第二稿"><a href="#2-2-第二稿" class="headerlink" title="2.2 第二稿"></a>2.2 第二稿</h3><p>1）将第一稿转化为英文，利用模板，英文需要简单和直接，最终的目的是给别人传达你的思想，不用担心太简单，后边再修改；</p>
+<h3 id="2-3-最后一稿"><a href="#2-3-最后一稿" class="headerlink" title="2.3 最后一稿"></a>2.3 最后一稿</h3><h4 id="2-3-1-如何编辑？"><a href="#2-3-1-如何编辑？" class="headerlink" title="2.3.1 如何编辑？"></a>2.3.1 如何编辑？</h4><p>1）注意期刊的语言风格<br>2）稿件是产品，像是烘烤面包；需要学会反复编辑自己的稿件；<br>3）写作是社会活动，始终要记得你是在为读者写作，需要让他们明白；<br>4）寻求合作者，信任并且坦率；有能力；熟悉作者；熟悉期刊；</p>
+<h4 id="2-3-2-删除词语"><a href="#2-3-2-删除词语" class="headerlink" title="2.3.2 删除词语"></a>2.3.2 删除词语</h4><h5 id="1）重复与冗余"><a href="#1）重复与冗余" class="headerlink" title="1）重复与冗余"></a>1）重复与冗余</h5><p>一个观点只能被阐述一次，不管其如何重要，复杂以及创新，除非在结论里简单总结提及；</p>
+<h5 id="2）冗词"><a href="#2）冗词" class="headerlink" title="2）冗词"></a>2）冗词</h5><p>重复使用非科学性词语（尤其动词）会显得文章乏味，需要通过模板或者母语作者的文章进行替换，但是不要只是通过词典找一个同义词进行替换，应该在模板里找；<br>好的单词或者短语应该只出现一次，是文章的香料，好看但惹眼，应该放置好位置；</p>
+<h5 id="3）多余的解释或者描述"><a href="#3）多余的解释或者描述" class="headerlink" title="3）多余的解释或者描述"></a>3）多余的解释或者描述</h5><p>如背景部分过长，介绍了不必要的工作等；</p>
+<h5 id="4）介词短语"><a href="#4）介词短语" class="headerlink" title="4）介词短语"></a>4）介词短语</h5><p>注意观察高质量文章的用法；</p>
+<h4 id="2-3-3-被动语态"><a href="#2-3-3-被动语态" class="headerlink" title="2.3.3 被动语态"></a>2.3.3 被动语态</h4><p>1）改为主动语态，务求直截了当；<br>2）避免 there be  … 句型和 it is … 句型;</p>
+<h4 id="2-3-4-使用加强语以强调内容"><a href="#2-3-4-使用加强语以强调内容" class="headerlink" title="2.3.4 使用加强语以强调内容"></a>2.3.4 使用加强语以强调内容</h4><p>1）避免 really， actually truly 等词语；<br>2）避免 very， 太常见，滥用，而应该使用 extremely， highly，strongly 和 surprisingly 替代，但是请间或使用；<br>3）其他避免过度使用的词语，如 a lot  或者 many，应该使用更加具体的词语；避免包含判断的词语，如 good 或者 nice ，好的科学在于解释而非赞美；<br>4）避免使用感叹号；</p>
+<h4 id="2-3-5-陈腐语句"><a href="#2-3-5-陈腐语句" class="headerlink" title="2.3.5 陈腐语句"></a>2.3.5 陈腐语句</h4><p>没 get，暂不记录…</p>
+<h4 id="2-3-6-转接词"><a href="#2-3-6-转接词" class="headerlink" title="2.3.6 转接词"></a>2.3.6 转接词</h4><p>1）润滑剂，如 furthermore; in addition; in fact; in truth 等词语；<br>2）对比，需要呈现对照关系，比如 but; however; instead 等词语；<br>3）解释，用于提示原因和结果，比如 because; as a result; in general 等词语；</p>
+<h4 id="2-3-7-动词时态"><a href="#2-3-7-动词时态" class="headerlink" title="2.3.7 动词时态"></a>2.3.7 动词时态</h4><p>最常见的是一般现在时态。</p>
+<p>最后需要记牢记两点：</p>
+<blockquote>
+<p>作者如果忘记了读者就会自但风险；<br>稿件应该使用科学的语言来表达；</p>
+</blockquote>
+<p>碎碎念：由于自己的写作和英文能力都很差，所以专门总结了这本书📚，一些建议我已经在尝试实践了，希望能够帮助到自己吧。<br>阅读原书风味更佳~</p>
+<p>待完善…</p>
+]]></content>
+      <categories>
+        <category>书</category>
+      </categories>
+      <tags>
+        <tag>写作; 读书</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>how to display the enrichment of multiple group comparsions?</title>
+    <url>/2019/12/11/barplot-by-multigroup/</url>
+    <content><![CDATA[<h2 id="如何展示多种比较情况下富集情况？"><a href="#如何展示多种比较情况下富集情况？" class="headerlink" title="如何展示多种比较情况下富集情况？"></a>如何展示多种比较情况下富集情况？</h2><p>🌰（<del>吃</del> ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。</p>
+<blockquote>
+<p>Jie, Z. <em>et al.</em> The gut microbiome in atherosclerotic cardiovascular disease. <em>Nat. Commun.</em> 8, 845 (2017).</p>
+</blockquote>
+<p>Talk cheap, show code ：</p>
+<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">'ggplot2'</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">'reshape2'</span>)</span><br><span class="line">dt = read.table(<span class="string">'inputfile'</span>, header = <span class="literal">T</span>, sep = <span class="string">'\t'</span>) <span class="comment">#输入格式是：map\tGroup1\tGroup2…\tLevel; map 是小类，Level 是大类，去看论文里的例子，就能明白</span></span><br><span class="line">dt_melt = melt(dt, id.vars = c(<span class="string">'map'</span>, <span class="string">'Level'</span>))</span><br><span class="line"><span class="comment">#order = c('Lipid metabolism', 'Amino acid metabolism', 'Carbohydrate metabolism', 'Metabolism of cofactors and vitamins', 'Xenobiotics biodegradation and metabolism',  'Antimicrobial resistance', 'Membrane transport', 'Cell motility', 'Glycan biosynthesis and metabolism', 'Metabolism of terpenoids and polyketides', 'Energy metabolism') #自定义排序</span></span><br><span class="line">dt_melt$Level =  factor(dt$Level,levels = order)</span><br><span class="line">pdf(<span class="string">'output.pdf'</span>, width = <span class="number">6</span>, height = <span class="number">6</span>) </span><br><span class="line">ggplot(dt_melt, aes(y = value, x = map, fill = value&gt;<span class="number">0</span>)) +</span><br><span class="line">    geom_bar(stat = <span class="string">"identity"</span>) + </span><br><span class="line">    scale_fill_manual(values= c(<span class="string">'#24af2d'</span>,<span class="string">'#e80211'</span>)) + </span><br><span class="line">    geom_hline(aes(yintercept = <span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>, color = <span class="string">'grey'</span>) +  <span class="comment">#设置阈值线，1.65 是单尾的 95% 置信区间；也可以看到论文里有 1.96 ，是双尾的值。 </span></span><br><span class="line">    geom_hline(aes(yintercept = -<span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>,  color = <span class="string">'grey'</span>) + </span><br><span class="line">    coord_flip() + </span><br><span class="line">    labs(x=<span class="string">"Pathway"</span>,y=<span class="string">"Pathway report score"</span>) + </span><br><span class="line">    facet_grid(Level ~ variable, scales = <span class="string">"free"</span>, space = <span class="string">"free_y"</span>) +  <span class="comment">#控制图形的各种间距，可以自己注释掉观察效果</span></span><br><span class="line">    theme_bw() +</span><br><span class="line">    theme(axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">6</span>),</span><br><span class="line">          axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">          panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">0.6</span>),</span><br><span class="line">          <span class="comment">#legend.key = element_blank(),</span></span><br><span class="line">          <span class="comment">#legend.text = element_text(size = 8),</span></span><br><span class="line">          panel.grid =element_blank(),</span><br><span class="line">          legend.title = element_blank(), legend.position=<span class="string">'none'</span>,</span><br><span class="line">          plot.margin = unit(c(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))  </span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+
+<p>碎碎念：好多写脚本时候的想到的点现在完全都忘记了…果然还是需要多记录呀 +.+<br>完结撒花~</p>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>R</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Immune recognition of microbial metabolites</title>
+    <url>/2019/12/10/metabolites/</url>
+    <content><![CDATA[<h2 id="微生物代谢物的免疫识别"><a href="#微生物代谢物的免疫识别" class="headerlink" title="微生物代谢物的免疫识别"></a>微生物代谢物的免疫识别</h2><p>时间关系，只记录一些重点（图）：</p>
+<ol>
+<li>细菌产生的丁酸和丙酮酸可以刺激 CX3CR1+  单核吞噬细胞释放树突过程并且在肠腔中取样（GPR31 依赖的方式）；</li>
+<li>丁酸可以通过 FFAR2 和 FFAR3 刺激 GPR8+ 记忆 T 细胞；</li>
+<li>丁酸也可以刺激巨噬细胞的抗菌功能；</li>
+<li>丙酸和乙酸信号通过  FFAR2 促进结肠 IL3s 的扩大和功能（行使）；</li>
+<li>肠道屏障衍生的核黄素抗原引导胸腺中的 MAIT 细胞发育（在其迁移到其他组织或者表面之前）；</li>
+<li>皮肤的 MAIT 细胞活跃地参与组织修复，可以被环境因素（cues），细胞因子和细菌代谢物衍生的抗原激活（有抗原递呈细胞传递）；</li>
+</ol>
+<p><a href="https://www.nature.com/articles/s41577-019-0252-2" target="_blank" rel="noopener">Immune recognition of microbial metabolites</a><br><a href="https://www.mr-gut.cn/papers/read/1043528380?kf=daily_email" target="_blank" rel="noopener">Nature Reviews：菌群代谢产物对免疫细胞的调控（年度回顾）-热心肠日报</a></p>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>immune</tag>
+        <tag>microbe</tag>
+        <tag>metabolites</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Next主题如何让网站被谷歌/百度检索到，并且投放谷歌广告</title>
+    <url>/2019/12/09/ads-google/</url>
+    <content><![CDATA[<h2 id="分为三步骤："><a href="#分为三步骤：" class="headerlink" title="分为三步骤："></a>分为三步骤：</h2><ol>
+<li><p>让谷歌或者百度收录网站，参考链接（一搜一大把，就不自己写了，下同）：<br><a href="http://duansm.top/2018/08/08/hexo-sitemap/" target="_blank" rel="noopener">Hexo+github搭建个人博客（五）：百度和谷歌收录博客 | duansm</a><br><a href="https://blog.csdn.net/qq_32454537/article/details/79482914" target="_blank" rel="noopener">https://blog.csdn.net/qq_32454537/article/details/79482914</a><br><a href="https://bytename.github.io/2018/10/14/github-pages-%E5%A6%82%E4%BD%95%E8%A2%ABgoogle%E6%94%B6%E5%BD%95/" target="_blank" rel="noopener">github pages 如何被google收录 | Byte的博客</a></p>
+</li>
+<li><p>接入谷歌广告<br><a href="http://www.darylliu.cn/archives/6a1f6623.html" target="_blank" rel="noopener">hexo个人next主题博客接入谷歌广告 | Daryl’s Blog</a><br><a href="http://codewithzhangyi.com/2019/11/06/google-adsense/" target="_blank" rel="noopener">Hexo接入谷歌广告 Google AdSense | Zhang Yi</a><br>我发现好多人的文案一样，也不知道谁抄谁的…<br>我个人不喜欢在文中插入广告，就只选择放在侧边栏和评论区…<br>Tips：中间有一步是添加 ads.txt ，在 Google Adsense 中下载后放在 source 目录下即可（网上其他答案说和_config.yml文件放在同级目录下是有问题的，我试了半天…），判断是否成功的依据是，能够打开 <a href="http://nonewood.github.io/ads.txt">http://nonewood.github.io/ads.txt</a> 。<br>ads.txt 前边的是你的网址。</p>
+</li>
+<li><p>等待广告接入，刚开始广告的位置可能会有空白，多等一会儿就会好；<br>另外按照其他人的说法，别做一些刻意点击广告的行为，会被封 =.=<br>这个也可以查到… </p>
+</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>广告</tag>
+        <tag>google</tag>
+        <tag>hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Lasso与宏基因组</title>
+    <url>/2019/12/08/Lasso/</url>
+    <content><![CDATA[<p>因为项目需要，去了解了一下LASSO【The Least Absolute Shrinkage and Selection Operator】，又译最小绝对值收敛和选择算子、套索算法。鼓捣了几天下来，我也没有弄太懂，但是大概知道了怎么使用，特此记录一下。</p>
+<ol>
+<li><p>首先是知乎的介绍：<br><a href="https://zhuanlan.zhihu.com/p/42122611" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/42122611</a></p>
+</li>
+<li><p>另外查的过程中发现，LASSO并不产生P值，并且不建议去计算P值，虽然原理没弄大懂，但是可以记住结论。同样，附上参考链接：<br><a href="https://www.reddit.com/r/statistics/comments/8jizat/are_p_values_generally_reported_in_lasso/" target="_blank" rel="noopener">Are p values generally reported in LASSO regressions? : statistics</a></p>
+</li>
+<li><p>如果要计算P值的话，得通过另外一种回归计算：<br><a href="https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression" target="_blank" rel="noopener">https://stats.stackexchange.com/questions/84185/lasso-to-identify-important-variables-in-ordered-logistic-regression</a><br>而我看到的一篇文章里是用有序回归（ordinal regression）计算的P值。<br>Chen, D. Q. et al. Identification of serum metabolites associating with chronic kidney disease progression and anti-fibrotic effect of 5-methoxytryptophan. Nat. Commun. 10, 1–15 (2019).</p>
+</li>
+<li><p>怎么是使用LASSO分析微生物的数据：<br>参考了这个脚本，该脚本只适用于二元分组的数据，并且接入的是 Biom 格式的文件：<a href="https://github.com/alifar76/MicrobeNets" target="_blank" rel="noopener">https://github.com/alifar76/MicrobeNets</a></p>
+</li>
+</ol>
+<p>同样因为项目需要，我基于该脚本按照我的理解修改成接入普通文件以及多组的情况，组别文件需要将字符型变量转化成数值型变量，脚本如下，不一定准确，仅供参考：<br>Biom 格式的也是类似的，只不过需要处理文件的最后一列的物种注释信息。</p>
+<figure class="highlight r"><table><tr><td class="code"><pre><span class="line"><span class="comment">## 用于非biom 格式文件, Genus</span></span><br><span class="line">intable &lt;- <span class="string">"Genus_abundance.xls"</span> <span class="comment"># 丰度文件</span></span><br><span class="line">mapfile &lt;- <span class="string">"Sample_Group.txt"</span> <span class="comment"># 分组文件，需要转化成数值型</span></span><br><span class="line">outfile &lt;- “Genus_lasso_output.xls<span class="string">" </span></span><br><span class="line"><span class="string">measuretype &lt;- "</span>deviance” <span class="comment">#这些设置的说明可以参考上边github的脚本</span></span><br><span class="line">famaliy &lt;- <span class="string">"multinomial"</span> <span class="comment">#同上</span></span><br><span class="line"></span><br><span class="line">otutab &lt;- read.table(intable,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>)</span><br><span class="line">group &lt;- read.table(mapfile,header = <span class="literal">T</span>, sep = <span class="string">"\t"</span>, check.names = <span class="literal">T</span>, row.names =<span class="number">1</span>, comment.char= <span class="string">""</span>)</span><br><span class="line">otutab &lt;- subset(as.matrix(otutab),select=rownames(group))</span><br><span class="line">otutab &lt;- t(otutab)</span><br><span class="line"> </span><br><span class="line">fitted = glmnet(as.matrix(otutab), group[,<span class="number">1</span>],standardize=<span class="literal">FALSE</span>,alpha=<span class="number">1</span>)<span class="comment"># 1 mean lasso</span></span><br><span class="line"><span class="comment">#plot(fitted,xvar = "lambda", label = TRUE)</span></span><br><span class="line"></span><br><span class="line">cv.dat = cv.glmnet(data.matrix(otutab),group[,<span class="number">1</span>],grouped=<span class="literal">FALSE</span>,nfolds=<span class="number">10</span>,alpha = <span class="number">1</span>,parallel=<span class="literal">TRUE</span>,type.measure=<span class="string">"deviance"</span>,family=<span class="string">"multinomial"</span>) <span class="comment">#输出的时候会有 warning, 据我测试是和nfold有关；</span></span><br><span class="line"><span class="comment">#plot(cv.dat,main=paste("cv_",compid,"_",methodtype,sep=""))</span></span><br><span class="line">coefval &lt;- coef(cv.dat)</span><br><span class="line"></span><br><span class="line"><span class="comment">### 输出</span></span><br><span class="line">write.table(as.matrix(t(c(<span class="string">"Tax"</span>,<span class="string">"coefficient"</span>))),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (i <span class="keyword">in</span> <span class="number">1</span>:length(row.names(coefval[[<span class="number">1</span>]])))&#123; </span><br><span class="line">    rowName = row.names(coefval[[<span class="number">1</span>]])[i]</span><br><span class="line">    all_dat &lt;- c()</span><br><span class="line">    <span class="keyword">if</span> (rowName != <span class="string">"(Intercept)"</span>)&#123;</span><br><span class="line">        <span class="keyword">if</span> (coefval[[<span class="number">1</span>]][i] != <span class="number">0</span>)&#123;</span><br><span class="line">            all_dat &lt;- c(rowName, coefval[[<span class="number">1</span>]][i])</span><br><span class="line">            write.table(as.matrix(t(all_dat)),file=outfile, sep=<span class="string">"\t"</span>,row.names=<span class="literal">FALSE</span>,col.names=<span class="literal">FALSE</span>,quote=<span class="literal">FALSE</span>,append=<span class="literal">TRUE</span>)   </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><p>效果如何?<br>就我的结果来看，不是很理想。我另外使用MaAsLin2做了测试，发现后者的结果更加好一些。两种方法的重叠物种也不多。个人经验和意见，仅供参考。<br><a href="https://bitbucket.org/biobakery/maaslin2" target="_blank" rel="noopener">MaAsLin2</a></p>
+</li>
+<li><p>Python如何实现LASSO？<br>使用了该方法的文章以及脚本：<br>Wilmanski, T. /et al./ Blood metabolome predicts gut microbiome α-diversity in humans. /Nat. Biotechnol./ doi:10.1038/s41587-019-0233-9<br><a href="https://github.com/PriceLab/ShannonMets" target="_blank" rel="noopener">GitHub - PriceLab/ShannonMets: ** Blood metabolome predicts gut microbiome α-diversity in humans**</a></p>
+</li>
+</ol>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+      <tags>
+        <tag>R</tag>
+        <tag>lasso</tag>
       </tags>
   </entry>
   <entry>

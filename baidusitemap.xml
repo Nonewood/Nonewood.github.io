@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://nonewood.github.io/2019/12/15/study/</loc>
+    <lastmod>2019-12-15</lastmod>
+  </url>  <url>
+    <loc>http://nonewood.github.io/2019/12/15/excerpt/</loc>
+    <lastmod>2019-12-15</lastmod>
+  </url>  <url>
+    <loc>http://nonewood.github.io/2019/12/11/barplot-by-multigroup/</loc>
+    <lastmod>2019-12-15</lastmod>
+  </url>  <url>
     <loc>http://nonewood.github.io/2019/12/12/phenotype/</loc>
     <lastmod>2019-12-15</lastmod>
   </url>  <url>
     <loc>http://nonewood.github.io/2019/12/13/cca/</loc>
     <lastmod>2019-12-15</lastmod>
-  </url>  <url>
-    <loc>http://nonewood.github.io/2019/12/11/barplot-by-multigroup/</loc>
-    <lastmod>2019-12-12</lastmod>
   </url>  <url>
     <loc>http://nonewood.github.io/2019/12/12/Rosetta-Stone/</loc>
     <lastmod>2019-12-12</lastmod>
@@ -24,9 +30,6 @@
   </url>  <url>
     <loc>http://nonewood.github.io/2019/12/08/Lasso/</loc>
     <lastmod>2019-12-08</lastmod>
-  </url>  <url>
-    <loc>http://nonewood.github.io/2019/12/07/excerpt/</loc>
-    <lastmod>2019-12-07</lastmod>
   </url>  <url>
     <loc>http://nonewood.github.io/2019/10/25/Mac-Authenticator-md/</loc>
     <lastmod>2019-10-25</lastmod>
