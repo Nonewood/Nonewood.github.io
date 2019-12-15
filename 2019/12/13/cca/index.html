@@ -84,14 +84,14 @@
 <meta name="description" content="CCA 简介典型关联分析(CCA)原理总结文章是专业的描述，我按照我的理解简单写一下：CCA 可以将高维的数据（比如丰度数据和表型数据）降维，然后进行相关性分析，降维的标准是降维后两组数据的相关系数最大，大概知道这么一个结论就可以了。 折腾了好久时间，本来是用 vegan 包的结果来画，结果发现如果这样的话, 个性化调整图片很难（比如将中间文件转用 ggplot2 画），查着查着就发现只用 ggp">
 <meta name="keywords" content="R">
 <meta property="og:type" content="article">
-<meta property="og:title" content="用 ggplot2 画 CCA">
+<meta property="og:title" content="CCA with ggplot2">
 <meta property="og:url" content="http://nonewood.github.io/2019/12/13/cca/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
 <meta property="og:description" content="CCA 简介典型关联分析(CCA)原理总结文章是专业的描述，我按照我的理解简单写一下：CCA 可以将高维的数据（比如丰度数据和表型数据）降维，然后进行相关性分析，降维的标准是降维后两组数据的相关系数最大，大概知道这么一个结论就可以了。 折腾了好久时间，本来是用 vegan 包的结果来画，结果发现如果这样的话, 个性化调整图片很难（比如将中间文件转用 ggplot2 画），查着查着就发现只用 ggp">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-13T08:51:10.801Z">
+<meta property="og:updated_time" content="2019-12-15T01:52:28.938Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="用 ggplot2 画 CCA">
+<meta name="twitter:title" content="CCA with ggplot2">
 <meta name="twitter:description" content="CCA 简介典型关联分析(CCA)原理总结文章是专业的描述，我按照我的理解简单写一下：CCA 可以将高维的数据（比如丰度数据和表型数据）降维，然后进行相关性分析，降维的标准是降维后两组数据的相关系数最大，大概知道这么一个结论就可以了。 折腾了好久时间，本来是用 vegan 包的结果来画，结果发现如果这样的话, 个性化调整图片很难（比如将中间文件转用 ggplot2 画），查着查着就发现只用 ggp">
 
 
@@ -136,7 +136,7 @@
      });
 </script>
 
-  <title>用 ggplot2 画 CCA | 朝简单处想 往认真处行</title>
+  <title>CCA with ggplot2 | 朝简单处想 往认真处行</title>
   
 
 
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">用 ggplot2 画 CCA</h1>
+          <h1 class="post-title" itemprop="name headline">CCA with ggplot2</h1>
         
 
         <div class="post-meta">
@@ -351,7 +351,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  742 字
+                  954 字
                 </span>
               
 
@@ -367,7 +367,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3 分钟
+                  4 分钟
                 </span>
               
             </div>
@@ -392,6 +392,11 @@
 <p>折腾了好久时间，本来是用 vegan 包的结果来画，结果发现如果这样的话, 个性化调整图片很难（比如将中间文件转用 ggplot2 画），查着查着就发现只用 ggplot2 也可以画，用的是 ggvegan 这个包。最后花了一段时间用来调整图片的细节问题，比如给个体代表的点按照组别上色，是否画物种以及如何加物种标签（结果发现物种多的时候，会显得很乱… 于是就暂时放弃了），接下来是代码：</p>
 <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">"ggvegan"</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">"ggrepel"</span>)</span><br><span class="line"></span><br><span class="line">taxdata &lt;- read.table(<span class="string">'All.taxonomy_percent.xls'</span>, header=<span class="literal">T</span>, check.names=<span class="literal">F</span>, sep=<span class="string">'\t'</span>, row.names = <span class="number">1</span>, comment.char = <span class="string">""</span>)   <span class="comment">#实测将低丰度的物种合并为 others 对结果的影响比较大，而且合并以后的效果更好;   </span></span><br><span class="line">env &lt;- read.table(<span class="string">'impute_phenotype.xls'</span>, header=<span class="literal">T</span>, check.names=<span class="literal">F</span>, sep=<span class="string">'\t'</span>, row.names = <span class="number">1</span>)</span><br><span class="line">taxdata &lt;- t(taxdata)</span><br><span class="line">vare.cca &lt;- cca(taxdata, env)</span><br><span class="line"><span class="comment">#autoplot(vare.cca,  geom = c("point","text"), layers = c("species", "sites", "biplot", "centroids")) #自动输出</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">ford = fortify(vare.cca) <span class="comment">#提取 CCA 的元数据</span></span><br><span class="line">ford &lt;- fortify(ford, axes = <span class="number">1</span>:<span class="number">2</span>)  <span class="comment"># fortify the ordination</span></span><br><span class="line">take &lt;- c(<span class="string">'CCA1'</span>, <span class="string">'CCA2'</span>)  <span class="comment"># which columns contain the scores we want</span></span><br><span class="line">arrows &lt;- subset(ford, Score == <span class="string">'biplot'</span>)  <span class="comment"># take only biplot arrow scores</span></span><br><span class="line"><span class="comment">## multiplier for arrows to scale them to the plot range</span></span><br><span class="line">mul &lt;- ggvegan:::arrowMul(arrows[, take],</span><br><span class="line">                          subset(ford, select = take, Score == <span class="string">'sites'</span>))</span><br><span class="line">arrows[, take] &lt;- arrows[, take] * mul  <span class="comment"># scale biplot arrows</span></span><br><span class="line"></span><br><span class="line"><span class="comment">## 加入组别信息以及颜色</span></span><br><span class="line">group = read.table(<span class="string">'Mapping.txt'</span>, comment.char = <span class="string">""</span>, row.names = <span class="number">1</span>, header = <span class="literal">T</span>) <span class="comment">#ID\tGroup</span></span><br><span class="line">sample = subset(ford, Score == <span class="string">'sites'</span>)</span><br><span class="line">rownames(sample) = sample$Label</span><br><span class="line">merge_dt = merge(sample, group, by = <span class="string">"row.names"</span>)</span><br><span class="line"></span><br><span class="line">group_list = <span class="string">"A:B:C"</span> <span class="comment">#设定组别以及下边的颜色</span></span><br><span class="line">color_list = <span class="string">"24af2d:ea5e74:aa75b3"</span> </span><br><span class="line">legend_list = c(unlist(strsplit(group_list, <span class="string">":"</span>)))</span><br><span class="line">color_var = unlist(strsplit(color_list, <span class="string">":"</span>))</span><br><span class="line">color_var = c(paste(<span class="string">"#"</span>,color_var,sep=<span class="string">""</span>))</span><br><span class="line">merge_dt$Group &lt;-factor(merge_dt$Description, legend_list)</span><br><span class="line"></span><br><span class="line">pdf(<span class="string">"CCA.pdf"</span>, width=<span class="number">5</span>, height=<span class="number">4</span>)</span><br><span class="line"></span><br><span class="line">ggplot() +</span><br><span class="line">  geom_point(data = merge_dt, size = <span class="number">2</span>, </span><br><span class="line">             mapping = aes(x = CCA1, y = CCA2, color = Group,)) +  scale_color_manual(values = color_var) +  <span class="comment">#个体</span></span><br><span class="line"> <span class="comment"># geom_point(data = subset(ford, Score == 'species'), size = 1,  shape = 1,</span></span><br><span class="line"> <span class="comment">#            mapping = aes(x = CCA1, y = CCA2)) +  #这是物种</span></span><br><span class="line"> <span class="comment"># geom_label_repel(data = subset(ford, Score == 'species'), mapping = aes(x = CCA1, y = CCA2, label = Label), </span></span><br><span class="line"> <span class="comment">#               #  box.padding   = 0, </span></span><br><span class="line">                 <span class="comment"># point.padding = 0,</span></span><br><span class="line"> <span class="comment">#                 segment.color = 'grey50') +    #物种标签，注释掉是因为会显得很乱</span></span><br><span class="line">  geom_segment(data = arrows,</span><br><span class="line">               mapping = aes(x = <span class="number">0</span>, y = <span class="number">0</span>, xend = CCA1, yend = CCA2),</span><br><span class="line">               arrow = arrow(length = unit(<span class="number">0.01</span>, <span class="string">"npc"</span>))) +  <span class="comment">#临床表型的箭头</span></span><br><span class="line">  geom_text(data = arrows,</span><br><span class="line">            mapping = aes(label = Label, x = CCA1, y = CCA2, hjust = <span class="number">0.5</span>*(<span class="number">1</span> - sign(CCA1)), vjust = <span class="number">0.5</span>*(<span class="number">1</span>-sign(CCA2)))) + <span class="comment">#临床表型的标签</span></span><br><span class="line">  coord_fixed() + </span><br><span class="line">  scale_x_continuous(expand = c(<span class="number">.1</span>, <span class="number">.1</span>)) +</span><br><span class="line">  scale_y_continuous(expand = c(<span class="number">.1</span>, <span class="number">.1</span>)) + </span><br><span class="line">  theme_bw() +</span><br><span class="line">  theme(</span><br><span class="line">      axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">12</span>), </span><br><span class="line">      axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">      panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">1</span>),</span><br><span class="line">      panel.grid =element_blank(), </span><br><span class="line">      legend.key = element_blank(),</span><br><span class="line">      legend.text = element_text(size = <span class="number">10</span>), </span><br><span class="line">      legend.title = element_blank(), </span><br><span class="line">      <span class="comment">#legend.position=c(0.1,0.1), </span></span><br><span class="line">      legend.position=<span class="string">'none'</span>, </span><br><span class="line">      plot.margin = unit(c(<span class="number">0.2</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))</span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
 
+<p>物种可以取丰度前 10 的进行分析（得看项目的具体情况）<br><a href="https://mp.weixin.qq.com/s/urMdWn5Jf2Ia8CdK9jEsgA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/urMdWn5Jf2Ia8CdK9jEsgA</a></p>
+<blockquote>
+<p>上图的CCA分析结果图，图中箭头代表不同的环境因子，红色的代表不同的微生物，绿色的代表不同的样本（当然这个图可以只展示样本和和环境因子2种）。<br>环境因子的箭头的长度代表相应的环境因子与研究对象（样品，微生物）相关程度的大小，越长代表其对所研究对象（样品，微生物）的分布影响越大。箭头连线之间的夹角的代表其相关性，为锐角是说明2个环境因子之间是正相关，钝角是负相关。</p>
+</blockquote>
+<p>表型因子也可以进行提前筛选<br><a href="https://mp.weixin.qq.com/s/Mn12azkNPNEHSK9tjiFYng" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/Mn12azkNPNEHSK9tjiFYng</a></p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://stackoverflow.com/questions/28682405/r-visualize-cca-plot-in-ggplot" target="_blank" rel="noopener">https://stackoverflow.com/questions/28682405/r-visualize-cca-plot-in-ggplot</a><br><a href="https://rdrr.io/github/gavinsimpson/ggvegan/man/autoplot.cca.html" target="_blank" rel="noopener">https://rdrr.io/github/gavinsimpson/ggvegan/man/autoplot.cca.html</a><br><a href="https://github.com/gavinsimpson/ggvegan/issues/9" target="_blank" rel="noopener">https://github.com/gavinsimpson/ggvegan/issues/9</a><br><a href="https://stackoverflow.com/questions/15624656/label-points-in-geom-point" target="_blank" rel="noopener">r - Label points in geom_point - Stack Overflow</a></p>
 
       
@@ -447,8 +452,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/12/12/phenotype/" rel="next" title="表型文件处理缺失值">
-                <i class="fa fa-chevron-left"></i> 表型文件处理缺失值
+              <a href="/2019/12/12/phenotype/" rel="next" title="how to deal with the missing values of phenotype">
+                <i class="fa fa-chevron-left"></i> how to deal with the missing values of phenotype
               </a>
             
           </div>
@@ -635,7 +640,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">13.3k</span>
+    <span title="Site words total count">13.5k</span>
   
 </div>
 
