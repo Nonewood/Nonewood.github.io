@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>What is PPM(parts per million)</title>
+    <url>/2019/12/19/ppm/</url>
+    <content><![CDATA[<h2 id="Sentences-in-paper-1"><a href="#Sentences-in-paper-1" class="headerlink" title="Sentences in paper[1]"></a>Sentences in paper[1]</h2><blockquote>
+<p>Units are “parts per million (PPM)” derived from sum-normalizing metabolomic features intensities within each LC-MS method.<br>Values plotted are raw measurements (not residuals) normalized to ppm units and then log10-transformed[1]</p>
+</blockquote>
+<p>1) Gut microbiome structure and metabolic activity in inflammatory bowel disease</p>
+<h2 id="What’s-the-meaning"><a href="#What’s-the-meaning" class="headerlink" title="What’s the meaning?"></a>What’s the meaning?</h2><blockquote>
+<p>This is a way of expressing very dilute concentrations of substances. Just as per cent means out of a hundred, so parts per million or ppm means out of a million. Usually describes the concentration of something in water or soil. One ppm is equivalent to 1 milligram of something per liter of water (mg/l) or 1 milligram of something per kilogram soil (mg/kg).</p>
+</blockquote>
+<p><a href="http://groups.molbiosci.northwestern.edu/holmgren/Glossary/Definitions/Def-P/parts_per_million.html" target="_blank" rel="noopener">Parts per million (ppm) definition</a></p>
+<blockquote>
+<p>PPM 是英文parts per million的缩写，译意是每百万份中的一部分，即表示百万分之（几），或称百万分率。 如1ppm即一百万千克的溶液中含有1千克溶质。 ppm与百分率（%）所表示的内容一样，只是它的比例数比百分率大而已。</p>
+</blockquote>
+<p><a href="https://baike.baidu.com/item/ppm" target="_blank" rel="noopener">ppm（衡量打印机打印速度的重要参数）_百度百科</a></p>
+]]></content>
+      <categories>
+        <category>metagenomics</category>
+      </categories>
+  </entry>
+  <entry>
     <title>书摘-学习方法</title>
     <url>/2019/12/15/study/</url>
     <content><![CDATA[<p>写在开头：<br>书常看常新，为了能更好地实践，必须要将某些观点整理，铭记在心，这是我做书摘，写读书笔记的根本目的所在。</p>
