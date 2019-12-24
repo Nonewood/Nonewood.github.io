@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>如何审阅写好的稿子</title>
+    <url>/2019/12/24/peer-review/</url>
+    <content><![CDATA[<h2 id="审稿检查清单"><a href="#审稿检查清单" class="headerlink" title="审稿检查清单"></a>审稿检查清单</h2><p>应该按清单的步骤，一遍一遍来，最好至少过几遍：</p>
+<ol>
+<li>第一遍，看整体行文或者某些段落的逻辑；</li>
+<li>第二遍，看细节错误，包括语法，动词时态，连接词等，这里可以继续按需细分：<blockquote>
+<p>2.1 语法错误，比如单复数等；<br>2.2 动词时态；<br>2.3 检查连接词，动词，形容词等是否使用不当，或者多次重复使用等（这里就能体现建立语料库的重要性）；<br>2.4 待补充完善…</p>
+</blockquote>
+</li>
+<li>第三遍，检查所有的补充文件，正文里是否引用正确，附件内容格式是否正确；</li>
+<li>第四遍，检查开头，结尾如摘要，结论，讨论等部分，看表达是否符合主旨（语料库 +1）；</li>
+<li>暂时没想好怎么检查引用文献是否正确？</li>
+<li>投稿吧 ( ꒪⌓꒪)  </li>
+</ol>
+<p>待完善…</p>
+]]></content>
+      <tags>
+        <tag>写作</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>读书笔记-富兰克林自传</title>
     <url>/2019/12/21/Benjamin-Franklin/</url>
     <content><![CDATA[<p>因为看了《穷查理宝典》，知道芒格有向富兰克林学习，所以看了这本《富兰克林自传》和《穷查理年鉴》；<br>看书的时候，又看到评论说三个人的传记值得一读，富兰克林，王阳明，曾国藩；<br>看完后，感觉收获挺多的，所以摘录一些自己读书时候得到的句子，以此勉励自己学习；<br>整理完后：还是建议阅读全书，每个人应该收获都不一样。</p>
@@ -981,7 +1002,14 @@
   <entry>
     <title>News about microbiome research | 微生物研究资讯</title>
     <url>/2019/09/18/M-news/</url>
-    <content><![CDATA[<h2 id="Flagellin-elicited-adaptive-immunity-suppresses-flagellated-microbiota-and-vaccinates-against-chronic-inflammatory-diseases"><a href="#Flagellin-elicited-adaptive-immunity-suppresses-flagellated-microbiota-and-vaccinates-against-chronic-inflammatory-diseases" class="headerlink" title="Flagellin-elicited adaptive immunity suppresses flagellated microbiota and vaccinates against chronic inflammatory diseases"></a>Flagellin-elicited adaptive immunity suppresses flagellated microbiota and vaccinates against chronic inflammatory diseases</h2><blockquote>
+    <content><![CDATA[<h2 id="Gut-Microbiome-Fermentation-Determines-the-Efficacy-of-Exercise-for-Diabetes-Prevention"><a href="#Gut-Microbiome-Fermentation-Determines-the-Efficacy-of-Exercise-for-Diabetes-Prevention" class="headerlink" title="Gut Microbiome Fermentation Determines the Efficacy of Exercise for Diabetes Prevention"></a>Gut Microbiome Fermentation Determines the Efficacy of Exercise for Diabetes Prevention</h2><blockquote>
+<p>Cell Metabolism  | IF: 22.415 | Date: 27 November 2019</p>
+</blockquote>
+<p><a href="https://www.sciencedirect.com/science/article/abs/pii/S1550413119306084?via%3Dihub" target="_blank" rel="noopener">https://www.sciencedirect.com/science/article/abs/pii/S1550413119306084?via%3Dihub</a></p>
+<p>1、不同前期糖尿病的患者，锻炼引起血糖反应差异很大<br>2、「响应者」和「无响应者」的肠道菌群的变化也不相同；<br>3、「响应者」的肠道菌群能赋予小鼠锻炼产生的代谢益处；<br>4、 菌群极限特征可以准确预测个性化的锻炼响应（因锻炼而产生的代谢变化）；</p>
+<p>My Summary(for English writing practice)：<br>The findings of this study  raise the possibility of implementation of personalized intervention for diabetes prevention by manipulating gut microbiota.<br>Update: 2019年12月24日</p>
+<hr>
+<h2 id="Flagellin-elicited-adaptive-immunity-suppresses-flagellated-microbiota-and-vaccinates-against-chronic-inflammatory-diseases"><a href="#Flagellin-elicited-adaptive-immunity-suppresses-flagellated-microbiota-and-vaccinates-against-chronic-inflammatory-diseases" class="headerlink" title="Flagellin-elicited adaptive immunity suppresses flagellated microbiota and vaccinates against chronic inflammatory diseases"></a>Flagellin-elicited adaptive immunity suppresses flagellated microbiota and vaccinates against chronic inflammatory diseases</h2><blockquote>
 <p>NATURE COMMUNICATIONS | IF：11.8 | Date: 11 December 2019 </p>
 </blockquote>
 <p><a href="https://www.nature.com/articles/s41467-019-13538-y" target="_blank" rel="noopener">https://www.nature.com/articles/s41467-019-13538-y</a><br>鞭毛蛋白引起的适应性免疫抑制鞭毛菌群，并且可以作为疫苗抵抗慢性炎症疾病</p>
