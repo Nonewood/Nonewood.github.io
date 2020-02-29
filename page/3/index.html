@@ -259,6 +259,188 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/10/25/Mac-Authenticator-md/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/10/25/Mac-Authenticator-md/" itemprop="url">Mac 下两步验证免密，免验证码登陆, 传输文件</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-25T08:56:51+08:00">
+                2019-10-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Mac/" itemprop="url" rel="index">
+                    <span itemprop="name">Mac</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  426 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="出发点"><a href="#出发点" class="headerlink" title="出发点"></a>出发点</h2><p>公司的集群前段时间需要两步验证登陆，每次登陆以及传输文件都得拿起手机，看验证码，输入验证码，今天实在觉得这么「繁琐」的步骤无法忍受，就想去查一下有没有可以在桌面端获取验证码的方式，结果还真有：</p>
+<p><a href="https://www.cnblogs.com/jasondan/p/6508249.html" target="_blank" rel="noopener">https://www.cnblogs.com/jasondan/p/6508249.html</a></p>
+<p><a href="https://github.com/stanzhai/GoldenPassport" target="_blank" rel="noopener">GitHub - stanzhai/GoldenPassport: A native implementation of Google Authenticator for Mac based on Swift</a></p>
+<p>作者的想法和目的简直和我的一模一样，而且自己动手，丰衣足食，解决了问题，果然知识才是生产力啊。</p>
+<p>既然有了现成的工具，我也直接优化我之前的脚本，实现即使有两步验证，也能无需输入密码验证码登陆以及传输文件的过程。脚本如下：</p>
+<h2 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/expect -f</span><br><span class="line">#  set user P_bc_medea</span><br><span class="line">  set user xxxx # xxxx is your account</span><br><span class="line">  set host IP  # your IP address</span><br><span class="line">  set password xxxx # xxxx is your passsword</span><br><span class="line">  set code [exec sh -c &#123;curl -s &quot;http://localhost:17304&quot; |grep -Eo &quot;\d&#123;6&#125;&quot;&#125;] # get the verfication code from the local host; 在 expect 脚本里边使用 shell 命令； grep 捕获变量；</span><br><span class="line">  set timeout -1</span><br><span class="line"></span><br><span class="line">  spawn ssh $user@$host</span><br><span class="line">  expect &quot;*assword:*&quot;</span><br><span class="line">  send &quot;$password\r&quot;</span><br><span class="line">  expect &quot;*erification code:*&quot;</span><br><span class="line">  send &quot;$code\r&quot;</span><br><span class="line">  interact</span><br><span class="line">  expect eof</span><br></pre></td></tr></table></figure>
+
+<h2 id="传输文件"><a href="#传输文件" class="headerlink" title="传输文件"></a>传输文件</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/expect -f</span><br><span class="line">  set src_file [lindex $argv 0] # the file need scp </span><br><span class="line">  set dest_dir [lindex $argv 1] # the target directory </span><br><span class="line">  set user xxxx # xxxx is your account</span><br><span class="line">  set host IP  # your IP address</span><br><span class="line">  set password xxxx # xxxx is your passsword</span><br><span class="line">  set code [exec sh -c &#123;curl -s &quot;http://localhost:17304&quot; |grep -Eo &quot;\d&#123;6&#125;&quot;&#125;]</span><br><span class="line">  set timeout -1</span><br><span class="line"></span><br><span class="line">  spawn scp -r $user@$host:$src_file $dest_dir</span><br><span class="line">  expect &quot;*assword:&quot;</span><br><span class="line">  send &quot;$password\r&quot;</span><br><span class="line">  expect &quot;*erification code:*&quot;</span><br><span class="line">  send &quot;$code\r&quot;</span><br><span class="line">  expect &quot;100%&quot;</span><br><span class="line">  expect eof</span><br></pre></td></tr></table></figure>
+
+<p>点击一下，完结撒花~</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/10/25/Mac-windows/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2074,7 +2256,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2154,7 +2336,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">69.6k</span>
+    <span title="Site words total count">73.9k</span>
   
 </div>
 
