@@ -70,7 +70,7 @@
 
 
 
-  <meta name="keywords" content="R,">
+  <meta name="keywords" content="R,python,">
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="如何展示多种比较情况下富集情况？🌰（吃 ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。  Jie, Z. et al. The gut microbiome in atherosclerotic cardiovascular disease. Nat. Commun. 8, 845 (2017).  Talk cheap, show code ： 12345678910111213">
-<meta name="keywords" content="R">
+<meta name="description" content="对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051library(dplyr)li">
+<meta name="keywords" content="R,python">
 <meta property="og:type" content="article">
-<meta property="og:title" content="how to display the enrichment of multiple group comparsions?">
-<meta property="og:url" content="http://nonewood.github.io/2019/12/11/barplot-by-multigroup/index.html">
+<meta property="og:title" content="离散型表型变量的差异检验">
+<meta property="og:url" content="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
-<meta property="og:description" content="如何展示多种比较情况下富集情况？🌰（吃 ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。  Jie, Z. et al. The gut microbiome in atherosclerotic cardiovascular disease. Nat. Commun. 8, 845 (2017).  Talk cheap, show code ： 12345678910111213">
+<meta property="og:description" content="对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051library(dplyr)li">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-15T02:03:57.778Z">
+<meta property="og:updated_time" content="2020-03-15T03:22:09.802Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="how to display the enrichment of multiple group comparsions?">
-<meta name="twitter:description" content="如何展示多种比较情况下富集情况？🌰（吃 ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。  Jie, Z. et al. The gut microbiome in atherosclerotic cardiovascular disease. Nat. Commun. 8, 845 (2017).  Talk cheap, show code ： 12345678910111213">
+<meta name="twitter:title" content="离散型表型变量的差异检验">
+<meta name="twitter:description" content="对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051library(dplyr)li">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://nonewood.github.io/2019/12/11/barplot-by-multigroup/">
+  <link rel="canonical" href="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/">
 
 
 
@@ -136,7 +136,7 @@
      });
 </script>
 
-  <title>how to display the enrichment of multiple group comparsions? | 朝简单处想 往认真处行</title>
+  <title>离散型表型变量的差异检验 | 朝简单处想 往认真处行</title>
   
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/11/barplot-by-multigroup/">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Nonewood">
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">how to display the enrichment of multiple group comparsions?</h1>
+          <h1 class="post-title" itemprop="name headline">离散型表型变量的差异检验</h1>
         
 
         <div class="post-meta">
@@ -292,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-11T16:05:05+08:00">
-                2019-12-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-15T11:13:01+08:00">
+                2020-03-15
               </time>
             
 
@@ -302,28 +302,6 @@
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
-                    <span itemprop="name">metagenomics</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -351,7 +329,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  357 字
+                  624 字
                 </span>
               
 
@@ -367,7 +345,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  1 分钟
+                  3 分钟
                 </span>
               
             </div>
@@ -388,14 +366,13 @@
       
 
       
-        <h2 id="如何展示多种比较情况下富集情况？"><a href="#如何展示多种比较情况下富集情况？" class="headerlink" title="如何展示多种比较情况下富集情况？"></a>如何展示多种比较情况下富集情况？</h2><p>🌰（<del>吃</del> ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。</p>
-<blockquote>
-<p>Jie, Z. <em>et al.</em> The gut microbiome in atherosclerotic cardiovascular disease. <em>Nat. Commun.</em> 8, 845 (2017).</p>
-</blockquote>
-<p>Talk cheap, show code ：</p>
-<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">'ggplot2'</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">'reshape2'</span>)</span><br><span class="line">dt = read.table(<span class="string">'inputfile'</span>, header = <span class="literal">T</span>, sep = <span class="string">'\t'</span>) <span class="comment">#输入格式是：map\tGroup1\tGroup2…\tLevel; map 是小类，Level 是大类，去看论文里的例子，就能明白</span></span><br><span class="line">dt_melt = melt(dt, id.vars = c(<span class="string">'map'</span>, <span class="string">'Level'</span>))</span><br><span class="line"><span class="comment">#order = c('Lipid metabolism', 'Amino acid metabolism', 'Carbohydrate metabolism', 'Metabolism of cofactors and vitamins', 'Xenobiotics biodegradation and metabolism',  'Antimicrobial resistance', 'Membrane transport', 'Cell motility', 'Glycan biosynthesis and metabolism', 'Metabolism of terpenoids and polyketides', 'Energy metabolism') #自定义排序</span></span><br><span class="line">dt_melt$Level =  factor(dt$Level,levels = order)</span><br><span class="line">pdf(<span class="string">'output.pdf'</span>, width = <span class="number">6</span>, height = <span class="number">6</span>) </span><br><span class="line">ggplot(dt_melt, aes(y = value, x = map, fill = value&gt;<span class="number">0</span>)) +</span><br><span class="line">    geom_bar(stat = <span class="string">"identity"</span>) + </span><br><span class="line">    scale_fill_manual(values= c(<span class="string">'#24af2d'</span>,<span class="string">'#e80211'</span>)) + </span><br><span class="line">    geom_hline(aes(yintercept = <span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>, color = <span class="string">'grey'</span>) +  <span class="comment">#设置阈值线，1.65 是单尾的 95% 置信区间；也可以看到论文里有 1.96 ，是双尾的值。 </span></span><br><span class="line">    geom_hline(aes(yintercept = -<span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>,  color = <span class="string">'grey'</span>) + </span><br><span class="line">    coord_flip() + </span><br><span class="line">    labs(x=<span class="string">"Pathway"</span>,y=<span class="string">"Pathway report score"</span>) + </span><br><span class="line">    facet_grid(Level ~ variable, scales = <span class="string">"free"</span>, space = <span class="string">"free_y"</span>) +  <span class="comment">#控制图形的各种间距，可以自己注释掉观察效果</span></span><br><span class="line">    theme_bw() +</span><br><span class="line">    theme(axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">6</span>),</span><br><span class="line">          axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">          panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">0.6</span>),</span><br><span class="line">          <span class="comment">#legend.key = element_blank(),</span></span><br><span class="line">          <span class="comment">#legend.text = element_text(size = 8),</span></span><br><span class="line">          panel.grid =element_blank(),</span><br><span class="line">          legend.title = element_blank(), legend.position=<span class="string">'none'</span>,</span><br><span class="line">          plot.margin = unit(c(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))  </span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+        <p>对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">library(dplyr)</span><br><span class="line">library(data.table)</span><br><span class="line">dt = read.table(&apos;../Samle_Information_categorical.xls&apos;, sep = &apos;\t&apos;, header = T)</span><br><span class="line">group = &apos;NS:FS:CS&apos; #the colname of group is &apos;Group&apos;</span><br><span class="line">group_list = unlist(strsplit(group, &quot;:&quot;))</span><br><span class="line">indice_index = 3 #表型开始的列的位置，从 1 开始</span><br><span class="line"></span><br><span class="line">fileConn&lt;-file(&quot;diff_results.xls&quot;,&apos;w&apos;)</span><br><span class="line">head = paste(&apos;Characteristic&apos;, &apos;P value&apos;, &apos;Method&apos;, sep =&apos;\t&apos;)</span><br><span class="line">writeLines(head, fileConn)</span><br><span class="line"></span><br><span class="line"># 计算连续变量的 sd 和 mean ... 但是我目前不需要这个...</span><br><span class="line">#temp = dt[c(&apos;Group&apos;, &apos;Age&apos;)]</span><br><span class="line">#ag = aggregate(. ~ Group, temp, function(x) c(mean = round(mean(x),2), sd = round(sd(x),2)))</span><br><span class="line">#ag_flat &lt;- do.call(&quot;data.frame&quot;, ag) # flatten</span><br><span class="line"></span><br><span class="line">for (index in indice_index:ncol(dt))&#123;</span><br><span class="line">    indice = colnames(dt)[index]</span><br><span class="line">	sub_dt = dt[c(&apos;Group&apos;,indice)] # 提取</span><br><span class="line"></span><br><span class="line">	freq = sub_dt %&gt;%</span><br><span class="line">    group_by(Group, eval(parse(text = indice))) %&gt;%  # 将变量转化为内置变量（大概这么叫吧）</span><br><span class="line">    summarise(n = n()) %&gt;%                           # 天呐这个功能太好用了...</span><br><span class="line">    mutate(freq = round(n / sum(n)*100,2)) %&gt;%       #另一个常见的操作是添加新的列。这就是mutate()函数的工作了。</span><br><span class="line">    mutate(item = paste(n,&apos;(&apos;, freq, &apos;)&apos;, sep = &apos;&apos;))</span><br><span class="line">	colnames(freq)[2] = indice</span><br><span class="line"></span><br><span class="line">#freq</span><br><span class="line">	need = freq[c(&apos;Group&apos;,indice,&apos;item&apos;)]</span><br><span class="line">#need</span><br><span class="line">	dt_cast = dcast(need, eval(parse(text = indice))~Group, value.var=&apos;item&apos;, fill=0) #太牛批了</span><br><span class="line">	colnames(dt_cast)[1] = indice</span><br><span class="line">	dt_cast = dt_cast[c(indice,group_list)]</span><br><span class="line">#dt_cast</span><br><span class="line">	write.table(dt_cast, file = paste(indice, &quot;information.xls&quot;, sep = &quot;_&quot;),sep=&quot;\t&quot;,quote = F, row.names = F)</span><br><span class="line"></span><br><span class="line">#计算 P 值</span><br><span class="line">	ctable = table(sub_dt)</span><br><span class="line"></span><br><span class="line">	if (any(ctable &lt; 5))&#123;</span><br><span class="line">    	p = fisher.test(ctable, simulate.p.value = TRUE, B = 1e6)$p.value</span><br><span class="line">	    line = paste(indice, p, &apos;fisher&apos;, sep =&apos;\t&apos;)</span><br><span class="line">	    writeLines(line, fileConn)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">    	p = chisq.test(ctable)$p.value</span><br><span class="line">    	line = paste(indice, p,&apos;chisq&apos;, sep =&apos;\t&apos;)</span><br><span class="line">		print(indice)</span><br><span class="line">    	writeLines(line, fileConn)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">close(fileConn)</span><br></pre></td></tr></table></figure>
 
-<p>碎碎念：好多写脚本时候的想到的点现在完全都忘记了…果然还是需要多记录呀 +.+<br>完结撒花~</p>
+<p>随后用 python3 对其结果进行整理即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">group = [<span class="string">'NS'</span>,<span class="string">'FS'</span>,<span class="string">'CS'</span>] <span class="comment"># 组名</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'diff_results.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> IN, open(<span class="string">'Final_result.xls'</span>,<span class="string">'w'</span>) <span class="keyword">as</span> out:</span><br><span class="line">	head = IN.readline().strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">	print(<span class="string">'\t'</span>.join([head[<span class="number">0</span>], <span class="string">'\t'</span>.join(group), head[<span class="number">1</span>]]), file = out)</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> IN:</span><br><span class="line">		line = line.strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">		outline = <span class="string">'\t'</span>.join([line[<span class="number">0</span>] + <span class="string">',n(%)'</span>, <span class="string">'\t'</span>*len(group)]) </span><br><span class="line">		print(outline + <span class="string">'%.2e'</span> % float(line[<span class="number">1</span>]), file = out) <span class="comment">#格式化输出，科学计数法，保留两位小数点... </span></span><br><span class="line">		<span class="keyword">with</span> open(line[<span class="number">0</span>] + <span class="string">'_information.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> indice:</span><br><span class="line">			indice.readline()</span><br><span class="line">			<span class="keyword">for</span> line <span class="keyword">in</span> indice:</span><br><span class="line">				line = line.strip(<span class="string">'\n'</span>)</span><br><span class="line">				print(line, file = out)</span><br><span class="line">	<span class="comment">#	os.remove(line[0] + '_information.xls')</span></span><br></pre></td></tr></table></figure>
+
+<p>参考链接：<br><a href="http://www.r-tutor.com/elementary-statistics/goodness-fit/chi-squared-test-independence" target="_blank" rel="noopener">Chi-squared Test of Independence | R Tutorial</a><br><a href="http://www.sthda.com/english/wiki/chi-square-test-of-independence-in-r" target="_blank" rel="noopener">Chi-Square Test of Independence in R - Easy Guides - Wiki - STHDA</a><br><a href="https://blog.csdn.net/z54572/article/details/61199246" target="_blank" rel="noopener">Fisher精确检验的通俗理解 - z54572的专栏 - CSDN博客</a><br><a href="https://likan.info/cn/post/2017-04-01-tabular-data/" target="_blank" rel="noopener">列联表数据的分析 - 战立侃</a></p>
 
       
     </div>
@@ -439,6 +416,8 @@
           
             <a href="/tags/R/" rel="tag"># R</a>
           
+            <a href="/tags/python/" rel="tag"># python</a>
+          
         </div>
       
 
@@ -450,8 +429,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/12/10/metabolites/" rel="next" title="Immune recognition of microbial metabolites">
-                <i class="fa fa-chevron-left"></i> Immune recognition of microbial metabolites
+              <a href="/2020/03/14/the-snowball2-md/" rel="next" title="读书笔记-滚雪球：巴菲特和他的财富人生（2）">
+                <i class="fa fa-chevron-left"></i> 读书笔记-滚雪球：巴菲特和他的财富人生（2）
               </a>
             
           </div>
@@ -459,10 +438,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/12/12/Rosetta-Stone/" rel="prev" title="读书笔记-科技写作与讲演">
-                读书笔记-科技写作与讲演 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -521,17 +496,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -591,22 +557,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何展示多种比较情况下富集情况？"><span class="nav-number">1.</span> <span class="nav-text">如何展示多种比较情况下富集情况？</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

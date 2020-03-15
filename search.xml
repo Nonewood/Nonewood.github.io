@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>离散型表型变量的差异检验</title>
+    <url>/2020/03/15/categorical-phenotype-test/</url>
+    <content><![CDATA[<p>对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">library(dplyr)</span><br><span class="line">library(data.table)</span><br><span class="line">dt = read.table(&apos;../Samle_Information_categorical.xls&apos;, sep = &apos;\t&apos;, header = T)</span><br><span class="line">group = &apos;NS:FS:CS&apos; #the colname of group is &apos;Group&apos;</span><br><span class="line">group_list = unlist(strsplit(group, &quot;:&quot;))</span><br><span class="line">indice_index = 3 #表型开始的列的位置，从 1 开始</span><br><span class="line"></span><br><span class="line">fileConn&lt;-file(&quot;diff_results.xls&quot;,&apos;w&apos;)</span><br><span class="line">head = paste(&apos;Characteristic&apos;, &apos;P value&apos;, &apos;Method&apos;, sep =&apos;\t&apos;)</span><br><span class="line">writeLines(head, fileConn)</span><br><span class="line"></span><br><span class="line"># 计算连续变量的 sd 和 mean ... 但是我目前不需要这个...</span><br><span class="line">#temp = dt[c(&apos;Group&apos;, &apos;Age&apos;)]</span><br><span class="line">#ag = aggregate(. ~ Group, temp, function(x) c(mean = round(mean(x),2), sd = round(sd(x),2)))</span><br><span class="line">#ag_flat &lt;- do.call(&quot;data.frame&quot;, ag) # flatten</span><br><span class="line"></span><br><span class="line">for (index in indice_index:ncol(dt))&#123;</span><br><span class="line">    indice = colnames(dt)[index]</span><br><span class="line">	sub_dt = dt[c(&apos;Group&apos;,indice)] # 提取</span><br><span class="line"></span><br><span class="line">	freq = sub_dt %&gt;%</span><br><span class="line">    group_by(Group, eval(parse(text = indice))) %&gt;%  # 将变量转化为内置变量（大概这么叫吧）</span><br><span class="line">    summarise(n = n()) %&gt;%                           # 天呐这个功能太好用了...</span><br><span class="line">    mutate(freq = round(n / sum(n)*100,2)) %&gt;%       #另一个常见的操作是添加新的列。这就是mutate()函数的工作了。</span><br><span class="line">    mutate(item = paste(n,&apos;(&apos;, freq, &apos;)&apos;, sep = &apos;&apos;))</span><br><span class="line">	colnames(freq)[2] = indice</span><br><span class="line"></span><br><span class="line">#freq</span><br><span class="line">	need = freq[c(&apos;Group&apos;,indice,&apos;item&apos;)]</span><br><span class="line">#need</span><br><span class="line">	dt_cast = dcast(need, eval(parse(text = indice))~Group, value.var=&apos;item&apos;, fill=0) #太牛批了</span><br><span class="line">	colnames(dt_cast)[1] = indice</span><br><span class="line">	dt_cast = dt_cast[c(indice,group_list)]</span><br><span class="line">#dt_cast</span><br><span class="line">	write.table(dt_cast, file = paste(indice, &quot;information.xls&quot;, sep = &quot;_&quot;),sep=&quot;\t&quot;,quote = F, row.names = F)</span><br><span class="line"></span><br><span class="line">#计算 P 值</span><br><span class="line">	ctable = table(sub_dt)</span><br><span class="line"></span><br><span class="line">	if (any(ctable &lt; 5))&#123;</span><br><span class="line">    	p = fisher.test(ctable, simulate.p.value = TRUE, B = 1e6)$p.value</span><br><span class="line">	    line = paste(indice, p, &apos;fisher&apos;, sep =&apos;\t&apos;)</span><br><span class="line">	    writeLines(line, fileConn)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">    	p = chisq.test(ctable)$p.value</span><br><span class="line">    	line = paste(indice, p,&apos;chisq&apos;, sep =&apos;\t&apos;)</span><br><span class="line">		print(indice)</span><br><span class="line">    	writeLines(line, fileConn)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">close(fileConn)</span><br></pre></td></tr></table></figure>
+
+<p>随后用 python3 对其结果进行整理即可</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">group = [<span class="string">'NS'</span>,<span class="string">'FS'</span>,<span class="string">'CS'</span>] <span class="comment"># 组名</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'diff_results.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> IN, open(<span class="string">'Final_result.xls'</span>,<span class="string">'w'</span>) <span class="keyword">as</span> out:</span><br><span class="line">	head = IN.readline().strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">	print(<span class="string">'\t'</span>.join([head[<span class="number">0</span>], <span class="string">'\t'</span>.join(group), head[<span class="number">1</span>]]), file = out)</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> IN:</span><br><span class="line">		line = line.strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">		outline = <span class="string">'\t'</span>.join([line[<span class="number">0</span>] + <span class="string">',n(%)'</span>, <span class="string">'\t'</span>*len(group)]) </span><br><span class="line">		print(outline + <span class="string">'%.2e'</span> % float(line[<span class="number">1</span>]), file = out) <span class="comment">#格式化输出，科学计数法，保留两位小数点... </span></span><br><span class="line">		<span class="keyword">with</span> open(line[<span class="number">0</span>] + <span class="string">'_information.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> indice:</span><br><span class="line">			indice.readline()</span><br><span class="line">			<span class="keyword">for</span> line <span class="keyword">in</span> indice:</span><br><span class="line">				line = line.strip(<span class="string">'\n'</span>)</span><br><span class="line">				print(line, file = out)</span><br><span class="line">	<span class="comment">#	os.remove(line[0] + '_information.xls')</span></span><br></pre></td></tr></table></figure>
+
+<p>参考链接：<br><a href="http://www.r-tutor.com/elementary-statistics/goodness-fit/chi-squared-test-independence" target="_blank" rel="noopener">Chi-squared Test of Independence | R Tutorial</a><br><a href="http://www.sthda.com/english/wiki/chi-square-test-of-independence-in-r" target="_blank" rel="noopener">Chi-Square Test of Independence in R - Easy Guides - Wiki - STHDA</a><br><a href="https://blog.csdn.net/z54572/article/details/61199246" target="_blank" rel="noopener">Fisher精确检验的通俗理解 - z54572的专栏 - CSDN博客</a><br><a href="https://likan.info/cn/post/2017-04-01-tabular-data/" target="_blank" rel="noopener">列联表数据的分析 - 战立侃</a></p>
+]]></content>
+      <tags>
+        <tag>R</tag>
+        <tag>python</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>读书笔记-滚雪球：巴菲特和他的财富人生（2）</title>
     <url>/2020/03/14/the-snowball2-md/</url>
     <content><![CDATA[<p>写在开头，今天突然冒出来思考的两个问题：</p>
@@ -11,7 +27,7 @@
 <p>看《洛克菲勒写给儿子的信》得到的，这本书超喜欢，我最近听了好多遍，每次睡前都听，发现提到的好多点都是我匮乏的。<br>书里提到：除了填饱肚子，我们还应该主动充实自己的精神世界。书里一句话说『<strong>荣格先生说过，只要改变一个人的词汇，就能够重塑出他的生活、他的收入、他的享受，甚至是改变他自己的人生。</strong>』</p>
 <p>我觉得挺有道理的，就好像伤心的时候不能听伤心的歌，那样只会更加伤心。<br>丘吉尔也说：没受过教育的人背一些语录是有好处的。<br>再比如战争时，给士兵或者普通百姓编的歌曲。</p>
 <p>忽然联想到了，网络媒体监管的问题，度的问题很难衡量，完全放开了真得好吗？最大限度地释放个人自由是对的吗？我不知道。但是我能感觉到一些人，像是小孩子一样，只是想去拿到自己被禁止的东西，而没充分考虑可能的后果。如果结果不好，谁来承担这个责任呢？ </p>
-<p>联想2：我发现，只要被冠以情感诉求，人类所有的行动每一步都能被讴歌。这样不总是是对的，更好的做法是应该避免自己陷入群体性的情绪（感动也好，难过也好，开心也好），这样能让自己保持最大限度的理性。</p>
+<p>联想2：我发现，只要被冠以情感诉求，人类所有的行动每一步都能被讴歌。这样不总是对的，更好的做法是应该避免自己陷入群体性的情绪（感动也好，难过也好，开心也好），这样能让自己保持最大限度的理性。</p>
 <p>联想3：糟糕的事情不能因为一件更加糟糕的事情发生，就觉得它不再糟糕，错的就是错的，对比是一种奇怪的心理因素，时好时坏。</p>
 <p>思考本身并没有用，因为就拿语录来说吧，大致而言，我认为普通人懂的应该都差不多，但是有的人做得很好，有的人就差，其差别我想在于实践。 那么自己应该怎么做呢？<br>让自己多接触一些「积极自信」的信息；<br>多读书，尤其是伟大人物的传记；<br>慎重选择自己平日相处的人，包括朋友，包括伴侣；</p>
 <p>这些『词汇』会影响你一生的轨迹，某种程度上来说，这是自己的广电总局，构筑对自我的墙，用个好听一点的词汇的话就是：护城河。你看，这就是词汇的影响~ </p>
@@ -2001,7 +2017,8 @@
         <category>书</category>
       </categories>
       <tags>
-        <tag>写作; 读书</tag>
+        <tag>写作</tag>
+        <tag>读书</tag>
       </tags>
   </entry>
   <entry>
@@ -2455,7 +2472,7 @@
       </categories>
       <tags>
         <tag>集群</tag>
-        <tag>pythton</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>

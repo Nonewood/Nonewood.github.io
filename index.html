@@ -259,6 +259,163 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/15/categorical-phenotype-test/" itemprop="url">离散型表型变量的差异检验</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-15T11:13:01+08:00">
+                2020-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  624 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">library(dplyr)</span><br><span class="line">library(data.table)</span><br><span class="line">dt = read.table(&apos;../Samle_Information_categorical.xls&apos;, sep = &apos;\t&apos;, header = T)</span><br><span class="line">group = &apos;NS:FS:CS&apos; #the colname of group is &apos;Group&apos;</span><br><span class="line">group_list = unlist(strsplit(group, &quot;:&quot;))</span><br><span class="line">indice_index = 3 #表型开始的列的位置，从 1 开始</span><br><span class="line"></span><br><span class="line">fileConn&lt;-file(&quot;diff_results.xls&quot;,&apos;w&apos;)</span><br><span class="line">head = paste(&apos;Characteristic&apos;, &apos;P value&apos;, &apos;Method&apos;, sep =&apos;\t&apos;)</span><br><span class="line">writeLines(head, fileConn)</span><br><span class="line"></span><br><span class="line"># 计算连续变量的 sd 和 mean ... 但是我目前不需要这个...</span><br><span class="line">#temp = dt[c(&apos;Group&apos;, &apos;Age&apos;)]</span><br><span class="line">#ag = aggregate(. ~ Group, temp, function(x) c(mean = round(mean(x),2), sd = round(sd(x),2)))</span><br><span class="line">#ag_flat &lt;- do.call(&quot;data.frame&quot;, ag) # flatten</span><br><span class="line"></span><br><span class="line">for (index in indice_index:ncol(dt))&#123;</span><br><span class="line">    indice = colnames(dt)[index]</span><br><span class="line">	sub_dt = dt[c(&apos;Group&apos;,indice)] # 提取</span><br><span class="line"></span><br><span class="line">	freq = sub_dt %&gt;%</span><br><span class="line">    group_by(Group, eval(parse(text = indice))) %&gt;%  # 将变量转化为内置变量（大概这么叫吧）</span><br><span class="line">    summarise(n = n()) %&gt;%                           # 天呐这个功能太好用了...</span><br><span class="line">    mutate(freq = round(n / sum(n)*100,2)) %&gt;%       #另一个常见的操作是添加新的列。这就是mutate()函数的工作了。</span><br><span class="line">    mutate(item = paste(n,&apos;(&apos;, freq, &apos;)&apos;, sep = &apos;&apos;))</span><br><span class="line">	colnames(freq)[2] = indice</span><br><span class="line"></span><br><span class="line">#freq</span><br><span class="line">	need = freq[c(&apos;Group&apos;,indice,&apos;item&apos;)]</span><br><span class="line">#need</span><br><span class="line">	dt_cast = dcast(need, eval(parse(text = indice))~Group, value.var=&apos;item&apos;, fill=0) #太牛批了</span><br><span class="line">	colnames(dt_cast)[1] = indice</span><br><span class="line">	dt_cast = dt_cast[c(indice,group_list)]</span><br><span class="line">#dt_cast</span><br><span class="line">	write.table(dt_cast, file = paste(indice, &quot;information.xls&quot;, sep = &quot;_&quot;),sep=&quot;\t&quot;,quote = F, row.names = F)</span><br><span class="line"></span><br><span class="line">#计算 P 值</span><br><span class="line">	ctable = table(sub_dt)</span><br><span class="line"></span><br><span class="line">	if (any(ctable &lt; 5))&#123;</span><br><span class="line">    	p = fisher.test(ctable, simulate.p.value = TRUE, B = 1e6)$p.value</span><br><span class="line">	    line = paste(indice, p, &apos;fisher&apos;, sep =&apos;\t&apos;)</span><br><span class="line">	    writeLines(line, fileConn)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">    	p = chisq.test(ctable)$p.value</span><br><span class="line">    	line = paste(indice, p,&apos;chisq&apos;, sep =&apos;\t&apos;)</span><br><span class="line">		print(indice)</span><br><span class="line">    	writeLines(line, fileConn)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">close(fileConn)</span><br></pre></td></tr></table></figure>
+
+<p>随后用 python3 对其结果进行整理即可</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">group = [<span class="string">'NS'</span>,<span class="string">'FS'</span>,<span class="string">'CS'</span>] <span class="comment"># 组名</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'diff_results.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> IN, open(<span class="string">'Final_result.xls'</span>,<span class="string">'w'</span>) <span class="keyword">as</span> out:</span><br><span class="line">	head = IN.readline().strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">	print(<span class="string">'\t'</span>.join([head[<span class="number">0</span>], <span class="string">'\t'</span>.join(group), head[<span class="number">1</span>]]), file = out)</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> IN:</span><br><span class="line">		line = line.strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">		outline = <span class="string">'\t'</span>.join([line[<span class="number">0</span>] + <span class="string">',n(%)'</span>, <span class="string">'\t'</span>*len(group)]) </span><br><span class="line">		print(outline + <span class="string">'%.2e'</span> % float(line[<span class="number">1</span>]), file = out) <span class="comment">#格式化输出，科学计数法，保留两位小数点... </span></span><br><span class="line">		<span class="keyword">with</span> open(line[<span class="number">0</span>] + <span class="string">'_information.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> indice:</span><br><span class="line">			indice.readline()</span><br><span class="line">			<span class="keyword">for</span> line <span class="keyword">in</span> indice:</span><br><span class="line">				line = line.strip(<span class="string">'\n'</span>)</span><br><span class="line">				print(line, file = out)</span><br><span class="line">	<span class="comment">#	os.remove(line[0] + '_information.xls')</span></span><br></pre></td></tr></table></figure>
+
+<p>参考链接：<br><a href="http://www.r-tutor.com/elementary-statistics/goodness-fit/chi-squared-test-independence" target="_blank" rel="noopener">Chi-squared Test of Independence | R Tutorial</a><br><a href="http://www.sthda.com/english/wiki/chi-square-test-of-independence-in-r" target="_blank" rel="noopener">Chi-Square Test of Independence in R - Easy Guides - Wiki - STHDA</a><br><a href="https://blog.csdn.net/z54572/article/details/61199246" target="_blank" rel="noopener">Fisher精确检验的通俗理解 - z54572的专栏 - CSDN博客</a><br><a href="https://likan.info/cn/post/2017-04-01-tabular-data/" target="_blank" rel="noopener">列联表数据的分析 - 战立侃</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/14/the-snowball2-md/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -369,7 +526,7 @@
 <p>看《洛克菲勒写给儿子的信》得到的，这本书超喜欢，我最近听了好多遍，每次睡前都听，发现提到的好多点都是我匮乏的。<br>书里提到：除了填饱肚子，我们还应该主动充实自己的精神世界。书里一句话说『<strong>荣格先生说过，只要改变一个人的词汇，就能够重塑出他的生活、他的收入、他的享受，甚至是改变他自己的人生。</strong>』</p>
 <p>我觉得挺有道理的，就好像伤心的时候不能听伤心的歌，那样只会更加伤心。<br>丘吉尔也说：没受过教育的人背一些语录是有好处的。<br>再比如战争时，给士兵或者普通百姓编的歌曲。</p>
 <p>忽然联想到了，网络媒体监管的问题，度的问题很难衡量，完全放开了真得好吗？最大限度地释放个人自由是对的吗？我不知道。但是我能感觉到一些人，像是小孩子一样，只是想去拿到自己被禁止的东西，而没充分考虑可能的后果。如果结果不好，谁来承担这个责任呢？ </p>
-<p>联想2：我发现，只要被冠以情感诉求，人类所有的行动每一步都能被讴歌。这样不总是是对的，更好的做法是应该避免自己陷入群体性的情绪（感动也好，难过也好，开心也好），这样能让自己保持最大限度的理性。</p>
+<p>联想2：我发现，只要被冠以情感诉求，人类所有的行动每一步都能被讴歌。这样不总是对的，更好的做法是应该避免自己陷入群体性的情绪（感动也好，难过也好，开心也好），这样能让自己保持最大限度的理性。</p>
 <p>联想3：糟糕的事情不能因为一件更加糟糕的事情发生，就觉得它不再糟糕，错的就是错的，对比是一种奇怪的心理因素，时好时坏。</p>
 <p>思考本身并没有用，因为就拿语录来说吧，大致而言，我认为普通人懂的应该都差不多，但是有的人做得很好，有的人就差，其差别我想在于实践。 那么自己应该怎么做呢？<br>让自己多接触一些「积极自信」的信息；<br>多读书，尤其是伟大人物的传记；<br>慎重选择自己平日相处的人，包括朋友，包括伴侣；</p>
 <p>这些『词汇』会影响你一生的轨迹，某种程度上来说，这是自己的广电总局，构筑对自我的墙，用个好听一点的词汇的话就是：护城河。你看，这就是词汇的影响~ </p>
@@ -2602,362 +2759,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/28/IKEA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/12/28/IKEA/" itemprop="url">读书笔记-宜家故事：IKEA 创始人英格瓦·坎普拉德传</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-28T19:39:18+08:00">
-                2019-12-28
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  9k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  30 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>写在开头：<br>这本书是去年（2018 年）三四月看的书，现在大部分内容都不记得了，唯一留下印象的是有人会对日常生活中，我们熟视无睹的家具特别热爱，这一点和耐克创始人传记里的「鞋狗」对我造成的感受是类似的。看了书后，就一直想去宜家逛一下，后来也真得去了。知道了背后的东西再去逛一个商场感受还是不大一样的。现在温故而知新，特此记录。</p>
-<blockquote>
-<p>童年时代我就有了做生意的意识，这点与大多数同龄人不一样。先开始我央求姑妈帮我从斯德哥尔摩（现在属于布特瑞克斯）的88欧尔批发市场以88欧尔的低价订购了100盒火柴。姑妈都不肯向我收取邮费。后来我以3欧尔一盒，甚至有时5欧尔一盒的价格，转手把这些火柴都卖了出去，从中赚取了每盒1—2欧尔的差价。那时我还不到5岁，不懂什么所谓的边际利润，但这次做生意的经历让我体会到了赚钱的快感，这种感觉我一辈子都记得。</p>
-</blockquote>
-<p>路过：这一点，巴菲特和格雷厄姆从小就卖报纸… 曹德旺也很小就和父亲一块开始做生意，小时候的经历真得很重要啊。我直到很久以后才体验到了赚钱的感觉….</p>
-<blockquote>
-<p>祖母不仅给我创造了一个安全不受外界影响的小世界，而且从我5岁开始做买卖起，她就是我最忠实的特别顾客。不论是否真的需要，她都会从我这儿买点零碎东西照顾我的生意。正是祖母的鼓励让我有了继续把小生意做下去的念头，有了向邻居们兜售的勇气。祖母去世后，我们在她屋里找到了一个盒子，整整一盒装的都是钢笔之类七零八碎的小物件——都是从她孙子的手上买的</p>
-</blockquote>
-<p>路过：有一个不错的长辈很重要，巴菲特有老爹，郭鹤年有母亲（父亲也很重要），似乎厉害的人物都至少有一个对他们影响很深远的人。</p>
-<blockquote>
-<p>小时候在学校里唱国歌时我都会眼泛泪花，这辈子我都极其感性，常常掉眼泪。都说男儿有泪不轻弹，可我的性格就是这样——极度多愁善感。</p>
-</blockquote>
-<blockquote>
-<p>发现我从外面囤了很多货带回家，母亲开始担忧了。她担心这么多的钢笔和橡皮根本卖不出去！那时候我们农场每间房子都有人住，于是我开始固执地挨家挨户推销。<br>一旦下定决心做一件事，我肯定全力以赴不达目的誓不罢休。</p>
-</blockquote>
-<p>路过：最后一句，真正做到的人又能又多少呢？ 今天看到一个视频，总结了几点「道理」，但是如果只是瞄一眼，甚至都不愿意花时间多想，多实践，凭啥道理能让你过好一生呢… 废物…</p>
-<blockquote>
-<p>中学最后一年，我鼓捣着玩儿的生意居然越做越大，逐渐有了正规公司的形态。我在乌斯比镇（Osby）学校宿舍时床底下搁了个棕色的大纸箱，里面囤积了好多用来卖的腰带、皮夹、手表和钢笔。</p>
-</blockquote>
-<p>路过：是中学…</p>
-<blockquote>
-<p>宜家的名字Ikéa是有含义的，字母I代表我的名字英格瓦（Ingvar），字母K代表我的姓坎普拉德（Kamprad），字母E代表我出生和生活的农场艾尔姆塔里德（Elmtaryd），字母A则代表我生活的村庄阿根纳瑞德（Agunnaryd）。</p>
-</blockquote>
-<p>路过：如果是我的话，应该就是 PWGS … 看起来好奇怪…</p>
-<blockquote>
-<p>就是在这样偶然的情况下，经营家具变成了我的宿命。其实刚开始决定做家具只是为了尽快入行。从模仿竞争对手开始。我误打误撞闯进了这个行业，但这也是我这一辈子做过的最满意的决定。那时候我的想法很局限，满脑子想的只有成交量，希望以低价卖出更多家具。直到有一天顾客投诉，我才意识到质量恰恰是我们真正缺乏的，而且质量问题不容小觑，迟早有一天质量问题要逼着我选择新的发展模式。</p>
-</blockquote>
-<p>路过：所以很多时候我觉得规划什么的是没有用的… 更多的是环境和自己同时驱动，不断变化的。我至今没想明白大学生职业规划的意义所在…<br>想到了曾国藩传记里看到的一句话「天下事无所为而成者极少，有所贪有所利而成者居其半，有所激有所逼而成者居其半。」</p>
-<blockquote>
-<p>这时，贡纳尔从嘴里取出粗雪茄，看着我说：“年轻人，你这样永远都当不了老板的。如果你的心理价位是50克朗，我说55克朗的时候，你就应该先跟我讨价还价，至少先砍到50克朗50欧尔。你居然问都没问就接受了我52克朗的报价。做生意的时候你必须牢记，哪怕价格只差10欧尔都能决定成败。”<br>“您的话我会一定记在心上。”我礼貌地回答，而且真的把这句话牢牢刻在了脑海中。直到今日，就算在瑞士家附近的露天市场买东西我也不改讨价还价的本性，总会在对方收拾东西起身要走的最后一刻，抓紧机会问问能不能以更低的价格买进。妻子就特别讨厌我这种讨价还价的习惯。</p>
-</blockquote>
-<p>路过：「讨厌」的习惯，却能带来实际的利润，面子更重要还是里子更重要….</p>
-<blockquote>
-<p>顾客果然还是识货的，不会一味贪便宜，而是明智地购买了性价比高的产品。</p>
-</blockquote>
-<blockquote>
-<p>其次，顾客可以在宽敞明亮的展厅自由走动，亲眼看到分门别类陈列的各类家居用品，亲手触摸他们喜欢的家居用品，遇到满意的商品就可以随手填到《商品目录》的表格上，然后把目录邮寄给我们就完成了订购，订单会由工厂处理和发货。<br>邮购业务与实体展厅相结合的新模式是宜家首创的，也是我与斯文两个人的思想结晶。据我所知，那时还没有其他商家有这样的远见。</p>
-</blockquote>
-<p>路过：像是点菜一样买东西，虽然现在网购快递很常见。 我当时候的笔记是：「上次买衣服时因为缺货，提供了快递的服务，其实即使不缺货也可以快递送，这样逛街买东西就可以不用一直大包小包了，尤其是怕麻烦的人，而且顾客可能觉得两手空空没买什么东西，会买更加多的东西..」</p>
-<blockquote>
-<p>起先我们的客户数量有限，所以《商品目录》也只刊印了十万多份。但就是这区区十万多份目录，在顾客间迅速传阅，把成千上万人带到了阿尔姆霍特。</p>
-</blockquote>
-<blockquote>
-<p>有天早上，收银员把一卷用来支付邮资的邮票遗留在桌上忘了锁起来。我留意到这件小事以后特别生气，于是算了算面值，拿走邮票并在桌面上留下了等值的现钞，大概15克朗。过了一会儿收银员回到座位发现了钞票，于是她红着脸跑来向我承认错误。</p>
-</blockquote>
-<blockquote>
-<p>因此，直至今日宜家一直坚持把所有无形的内部成本转化成清晰可见的价格并公布出来。即便是在广告宣传册上，我们也会把广告成本明确标示在封面或封底上，因为我们花费的所有成本最终都会转嫁到顾客的消费上。</p>
-</blockquote>
-<blockquote>
-<p>成本意识成了宜家经久不衰的秘诀。绳子（有时候我们会把短绳子系在一起接着再用）、纸张，还有箱子我们都会反复利用以节约成本。</p>
-</blockquote>
-<p>路过：我当时候的笔记是「所以自己平时也不能乱花钱喔。。不能像之前那样了。。成本意识」，而且现在也一直在实践，所以这可能就看书的好处吧，看似东西忘记了，但是却在不知处留下影响。</p>
-<blockquote>
-<p>在门店提供餐饮服务的初衷与我们当年在阿尔姆霍特展厅提供免费食品的初衷一样：顾客饿着肚子是不会有心情买东西的。</p>
-</blockquote>
-<p>路过：所以逛的时候特别关注了卖的吃的，感受一下创始人的这份不让顾客饿肚子的心情。</p>
-<blockquote>
-<p>其实，细微体察加上权宜之计有时也指引着重大的决策。宜家就是这样一步一步完善自身的经营理念，而这些经营之道最后也经受住了来自全球市场的不断考验。</p>
-</blockquote>
-<p>路过：当时的笔记「喔，书里的说法是这样的，应该是你用心去做，然后去观察，然后去调整，很难有什么规划去规划未来的不确定性，尤其是我这种人来说」</p>
-<blockquote>
-<p>我和第一任妻子结婚很早。她当时在瑞典广播电台工作，白天担任拉尔斯·马德森（Lars Madsen）的秘书，并协助著名歌手波韦尔·拉梅尔（Povel Ramel）做晚间节目。我们在一起度过了幸福的几年。<strong>在农场刚起步的那几年，前妻也确实给予了我莫大的帮助，但她从来都不喜欢我对工作和公司的全情投入。她期待的是完全不同的生活。</strong></p>
-<p>我不是普通朝九晚五的上班族，不能常常守在妻子身边。她愿意跟着我到处走吗？不，她更喜欢待在家里。就这样，夫妻之间慢慢有了隔阂并渐行渐远。曾几何时，这一切被我们归咎于没有自己的孩子。尽管我们很想有自己的小宝宝，并做过尝试要孩子，也都去医院检查过，但还是失败了。</p>
-<p>所以后来我们收养了一个瑞典小姑娘，希望通过养女拉近一家人的距离。的确，养女的出现暂时缓和了我们夫妻间的矛盾，但最终我们还是决定离婚。<strong>婚姻的破裂是我人生的失败，在工作上我可以失败，这毕竟是工作的一部分，有工作就有失败，但个人生活上我不允许自己失败。</strong>婚姻的失败对我是个巨大的打击，并且我特别想念我们的养女。</p>
-<p>离婚分家的时候前妻狮子大开口，连她的律师都吃惊不已。虽然最终双方达成了一个合理的数目，但这件事的余波远没那么快结束。前妻很快就病倒了，并在几年前因结核病后遗症去世了，她年轻时就不幸感染了这种病。<br>很长一段时间她都不允许我探望养女。我从心底里想念那个小娃娃，她在我心里还是小时候熟悉的模样。好在现在我们终于重新取得了联系。她现在已经有了幸福的家庭，丈夫在建筑公司工作。虽然她没有加入宜家，但我们每年都要见一两次面，关系也很好。</p>
-<p><strong>前妻去世前，我和她也化解了彼此间的矛盾，但这整件事至今还让我痛彻心扉。我认为自己是一个真正的混蛋。我总是问自己，在婚姻中我真的尽全力了吗？还是我们都早就不再是当初的我们了？</strong></p>
-</blockquote>
-<p>路过：什么才算是不错的人生…？ 毛泽东也羡慕周恩来的感情…</p>
-<blockquote>
-<p>1950年左右，Ikéa（当时品牌官方拼法不一）这个名字第一次被展销会拒之门外。即便是以个人身份，英格瓦也遭遇同行排挤，连一些交易会都参加不了。面对巨大的压力和同行的压制，英格瓦既难过得痛哭流泪，但也用自己的骄傲和机敏进行了反击。在这期间，他成立了多家名称不同的公司，这样就可以借壳扮演不同的角色，既当买家又是卖家。</p>
-</blockquote>
-<p>路过：当时候的笔记：「某种程度上来说，没有人和你意见相左或者甚至反对你，说明你挺平庸的，当然前提是本来就是对的，或者坚信自己是对的，而不是盲目固执。。虽然这个度比较难把握，但是一些事情自己能够确认是对的吧，至少对我来说🙃」。看起来别说了解别人，就算了解过去的自己也是一件颇难的事情，忘记了我当时候的确切想法。</p>
-<blockquote>
-<p>伊利斯眼光独到，他的祖父和外祖父当过木匠和铁匠，母亲设计过鞋子，伊利斯深得家人真传也会很多门手艺。他朴素节俭的工作作风（伊利斯的父亲曾是一位技工）也很符合典型的宜家式风格，与早期开创团队不谋而合。伊利斯原先在马尔默技工学校学习绘画，后来转行在马尔默的格玛丽斯广告公司做过一阵子版面设计、摄影和印刷等工作。<br>1952年在兰斯克鲁纳的那次会面冥冥之中决定了伊利斯的命运。迄今为止，他已经为宜家设计了不下400件家具和其他产品，具体数字多到可能连他自己都记不清了。</p>
-</blockquote>
-<blockquote>
-<p>白天，我们在展销会上看到的都是最摩登奢华的家具，每件都价值连城；可到了晚上，我有幸深入真正的意大利人家，才亲眼看到了普通人家中的家居装饰。人民群众能买得起的家具和白天展销会所见的富丽堂皇的家具实在有天壤之别。<br>我不禁扪心自问，为什么贫穷就得忍受如此丑陋的东西呢？<br>美好的东西就必须贵到只有精英阶层才买得起吗？<br>回家以后，这些问题仍然在我脑海中挥之不去。我必须为这些问题找到答案，哪怕耗尽我一生的时间。</p>
-</blockquote>
-<blockquote>
-<p>他认为的理想状态是：宜家的发展不受任何人、任何事的干扰和破坏，免受来自任何家族成员、市场力量或政治人物的不良影响。他想为宜家建立起坚固的屏障，使它不仅能够抵御来自外部的恶意攻击，也能免遭因疏忽大意引发的危机。他希望竭尽所能为宜家长久焕发活力保驾护航。不论战火纷扰，或政局变迁，他希望宜家信念都能被延续和呵护。最重要的是，对宜家的最终控制权应该牢牢掌握在坎普拉德家族手中。</p>
-</blockquote>
-<p>路过：我觉得个人的自由状态也应该是这样的，像是战国的墨家一样，独立于大国之外，保持自己的完整性。但是针对个人来说应该就容易实现好多，应该，个人看法。</p>
-<blockquote>
-<p>那时我们都很年轻。每天跟着感觉走，<br>每天都要多一点儿冒险。</p>
-</blockquote>
-<blockquote>
-<p><strong>民主作为进步的工具也会带来明显的惰性</strong>。假如公司里每件事都要遭遇质疑或经过讨论，那最终就无法做决定了。而且即使你已经拥有了一半的决策权，另外一半还是会毁在那些无休止的建议与提案当中。在科学技术不断进步的时代，民主可能会无法控制成为脱缰的野马。比如说，我们是不是有足够的知识储备来对是否支持核能这一议题进行投票呢？<strong>仅凭我自己的判断，恕我无知，有可能在这种层面的问题上投出正确民主的一票吗？</strong></p>
-</blockquote>
-<blockquote>
-<p>对于那些不断抨击当下经济制度和商业政策的人，我想问：我们有什么更好的选择吗？</p>
-</blockquote>
-<blockquote>
-<p>坐在家里凭空批评这些供应商不能达到西方社会的技术标准当然很容易。但请各位扪心自问：<strong>我们怎样才能更好地推动进步，把事情往更积极的方向推动？</strong>我们应该直接跑到丛林里跟那些泰国人说：“听着，你们得先处理一下室内空气问题，换好点儿的机器，墙角那些装着有毒物质的桶能不能别漏了，都搞定了我们再回来跟你们订货？”<br><strong>还是说，我们应当试着帮点忙，一步一步慢慢来？</strong></p>
-</blockquote>
-<p>路过：想到了《富兰克林自传》的一段话「<strong>像使徒行传里的口头善人一样，不是给缺衣少食者指明怎样或者何处可以得到衣食，而只是一味地劝导他们要吃饱穿暖。</strong>」</p>
-<blockquote>
-<p>如果一旦发现使用童工就中止合约，那必然会造成悲剧——对那些童工来说反而是悲剧。<strong>没有了这份工作他们该做什么？流落街头吗？大多数情况下他们根本没有学校可去。那要让这些孩子去哪里呢？他们的家庭又该怎样维持生计呢？</strong>在电视节目上曝光了童工问题后，我收到了很多来自远东地区的信件，这让我相当惊讶。这些信都是普通人写给宜家的：“请不要抛弃菲律宾，也不要抛弃印度和越南。他们需要宜家，需要在宜家的帮助下走向繁荣，提高生活水平。”</p>
-</blockquote>
-<p>路过：所以所谓的对其实错得很厉害…</p>
-<blockquote>
-<p>就像我经常说的：“好的买卖不会让买卖双方中的任何一方有所损失，好的买卖必须是共赢。</p>
-</blockquote>
-<blockquote>
-<p>这本八九百页的大部头书我其实只草草翻阅了几页。（<strong>而我真的从头到尾读完的书，数量用一只手就能数完。</strong>）</p>
-</blockquote>
-<blockquote>
-<p>有一次我们要宣传一款售价10克朗的马克杯。广告上写着让顾客快来宜家抢购，但我觉得特别尴尬——价格实在太高了，尽管马克杯造型漂亮质量也好，但最多也不能超过5克朗。有问题的是定价。</p>
-</blockquote>
-<blockquote>
-<p>于是我写下了“十只热狗”（现在有20只了）的经营哲学。我们必须找出10件符合“热狗”定价标准的商品。<strong>根据3+1+1的经验法则，5个克朗应该这样分配——3个克朗归生产者，1个克朗归财政部（或其他税收部门）,1个克朗归我们自己。一旦定价不符合3+1+1的法则，我们就得再重新调整。</strong><br>比如上面提到的这款叫作“邦”的马克杯。<br>在瑞士宜家，“邦”的售价只要1个瑞士法郎，而在普通市场上同款马克杯的售价从来不可能低于3瑞士法郎，即便在这样的情况下，我们的设计和质量还更胜一筹。过去宜家每年最多售出70万个杯子，但自从有了“热狗杯子”，年销售量一下子激增为上千万。</p>
-</blockquote>
-<blockquote>
-<p>假如之前说到的马克杯“邦”定价是10克朗而不是5克朗的话，宜家显然能从每个马克杯身上“多挣”一点儿——大概多了1.5克朗的利润——“毛利率”看上去可能更好，但定价这么高最多只能卖出去50万个。相比之下，现在定价5克朗虽然低，却总共卖出了近1200万个，虽然每个才挣1克朗。<br>这些学习经验很容易被忽略或扼杀。但经过数十年来无休止的争论之后，我们在这个问题上已经彻底清醒了。</p>
-</blockquote>
-<blockquote>
-<p>我不禁问自己，如何才能将人民群众的利益放在第一位呢？还有，什么才是所谓的“人民群众的利益”呢？<br>我知道中国政府允许一部分人先富起来的政策。这个政策背后的思想坚信，先富起来的人能够带动和帮助其他地区、其他的人，逐步达到共同富裕，最终使得全体人民群众受益。今天，共产主义也可以是有特色的。但问题在于，<strong>像我这样的企业家可以将追逐利润和财富，与建立永恒人类社会的美好愿望有机地结合在一起吗？</strong><br>我从内心深处相信这是有可能的。</p>
-</blockquote>
-<blockquote>
-<p>俄罗斯的传统文化认为猫护宅，开业都得先请招财猫第一个进去，以求万事亨通、财运兴隆。<br>宜家这只招财猫肯定绝非凡种，当年可是费了好大劲儿经过一轮公开募集才找到的。第一年，它就招来了10亿瑞典克朗的营业额，一举创造惊人纪录。</p>
-</blockquote>
-<blockquote>
-<p>宜家独立自主的自营模式被再一次证明，它那套长久以来沿袭的模式也被再次肯定：<br>——宜家不需要那种惶惶不可终日的股东，他们随时可能抛弃公司。<br>——宜家不需要那些高高在上颐指气使的财经记者，他们可能会迫使管理层仓促决策。<br>——宜家不应当为股票金融市场所困，它可能一朝就让通张的股价惨跌谷底。<br>——宜家也不需要在股东大会上被愤怒的股东们夹枪带棒地攻击，他们可能会指责大股东不顾及小股东的利益。</p>
-</blockquote>
-<blockquote>
-<p>但万事开头难，而且对安享稳定的人来说，再去创新，一切从头再来可能是最大的挑战。对没钱但有好点子的人来说，做什么都不怕损失，做好了就赚到了。但对拿工资的中产阶级来说，凭什么要求这些人为了实现一个好点子就更拼命？而且这种冒险可能得搭上他们一辈子的积蓄！</p>
-</blockquote>
-<blockquote>
-<p>毛泽东在1945年10月曾说过：“世界是在进步的，前途是光明的，这个历史的总趋势任何人也改变不了。”</p>
-</blockquote>
-<blockquote>
-<p>当时的贝利刚满18岁，但他执意要同一个英国姑娘结婚。坎普拉德郑重地提醒<strong>他不要过早结婚轻率承诺</strong>，问他愿不愿意先放一放婚事到宜家工作一段时间试试看。<br>坎普拉德的话最终应验了，而像贝利这样转而把一辈子献给宜家的也不止一个。</p>
-</blockquote>
-<blockquote>
-<p>因为要重新拾掇箱子，约好的7点吃早饭他迟到了。英格瓦只向他简单地问候了一句“早上好”，这是他一贯以来对待迟到者的态度，画外音是在强调他们睡过头了。</p>
-</blockquote>
-<blockquote>
-<p>无论事情进展多么顺利，英格瓦都不喜欢表现出自满，这对他来说无异于吹嘘，而且自满是失败之母。农民那种不信命的精神让他始终保持脚踏实地。<strong>是的，今年的收成确实不错，但谁也说不准秋天会怎样，所以别把一切当成理所当然的。</strong></p>
-</blockquote>
-<p>路过：今天的看得<a href="https://mp.weixin.qq.com/s/gRgxPpAZwoFkj_2NjhlpCQ" target="_blank" rel="noopener">巴菲特的视频</a>也提到了，他喜欢研究失败的案例，发现企业走下坡路失败的最大原因就是骄傲自满，你应该希望自己不断向前，你也应该意识到，总有人在不断追赶，所以要保持优势，一直进步。这又像是芒格提到的，每天让自己进步一点点…</p>
-<blockquote>
-<p>有人好奇到底是什么力量在心中驱使着他前行，英格瓦带着羞愧神情回答：“可能是附庸风雅的心态吧。我喜欢万众瞩目带来的光环，喜欢表现自己，我想另辟蹊径达到功成名就……骄傲或者说是虚荣心掩藏了我内心深处的其他东西……”</p>
-</blockquote>
-<p>路过：这就是富兰克林说的虚荣心带来的好处的例子；</p>
-<blockquote>
-<p>当被问及「您挣到第一个100万的时候难道不兴奋吗？」</p>
-<p> 当时肯定兴奋啊，但现在已经不记得了。我只记得第一次赚到100块钱，第一次有1000块钱的时候——是啊，那一刻我简直高兴坏了，但现在也早忘了。</p>
-<p>钱不能吃，不是万能的。变成有钱人是一回事，但内在驱动力是另一回事，不是你想做就能做到的。<strong>你赚钱的动力可能来自于你的父亲、母亲，也可能是为了你自己，或者为了其他对你来说重要的人。</strong></p>
-</blockquote>
-<blockquote>
-<p>当被提及「20世纪50年代您买过一辆保时捷跑车，后来又买了一辆。」</p>
-<p> 你说的就是我生活中另一个让人绝望的方面。我20岁的时候开始在韦克舍的林场主协会工作。和我差不多的同龄人当时周日都出去跳舞。我服兵役那会儿，年轻人都出去喝酒，只有我一个人笨笨地跑到地下室办公。<strong>对我来说生意永远是第一位。美好的青春很多时候都被工作充斥。后来我的第一次婚姻触礁，当时手头也比较宽裕，我便放下脚步，也开始去跳舞、聚会、喝酒。我想让事情好转起来，想把失去的东西追回来。</strong></p>
-<p> 就在当时那种情况下，我买了第一辆保时捷。但发现车不好开，而我又不愿承认，于是又买了一辆一模一样的，都是白色车身红色皮饰。这样一来，除了身边最亲近的人，根本就没人会注意到我花了多少钱在这车上。</p>
-<p>外面人说我身家500亿克朗，听到这个，我想的是：“不错，看来发展挺顺利的，”但转念又会想，“基金会我又卖不出去，就算能转手，500亿我该怎么花呢？”</p>
-<p>我认为成为亿万富翁是件好事儿，这意味着我能为公司实现很多事情，而不是对我本人或者家庭而言。而成功也让我自豪，<strong>不是因为赚了这么多钱，而是因为我的理念火了。</strong></p>
-</blockquote>
-<p>路过：我也觉得因为尝试去实践理念而证明其有效带来的快感大于其他的附加价值，这也就能解释为什么有些人不赚钱也愿意做一些事情；</p>
-<blockquote>
-<p><strong>缺乏自信</strong>几乎已经成为我跨不过去的一个坎了，也让我白白浪费了很多时间。为什么我总担心出门忘带钞票呢？为什么我出门总要一遍又一遍地反复检查是否带上了护照、票证、钱？这样的情况我已经经历了上千次了！为什么一要发表演讲或者和权威人士见面我就紧张？为什么我会恐高？为什么我的这些恐惧还各种各样自成一派？为什么我难于做决定，不会写会议纪要，而且很难集中注意力？为什么会有那么多想法同时在我脑袋里打架？为什么有时候撰写一篇简单的文件我都得花好几天？我总是写了撕，撕了又写。<br>….<br><strong>接受速度慢</strong>也造成了我的很多缺陷。因为我有很严重的学习障碍，所以有时也会因为跟不上进度而苦恼。<br>比如说学习语言吧。在学校的时候我只学了一门外语——英语。尽管每天花好几个小时在英语学习上，我还是只能得B。我的德语成绩是BC，法语更差得C。即便我每天都在不停地默背单词和句子，有时还会把同一个词狂抄100遍，但还是记不住大部分单词。<br>…<br><strong>我写作也很困难！</strong>尤其是拼写，我手边永远会备一本《博尼尔字典》，旅行的时候我会带另一本袖珍字典。</p>
-</blockquote>
-<p>路过：厉害的宜家创始人也会这样… 所以有时候别想太多啦…</p>
-<blockquote>
-<p>用专业的商业术语来讲，这实质上是安全边际量的问题。我想说的是：<strong>掌握权力的人绝不能拿员工的信任当赌注。比方说，永远不该让员工担心我们会让他们丢了饭碗；比方说，公司永远不应该资金短缺……</strong><br>为此我们制定了三条安全原则：<br>——保持高流动资金。<br>——绝不交叉担保；宜家旗下各子公司之间互相担保时，应限制担保的时间和金额。<br>——确保物权自由占大多数，控制抵押贷款的数量。</p>
-</blockquote>
-<blockquote>
-<p>然而，保证质量也不能牺牲其他，必须切实适应消费者的不同需要。例如，桌面比书架搁板更需要注重表面耐用性。因此，在桌面上应当使用更贵的面漆保障顾客能够长久使用，而在书架上使用同样价钱的面漆不仅毫无用处反而增加了成本。<strong>质量必须以适应消费者的长远利益为出发点。</strong></p>
-</blockquote>
-<blockquote>
-<p>工作不只是为了谋生的手段。如果你对自己的工作缺乏热情，<strong>那么一生将会虚度三分之一的时光</strong>，即便上班时间看杂志也弥补不回来。</p>
-</blockquote>
-<blockquote>
-<p>所有设计师都能设计出一张5000克朗的桌子，但只有最娴熟的设计师才能设计出又实用又好，而且只要100克朗的桌子。昂贵的解决方案通常都平庸至极。</p>
-</blockquote>
-<p>路过：当时候的笔记：就像是哪句『没有什么事情发生的时候，是个人都能讲出来大道理，某一些一旦真正发生了事情，就慌了手脚，但是往往有事发生的时候才能体现你的价值，<strong>你要做的就是耐心和坚持</strong>，貌似有点偏，但是核心是一样的，以后的自己应该能看懂。』</p>
-<blockquote>
-<p>我们相互需要，共同建立起我们的宜家。没有什么想法是属于我个人的。<br>绝大多数是我们在实践中共同研究出来的。或许这就是为什么我学会了用怀疑的眼光去看待那些<strong>远离实际、整天坐在办公室</strong>里的人。</p>
-</blockquote>
-<blockquote>
-<p>“我的一生将被用于证明。有用的东西并不一定是昂贵的。”</p>
-</blockquote>
-<blockquote>
-<p>只有睡着的人才不会出错。犯错是主动者的特权。这一特权只属于那些知错就改并能正视错误的人。</p>
-</blockquote>
-<p>路过：想到了《鞋狗》里的一句话：“<strong>懦夫从不启程，弱者死于路中，只剩我们前行。</strong>”</p>
-<blockquote>
-<p>为了实现目标，我们需要不断学习如何做决策和承担责任，不断克服害怕犯错误的恐惧。害怕出错是官僚主义的根源，也是发展的大敌。<strong>没有所谓的唯一正确的决定。评判一个决定是否正确，要看为之付出的精力。</strong>每个人都有权犯错误。通常只有庸人才总是消极地浪费时间去证明自己没错。真正的强人会保持积极进取向前看。 </p>
-</blockquote>
-<blockquote>
-<p><strong>切记时间才是最重要的资源。</strong><br>短短十分钟，充分利用的话可以做很多事儿，不珍惜就再也追不回来，逝者如斯夫。<br>十分钟不仅仅是时薪的六分之一。十分钟是我们生命的一个片段。我们的一生也是由许多个十分钟的片段组成的，少在无意义的活动上浪费每一个宝贵的十分钟。</p>
-</blockquote>
-<blockquote>
-<p>如果当初我们就听取专家的意见，去咨询阿尔姆霍特这么个小地方是否适合建宜家，毫无疑问，专家肯定会反对。然而事实证明，现如今的阿尔姆霍特已经成为宜家这个世界家具行业最强大企业的总部。</p>
-<p>不断反思行事背后的原因可以帮助我们找到新方法。拒绝被已有的模式禁锢可以帮助我们进步。</p>
-</blockquote>
-<blockquote>
-<p><strong>兵分必然势弱</strong>。再全能的人，精力分散了也会有问题。<br>对我们来说也一样，我们应当专注，专注于我们的资源。任何人都不可能同时做所有事，还达到尽善尽美。</p>
-</blockquote>
-<blockquote>
-<p>就拿他擅长的定价来说吧。英格瓦特别关注价格，总喜欢不停地比价——从买一瓶腌黄瓜到订酒店，从在小贩儿手里买一管牙膏到胶合板、啤酒杯的造价，甚至是口含烟和酒精的价格他都要来回比。妻子在超市买东西拿回来的小票他都要着迷地仔细看半天。</p>
-<p>有一天晚上，在哈姆勒贝克的老宜家总部，他拿出一本七百多页厚的价目单给我看，里面包括了宜家浩如烟海的产品线中所有商品的价目。<br>“曾几何时，宜家绝大多数商品的价格我都能倒背如流。”他颇为自我欣赏地说，语气里也带着一丝疲惫和忧伤，说得好像他已经不再能百分之百地充分把握最新动态了，说得好像要记清楚这两万多件商品及各种配件还属于正常人类记忆限度一样。</p>
-</blockquote>
-<p>路过：好像厉害的人都有类似的技能… 比如老巴…</p>
-<blockquote>
-<p>谦逊和坚毅是我最看中的品质。应当心怀关爱，乐于融入集体。但我觉得自己最看重的还是谦逊。”</p>
-</blockquote>
-<p>路过：好多人都提到了这个品质… 郭鹤年也是。</p>
-<p>结束语：<br>整理笔记的时候，发现以前的自己（一年半多以前）没有注意到很多有意思的内容，这就印证了那句话「读书是一种过程，而不是结果。」（我说的…）只是说看完了某一本书并无意义。所以整理笔记，经常回过头来看看，能够有新发现。我想，不仅仅是看书，对个人的总结也是一样的吧。今年马上就要结束啦，记得总结一下过去的一年，以一年为维度和一天为维度的总结还是有很大区别的。大概就这样，每天都要进步一点点。</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -3015,7 +2816,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -3037,7 +2838,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">29</span>
+                  <span class="site-state-item-count">31</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -3095,7 +2896,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">78.1k</span>
+    <span title="Site words total count">78.7k</span>
   
 </div>
 
