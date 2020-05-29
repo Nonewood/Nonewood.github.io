@@ -383,10 +383,10 @@
       
         
           
-            <h4 id="一、写在开头"><a href="#一、写在开头" class="headerlink" title="一、写在开头"></a>一、写在开头</h4><p>因为项目的原因，必须得画网络互作图，之前一直想用脚本实现，不想手动在可视化的软件界面（因为觉得麻烦），但是又一直找不到合适的，即使找到了也不知道怎么用于我目前项目的数据，就一直拖着。</p>
+            <h3 id="一、写在开头"><a href="#一、写在开头" class="headerlink" title="一、写在开头"></a>一、写在开头</h3><p>因为项目的原因，必须得画网络互作图，之前一直想用脚本实现，不想手动在可视化的软件界面（因为觉得麻烦），但是又一直找不到合适的，即使找到了也不知道怎么用于我目前项目的数据，就一直拖着。</p>
 <p>后来看到好多文献都是用 Cytoscape 这个软件画，我想，那行吧，我学习一下，就利用同事的教程生成了配置文件然后请教了一些问题（特别感谢），花了不少的时间终于鼓捣出来了，虽然结果依旧不美观，但是至少有产出了。</p>
 <p>写这个文档，是因为后来发现自己年纪大了，总是有忘记事情的倾向，如果不做记录，隔一段时间不用了，肯定马上就忘了，所有后来总是有记录的习惯，脚本也好，日记也好，技术文档也罢。下边是正式的记录内容：</p>
-<h4 id="二、网络互作图简易教程"><a href="#二、网络互作图简易教程" class="headerlink" title="二、网络互作图简易教程"></a>二、网络互作图简易教程</h4><ol>
+<h3 id="二、网络互作图简易教程"><a href="#二、网络互作图简易教程" class="headerlink" title="二、网络互作图简易教程"></a>二、网络互作图简易教程</h3><ol>
 <li><p>生成 Edges 和 Nodes 文件，两种文件格式如下（同事脚本生成的）：<br>Edges 文件列名:  Source  Target  Correlation     LineWidth       LineColor<br>Nodes 文件列名：Node    NodeFontFace    NodeSize        NodeColor</p>
 </li>
 <li><p>导入文件<br>Edges 文件导入方法：File -&gt; Import -&gt; Network from File<br>Nodes 文件导入方法：File -&gt; Import -&gt; Table from File</p>
@@ -409,8 +409,8 @@
 <figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">"UpSetR"</span>)</span><br><span class="line">pdf(<span class="string">"upset.pdf"</span>, width=<span class="number">3</span>,height=<span class="number">3</span>)</span><br><span class="line">gene &lt;- read.csv(<span class="string">'edge.xls'</span>, header = <span class="literal">T</span>, sep = <span class="string">'\t'</span>)</span><br><span class="line">upset(gene, order.by = <span class="string">"freq"</span>, </span><br><span class="line">      mb.ratio = c(<span class="number">0.70</span>, <span class="number">0.30</span>), </span><br><span class="line">      <span class="comment">#point.size = 2, line.size = 1,</span></span><br><span class="line">      sets.bar.color=c(<span class="string">"#24abe1"</span>, <span class="string">"#f3796f"</span>), mainbar.y.label = <span class="string">"Edges Intersections"</span>, sets.x.label = <span class="string">"Edges Size"</span>)</span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
 
 <p>3） 最后竖起你的大拇指，夸自己一下，完成撒花。</p>
-<h4 id="三、参考资料"><a href="#三、参考资料" class="headerlink" title="三、参考资料"></a>三、参考资料</h4><p><a href="https://kateto.net/tutorials/" target="_blank" rel="noopener">https://kateto.net/tutorials/</a><br><a href="https://zhuanlan.zhihu.com/p/31198752" target="_blank" rel="noopener">谁是社会网络中最重要的人？ - 知乎</a><br><a href="http://bioinformatics.psb.ugent.be/webtools/Venn/" target="_blank" rel="noopener">Draw Venn Diagram</a><br><a href="https://www.r-bloggers.com/hacking-our-way-through-upsetr/" target="_blank" rel="noopener">Hacking our way through UpSetR | R-bloggers</a><br><a href="https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html</a></p>
-<h4 id="四、联系方式"><a href="#四、联系方式" class="headerlink" title="四、联系方式"></a>四、联系方式</h4><p>我想适当开放一下，可以通过以下方式联系我，但是不保证解决问题.. （因为菜）<br>邮箱:  <a href="mailto:Pengzai16@gmail.com" target="_blank" rel="noopener">Pengzai16@gmail.com</a></p>
+<h3 id="三、参考资料"><a href="#三、参考资料" class="headerlink" title="三、参考资料"></a>三、参考资料</h3><p><a href="https://kateto.net/tutorials/" target="_blank" rel="noopener">https://kateto.net/tutorials/</a><br><a href="https://zhuanlan.zhihu.com/p/31198752" target="_blank" rel="noopener">谁是社会网络中最重要的人？ - 知乎</a><br><a href="http://bioinformatics.psb.ugent.be/webtools/Venn/" target="_blank" rel="noopener">Draw Venn Diagram</a><br><a href="https://www.r-bloggers.com/hacking-our-way-through-upsetr/" target="_blank" rel="noopener">Hacking our way through UpSetR | R-bloggers</a><br><a href="https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html</a></p>
+<h3 id="四、联系方式"><a href="#四、联系方式" class="headerlink" title="四、联系方式"></a>四、联系方式</h3><p>我想适当开放一下，可以通过以下方式联系我，但是不保证解决问题.. （因为菜）<br>邮箱:  <a href="mailto:Pengzai16@gmail.com" target="_blank" rel="noopener">Pengzai16@gmail.com</a></p>
 
           
         
@@ -2278,7 +2278,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">31</span>
+                  <span class="site-state-item-count">30</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
