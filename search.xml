@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Linux 集群安装 HUMAnN 3.0</title>
+    <url>/2020/06/07/HUMAnN/</url>
+    <content><![CDATA[<h3 id="HUMAnN-3-0-官方链接"><a href="#HUMAnN-3-0-官方链接" class="headerlink" title="HUMAnN 3.0 官方链接"></a>HUMAnN 3.0 官方链接</h3><p><a href="http://huttenhower.sph.harvard.edu/humann3" target="_blank" rel="noopener">http://huttenhower.sph.harvard.edu/humann3</a><br><a href="https://pypi.org/project/humann/#files" target="_blank" rel="noopener">https://pypi.org/project/humann/#files</a></p>
+<h3 id="安装过程以及代码"><a href="#安装过程以及代码" class="headerlink" title="安装过程以及代码"></a>安装过程以及代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 测试了 conda 安装，但是使用了各种镜像都失败了... 可能是集群网络的问题</span><br><span class="line">conda install humann -c biobakery --prefix=/YourPath/</span><br><span class="line"></span><br><span class="line"># 测试 pip 安装, 即使加了各种镜像网址，依然失败...</span><br><span class="line">pip3 install humann</span><br><span class="line"></span><br><span class="line"># 尝试源码安装</span><br><span class="line">wget https://files.pythonhosted.org/packages/9d/57/08aa836c56651f0a4e03f5883860a803bc4aabb2d1357df5f0d6f0841edf/humann-3.0.0a2.tar.gz</span><br><span class="line"></span><br><span class="line"># 解压之后运行，安装程序</span><br><span class="line">python3 setup.py install --prefix=/YourPath/humann-3.0.0a2</span><br><span class="line"></span><br><span class="line"># 安装之前如果有一些依赖的软件已经装好了，可以提前加到环境变量里，不然会重新安装... </span><br><span class="line"># 比如 Bowtie， diamond 等</span><br><span class="line">export PATH=/SoftwarePath/bin:$PATH</span><br><span class="line"></span><br><span class="line">#使用, 需要将一些软件添加至环境变量，并且测试</span><br><span class="line">export PYTHONPATH=/YourPath/humann-3.0.0a2/lib/python3.6/site-packages:$PYTHONPATH</span><br><span class="line">export PATH=&quot;/YourPath/Python-3.6.1/bin/&quot;:$PATH</span><br><span class="line">export PATH=/YourPath/humann-3.0.0a2/bin:$PATH</span><br><span class="line">humann_test</span><br><span class="line"></span><br><span class="line">#安装数据库，整个数据库大约 40G;</span><br><span class="line">humann_databases --download chocophlan full humann_dbs</span><br><span class="line">humann_databases --download uniref uniref90_diamond humann_dbs</span><br><span class="line">humann_databases --download uniref90_ec_filtered_diamond humann_dbs</span><br><span class="line">humann_databases --download utility_mapping full humann_dbs</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/brazy/article/details/88544505" target="_blank" rel="noopener">Anaconda 国内镜像源整理</a><br> <a href="https://www.hotbak.net/key/%E6%9B%B4%E6%94%B9pip%E6%BA%90%E4%B8%8Econda%E6%BA%90%E8%87%B3%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E6%98%BE%E8%91%97%E6%8F%90%E5%8D%87%E4%B8%8B%E8%BD%BD%E9%80%9F%E5%BA%A6%E5%8D%8ECSDN%E5%8D%9A%E5%AE%A2.html" target="_blank" rel="noopener">更改pip源与conda源至国内镜像，显著提升下载速度</a> </p>
+]]></content>
+      <tags>
+        <tag>metagenomics</tag>
+        <tag>shell</tag>
+        <tag>conda</tag>
+        <tag>MetaPhlAn</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>拐杖和稻穗</title>
     <url>/2020/06/06/rockefeller8/</url>
     <content><![CDATA[<p>写在开头：去吃饭的途中想出来一些话，是关于「道理和讲道理」：</p>
-<p>首先，和道德一样，道理只能用来约束自己，而非用来「指导」别人。若是因为「讲道理」而让别人不悦或者和人发生冲突，其实是没明白道理的表现，因为真正懂得道理的人，自然会知道如何将道理以合适的方式表现。有些人看似在给别人讲道理，实则是为了满足自己虚荣心，有时候还会气急败坏，恼羞成怒；</p>
+<p>首先，和道德一样，道理只能用来约束自己，而非用来「指导」别人。若是因为「讲道理」而让别人不悦或者和人发生冲突，其实是没明白道理的表现，因为真正懂得道理的人，自然会知道如何将道理以合适的方式表现。有些人看似在给别人讲道理，实则是为了满足自己的虚荣心，有时候还会气急败坏，恼羞成怒；</p>
 <p>其次，道理不能通过「听」而获得，只能自己寻找和领悟，所以你也没有讲的必要；</p>
 <p>再者，知道了道理并且尝试去实践而发现没有发挥用处（或者发现别人这样），也不要奇怪，这就像好多物理公式的设定是无摩擦的世界，而现实生活中到处都是阻力，为什么期望你知道的道理能一直匀速行驶下去呢？ </p>
 <p>所以，自己不一定懂，别人不一定能悟，即使知道也不一定能实践成功，实在没有「讲道理」的必要，交流还是可以的。</p>
@@ -34,7 +49,7 @@
 <p>哪怕是一头猪被人夸奖一番，它都能够爬到树上。</p>
 </blockquote>
 <blockquote>
-<p><strong>没有知识的人没有什么作为，但是有知识的人很有可能最后成为知识的奴隶</strong>，每个人都要知道，一切的知识都会转化成为一种先入为主的观念，结果形成了一种保守的心理，认为“我懂了，我知道了，社会原本就是这样的”</p>
+<p><strong>没有知识的人没有什么作为，但是有知识的人很有可能最后成为知识的奴隶</strong>，每个人都要知道，一切的知识都会转化成为一种先入为主的观念，结果形成了一种保守的心理，认为“我懂了，我知道了，社会原本就是这样的”.</p>
 </blockquote>
 <blockquote>
 <p>装傻能够给你带来的好处还有很多，这里装傻的含义，其实是摆低自己的姿态，让自己学会谦虚，换句话来说，就是不要将你的聪明表现出来。越是聪明的人就越有装傻的必要，因为就像那句话说的那样，<strong>越是成熟的稻子，越会垂下自己的 。</strong></p>

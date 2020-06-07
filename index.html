@@ -259,6 +259,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/06/07/HUMAnN/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/07/HUMAnN/" itemprop="url">Linux 集群安装 HUMAnN 3.0</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-07T08:54:08+08:00">
+                2020-06-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  284 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="HUMAnN-3-0-官方链接"><a href="#HUMAnN-3-0-官方链接" class="headerlink" title="HUMAnN 3.0 官方链接"></a>HUMAnN 3.0 官方链接</h3><p><a href="http://huttenhower.sph.harvard.edu/humann3" target="_blank" rel="noopener">http://huttenhower.sph.harvard.edu/humann3</a><br><a href="https://pypi.org/project/humann/#files" target="_blank" rel="noopener">https://pypi.org/project/humann/#files</a></p>
+<h3 id="安装过程以及代码"><a href="#安装过程以及代码" class="headerlink" title="安装过程以及代码"></a>安装过程以及代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># 测试了 conda 安装，但是使用了各种镜像都失败了... 可能是集群网络的问题</span><br><span class="line">conda install humann -c biobakery --prefix=/YourPath/</span><br><span class="line"></span><br><span class="line"># 测试 pip 安装, 即使加了各种镜像网址，依然失败...</span><br><span class="line">pip3 install humann</span><br><span class="line"></span><br><span class="line"># 尝试源码安装</span><br><span class="line">wget https://files.pythonhosted.org/packages/9d/57/08aa836c56651f0a4e03f5883860a803bc4aabb2d1357df5f0d6f0841edf/humann-3.0.0a2.tar.gz</span><br><span class="line"></span><br><span class="line"># 解压之后运行，安装程序</span><br><span class="line">python3 setup.py install --prefix=/YourPath/humann-3.0.0a2</span><br><span class="line"></span><br><span class="line"># 安装之前如果有一些依赖的软件已经装好了，可以提前加到环境变量里，不然会重新安装... </span><br><span class="line"># 比如 Bowtie， diamond 等</span><br><span class="line">export PATH=/SoftwarePath/bin:$PATH</span><br><span class="line"></span><br><span class="line">#使用, 需要将一些软件添加至环境变量，并且测试</span><br><span class="line">export PYTHONPATH=/YourPath/humann-3.0.0a2/lib/python3.6/site-packages:$PYTHONPATH</span><br><span class="line">export PATH=&quot;/YourPath/Python-3.6.1/bin/&quot;:$PATH</span><br><span class="line">export PATH=/YourPath/humann-3.0.0a2/bin:$PATH</span><br><span class="line">humann_test</span><br><span class="line"></span><br><span class="line">#安装数据库，整个数据库大约 40G;</span><br><span class="line">humann_databases --download chocophlan full humann_dbs</span><br><span class="line">humann_databases --download uniref uniref90_diamond humann_dbs</span><br><span class="line">humann_databases --download uniref90_ec_filtered_diamond humann_dbs</span><br><span class="line">humann_databases --download utility_mapping full humann_dbs</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/brazy/article/details/88544505" target="_blank" rel="noopener">Anaconda 国内镜像源整理</a><br> <a href="https://www.hotbak.net/key/%E6%9B%B4%E6%94%B9pip%E6%BA%90%E4%B8%8Econda%E6%BA%90%E8%87%B3%E5%9B%BD%E5%86%85%E9%95%9C%E5%83%8F%E6%98%BE%E8%91%97%E6%8F%90%E5%8D%87%E4%B8%8B%E8%BD%BD%E9%80%9F%E5%BA%A6%E5%8D%8ECSDN%E5%8D%9A%E5%AE%A2.html" target="_blank" rel="noopener">更改pip源与conda源至国内镜像，显著提升下载速度</a> </p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/06/06/rockefeller8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -362,7 +516,7 @@
         
           
             <p>写在开头：去吃饭的途中想出来一些话，是关于「道理和讲道理」：</p>
-<p>首先，和道德一样，道理只能用来约束自己，而非用来「指导」别人。若是因为「讲道理」而让别人不悦或者和人发生冲突，其实是没明白道理的表现，因为真正懂得道理的人，自然会知道如何将道理以合适的方式表现。有些人看似在给别人讲道理，实则是为了满足自己虚荣心，有时候还会气急败坏，恼羞成怒；</p>
+<p>首先，和道德一样，道理只能用来约束自己，而非用来「指导」别人。若是因为「讲道理」而让别人不悦或者和人发生冲突，其实是没明白道理的表现，因为真正懂得道理的人，自然会知道如何将道理以合适的方式表现。有些人看似在给别人讲道理，实则是为了满足自己的虚荣心，有时候还会气急败坏，恼羞成怒；</p>
 <p>其次，道理不能通过「听」而获得，只能自己寻找和领悟，所以你也没有讲的必要；</p>
 <p>再者，知道了道理并且尝试去实践而发现没有发挥用处（或者发现别人这样），也不要奇怪，这就像好多物理公式的设定是无摩擦的世界，而现实生活中到处都是阻力，为什么期望你知道的道理能一直匀速行驶下去呢？ </p>
 <p>所以，自己不一定懂，别人不一定能悟，即使知道也不一定能实践成功，实在没有「讲道理」的必要，交流还是可以的。</p>
@@ -392,7 +546,7 @@
 <p>哪怕是一头猪被人夸奖一番，它都能够爬到树上。</p>
 </blockquote>
 <blockquote>
-<p><strong>没有知识的人没有什么作为，但是有知识的人很有可能最后成为知识的奴隶</strong>，每个人都要知道，一切的知识都会转化成为一种先入为主的观念，结果形成了一种保守的心理，认为“我懂了，我知道了，社会原本就是这样的”</p>
+<p><strong>没有知识的人没有什么作为，但是有知识的人很有可能最后成为知识的奴隶</strong>，每个人都要知道，一切的知识都会转化成为一种先入为主的观念，结果形成了一种保守的心理，认为“我懂了，我知道了，社会原本就是这样的”.</p>
 </blockquote>
 <blockquote>
 <p>装傻能够给你带来的好处还有很多，这里装傻的含义，其实是摆低自己的姿态，让自己学会谦虚，换句话来说，就是不要将你的聪明表现出来。越是聪明的人就越有装傻的必要，因为就像那句话说的那样，<strong>越是成熟的稻子，越会垂下自己的 。</strong></p>
@@ -2009,214 +2163,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/04/18/rockefeller2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/04/18/rockefeller2/" itemprop="url">读书笔记-洛克菲勒写给儿子的38封信（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-18T15:15:14+08:00">
-                2020-04-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  6 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>接上周的第三封，以及日常提醒自己懂得道理却做不好事情的人到处都是，如何少说话的同时让这些道理在实际生活中发挥切实的作用大概是个一生的命题。</p>
-<h3 id="第三封-天堂和地狱比邻"><a href="#第三封-天堂和地狱比邻" class="headerlink" title="第三封 天堂和地狱比邻"></a>第三封 天堂和地狱比邻</h3><blockquote>
-<p>我认为，工作是一件非常有意义的事情，工作能够带来比所谓维持生活更多的事情，工作是所有生意的基础，所有繁荣的来源，同时也是那些天才们的塑造者。工作能够让年轻人更加发奋，比他们的父辈们做得更多，不管他们是多么的有钱。</p>
-</blockquote>
-<blockquote>
-<p>工作能够用储蓄表示，同时能够奠定幸福的基础。<strong>工作是生命当中掌握味道的食盐</strong>，但是人们必须要先学会热爱工作，它才能给予人们最大的恩惠，收获最大的成果。</p>
-</blockquote>
-<p>在郭鹤年的自传里也有类似的表述：</p>
-<blockquote>
-<p><strong>我一生坚信忙碌是一种治疗。</strong>人必须工作，工作能将身体和心灵结合起来，一并治疗。一个有工作的人会比别人早起，晚上又因为需要恢复体力而比别人早睡，这样不会浪费生命。感谢上帝，庆幸我们那时没有电视、没有愚蠢的电子游戏、没有现在报摊上那些琳琅满目的恶俗杂志，那都只为了迎合人类低下和庸俗的本质。  — 《郭鹤年自传》</p>
-</blockquote>
-<blockquote>
-<p>我刚刚进入商界的时候，常常听人说，一个人想要爬到高峰，需要做出很多的牺牲，然而经过时间的流逝，我开始知道，那些正在爬向高峰的人，并不是在“付出代价”。他们努力地进行工作是因为他们热爱自己的工作。</p>
-</blockquote>
-<p>路过：以前我也是这么觉得的，还和同龄人聊过，「本以为奋斗到了一定的地位会轻松一些，结果发现，更高的位置更累人，牺牲也更多。」直到看到了这句话，在那些从事自己喜欢的事情的人来看，这并不是「牺牲」，大概会乐在其中。</p>
-<blockquote>
-<p>热爱工作是一种信念，只要我们怀着这个信念，就可以将绝望的大山凿成一块希望的磐石。有一个伟大的画家曾经说过，有一个伟大的画家曾经说过，“痛苦终将过去，但是美丽永存。”</p>
-</blockquote>
-<p>路过：或者说痛苦本身是美丽的一部分，比如说前奏。</p>
-<blockquote>
-<p>不管一个人的野心有多么大，<strong>首先他要学会起步</strong>，才能到达高峰。第一步是最难的，只要第一步迈出去，继续前进就不太困难了。</p>
-</blockquote>
-<blockquote>
-<p><strong>工作越是困难或不愉快，就越要努力地去做好，如果等待的时间越久，就变得越困难、越可怕，这有点像打枪，你观望的时间越长，射击的机会就越渺茫。</strong></p>
-</blockquote>
-<p>路过：这句话督促了我很主动地推动我手头的事情。</p>
-<blockquote>
-<p>你要知道，<strong>收入只是你工作当中的副产品</strong>，做好你应该做的事情，只要能够完美地完成自己的工作，理想的薪水自然会随之而来。<strong>而更为重要的是，我们通过劳动所获得的报酬，并不是我们所获取的利益，而是我们最终因此成为什么样的人。</strong></p>
-</blockquote>
-<p>路过：所以我们最终因此会成为什么样的人？ </p>
-<blockquote>
-<p>平心而论，我是一个野心家，<strong>从很小的时候我就想成为一个富翁</strong>，对于我来说，我受雇的休伊特-塔特尔公司是一个锻炼我的能力、让我一试身手的好地方。</p>
-</blockquote>
-<blockquote>
-<p>所以，我从来没有像那些人那样，去抱怨自己曾经的雇主，他们说：“我们只不过是奴隶，我们被雇主压在尘埃当中，而他们却始终高高在上，在他们美丽的别墅里享乐；他们的保险柜里装满了黄金，而他们所拥有的每一块钱，都是通过压榨我们这些诚实的工人所得来的。”</p>
-</blockquote>
-<blockquote>
-<p>我不知道这样抱怨的人有没有想过：到底是谁给了你就业的机会？又是谁帮你有了建设家庭的可能？是谁让你可以发展自己？<strong>如果你觉得别人是在压榨你，那么你为什么不结束这种压榨一走了之呢？</strong></p>
-</blockquote>
-<p>路过：情绪没有用，吐槽没有用，抱怨没有用，吵架没有用，一切流于表面的张牙舞爪都是纸老虎，只需要冷眼旁观，闷头去改变就好了。适用于任何事情。</p>
-<blockquote>
-<p>选择天堂还是地狱都是由自己决定的，如果<strong>你将工作赋予了意义</strong>，不管你做什么工作，你都会感到由衷的快乐。如果你不喜欢，甚至厌恶自己的工作，那么任何简单的事情都会变得困难、无趣。</p>
-</blockquote>
-<p>路过：那怎么判断自己所从事的是真的有意义？还是自己由于没有能力做出改变而给自己找的理由呢？ 芒格说人最容易自我欺骗了。比如一旦诞生某个想法，就会找出无数看似合理的证据去佐证这个想法。 这是个问题，我想了想，答案可能是：自己会开心吧，像是吃到了好吃的那样简单。</p>
-<blockquote>
-<p><strong>当你口口声声喊着工作很累的时候，即便你不卖力气，也会常常感到筋疲力尽，反之则大不相同，事情就是这样。</strong></p>
-</blockquote>
-<p>路过：后文里出现类似的话，『<strong>荣格先生说过，只要改变一个人的词汇，就能够重塑出他的生活、他的收入、他的享受，甚至是改变他自己的人生。</strong>』</p>
-<p>心理暗示挺重要的，这又像是墨菲定律讲的：『<strong>如果你担心某种情况发生，那么它就更有可能发生。</strong>』</p>
-<p>类似的，《穷查理宝典》里提到了「<strong>自怜</strong>」情绪，这也我后来对某些文学作品不大感兴趣的原因，作者们更多的是在抒发自己某种情绪，你要做的应该是绕过去，而非被吸引，造成某些错觉：</p>
-<blockquote>
-<p>每当你们发现自己产生了自怜的情绪，不管是什么原因，哪怕由于自己的孩子患上癌症而即将死去，你们也要想到，<strong>自怜是于事无补的</strong>。每当这样的时候，你们要给自己送一张我朋友的卡片。<strong>自怜总是会产生负面的影响，它是一种错误的思维方式。如果你们能够避开它，你们的优势就远远大于所有其他人，或者几乎所有其他人，</strong>因为自怜是一种标准的反应。<strong>你们可以通过训练来摆脱它。</strong></p>
-</blockquote>
-<p>而且我觉得我有这个毛病，正在订正ing，尽量不讲负面的话，不给自己消极的心理暗示。难过的时候去找点儿开心的事情做，别听伤心的歌。还有对于自己的事情要『相信』，而不是『希望』，前者的力量比后者大得多。</p>
-<p>结束语：总结这么多道理有用吗，我觉得是有用的。能做到吗？ 不一定，就像是《当呼吸化为空气》里提到的『新约说，<strong>从善没有尽头：善良就是人生的目标，你永远也不可能做到尽善尽美。</strong>』</p>
-<p>又或者像《鞋狗》里描述跑步的过程一样，你无法判断路的终点在哪，能做的就是保证自己在路上。『<strong>懦夫从不启程，弱者死于路中，只剩我们前行，一步都不能停。</strong>』</p>
-<p>这些话主要是写给自己的，督促自己不断学习，思考，实践。芒格讲：每天进步一点点。</p>
-<p>2020年4月18日 下午3:13 @SZ</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2274,7 +2220,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">48</span>
+                  <span class="site-state-item-count">49</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2354,7 +2300,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">99.2k</span>
+    <span title="Site words total count">99.5k</span>
   
 </div>
 
