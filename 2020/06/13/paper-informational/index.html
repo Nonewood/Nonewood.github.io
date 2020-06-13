@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="google-site-verification" content="9HGY4GvHBQiYcf3ysSZmtQCkRadM6n5ZDPoYRlcr71E">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,linux,文献，爬虫,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="写在开头：几年的 科研工作 搬砖经历，不得不和文献打交道，不论是自己读还是做成文档给别人讲，一般都会需要获取文献某些信息如题目，杂志名称，影响因子，一作，通讯以及下载文献原文等，而常规（以往的自己）的做法是，搜索 - 复制 - 粘贴 - 下载（以及 for 循环这个过程），其实很烦很枯燥很无聊很费时间（那你以前是怎么忍下来的…），应该把这部分时间节省下来做其他重要的时间，比如睡觉和发呆 +.+">
+<meta name="keywords" content="python,linux,文献，爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 集群上文献信息的爬虫和下载">
+<meta property="og:url" content="http://nonewood.github.io/2020/06/13/paper-informational/index.html">
+<meta property="og:site_name" content="朝简单处想 往认真处行">
+<meta property="og:description" content="写在开头：几年的 科研工作 搬砖经历，不得不和文献打交道，不论是自己读还是做成文档给别人讲，一般都会需要获取文献某些信息如题目，杂志名称，影响因子，一作，通讯以及下载文献原文等，而常规（以往的自己）的做法是，搜索 - 复制 - 粘贴 - 下载（以及 for 循环这个过程），其实很烦很枯燥很无聊很费时间（那你以前是怎么忍下来的…），应该把这部分时间节省下来做其他重要的时间，比如睡觉和发呆 +.+">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-06-13T03:16:34.472Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux 集群上文献信息的爬虫和下载">
+<meta name="twitter:description" content="写在开头：几年的 科研工作 搬砖经历，不得不和文献打交道，不论是自己读还是做成文档给别人讲，一般都会需要获取文献某些信息如题目，杂志名称，影响因子，一作，通讯以及下载文献原文等，而常规（以往的自己）的做法是，搜索 - 复制 - 粘贴 - 下载（以及 for 循环这个过程），其实很烦很枯燥很无聊很费时间（那你以前是怎么忍下来的…），应该把这部分时间节省下来做其他重要的时间，比如睡觉和发呆 +.+">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://nonewood.github.io/2020/06/13/paper-informational/">
+
+
+
+
+
+<script data-ad-client="ca-pub-7093029654692281" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-7126877795421398",
+          enable_page_level_ads: true
+     });
+</script>
+
+  <title>Linux 集群上文献信息的爬虫和下载 | 朝简单处想 往认真处行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">朝简单处想 往认真处行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/06/13/paper-informational/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Linux 集群上文献信息的爬虫和下载</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-13T10:43:36+08:00">
+                2020-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.8k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="写在开头："><a href="#写在开头：" class="headerlink" title="写在开头："></a>写在开头：</h3><p>几年的 <del>科研工作</del> 搬砖经历，不得不和文献打交道，不论是自己读还是做成文档给别人讲，一般都会需要获取文献某些信息如题目，杂志名称，影响因子，一作，通讯以及下载文献原文等，而常规（以往的自己）的做法是，搜索 - 复制 - 粘贴 - 下载（以及 for 循环这个过程），其实<strong>很烦很枯燥很无聊很费时间</strong>（那你以前是怎么忍下来的…），应该把这部分时间节省下来做其他重要的时间，比如睡觉和发呆 +.+ </p>
+<p>最近因为工作的刚需以及加上同事的鞭策，我写了一个程序，只需要输入 DOI 就可以做到上边提到的事情，两个脚本：</p>
+<ol>
+<li>advanced_paper_informational.py， 用来在 Linux 环境下提取文献信息；</li>
+<li>scihub.py，用来下载文献；</li>
+</ol>
+<h3 id="1-advanced-paper-informational-py"><a href="#1-advanced-paper-informational-py" class="headerlink" title="1. advanced_paper_informational.py"></a>1. advanced_paper_informational.py</h3><p>这个脚本需要两个输入文件： </p>
+<ol>
+<li>IF_2019.txt 影响因子文件，每年都会更新，以后下载更新即可；</li>
+<li>J_Medline.txt，NCBI 的杂志缩写和全称对应文件；</li>
+</ol>
+<p>一些软件和相应的库：</p>
+<ol>
+<li>python3 以及相应的库包括  selenium; bs4;</li>
+<li>PhantomJS，在 linux 用来模拟浏览器，我本来想用 chromedriver 来着，结果没有在集群上安装成功；</li>
+</ol>
+<p>这些东西安装成功以后需要添加至环境变量。 </p>
+<p>成功以后你可以用单独的 DOI 或者 DOI 的文件（换行符分割）批量查询。</p>
+<p>这个脚本的原理简述如下：根据文献的 DOI（唯一标识），使用脚本模拟浏览器去 PubMed 检索，根据检索结果提取信息即可，下边是代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver <span class="keyword">import</span> ActionChains </span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> Select</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys </span><br><span class="line"><span class="keyword">import</span> time,os,re</span><br><span class="line"></span><br><span class="line"><span class="comment"># set pars</span></span><br><span class="line"><span class="keyword">import</span> argparse,re,os,math,glob</span><br><span class="line">parser = argparse.ArgumentParser(</span><br><span class="line">    formatter_class=argparse.RawDescriptionHelpFormatter,</span><br><span class="line">    description=<span class="string">'''</span></span><br><span class="line"><span class="string">-------------------</span></span><br><span class="line"><span class="string">Simple Introduction:</span></span><br><span class="line"><span class="string">Crawl the information of paper... You should provide the DOI or a file for DOI (line breaks). </span></span><br><span class="line"><span class="string">Example: python3 advanced_paper_informational.py -l 10.1016/S0140-6736(19)32319-0</span></span><br><span class="line"><span class="string">         python3 advanced_paper_informational.py -f doi_file</span></span><br><span class="line"><span class="string">To be continued.</span></span><br><span class="line"><span class="string">------------------'''</span></span><br><span class="line">)</span><br><span class="line">parser.add_argument(<span class="string">'-l'</span>,<span class="string">'--onedoi'</span>, nargs=<span class="string">'?'</span>, help = <span class="string">"DOI information."</span>)</span><br><span class="line">parser.add_argument(<span class="string">'-f'</span>,<span class="string">'--filelist'</span>,nargs=<span class="string">'?'</span>, help = <span class="string">"the DOI information list file."</span>)</span><br><span class="line">parser.add_argument(<span class="string">"-v"</span>, <span class="string">"--version"</span>,action=<span class="string">'version'</span>, version=<span class="string">'%(prog)s 1.0'</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line">var = args.onedoi</span><br><span class="line">files = args.filelist </span><br><span class="line"></span><br><span class="line"><span class="comment">## define the user（linux） and abbreviatio for print  </span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line">Dict = &#123;<span class="string">'zhangSan'</span>:<span class="string">'ZS'</span>, <span class="string">'LiSi'</span>:<span class="string">'LS'</span>&#125;</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">user_full = os.popen(<span class="string">'whoami'</span>).readlines()[<span class="number">0</span>].strip()</span><br><span class="line"><span class="keyword">if</span> user_full <span class="keyword">in</span> Dict:</span><br><span class="line">    user = Dict[user_full]</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    user = user_full</span><br><span class="line"></span><br><span class="line"><span class="comment"># doi information </span></span><br><span class="line">doi_list = list()</span><br><span class="line"><span class="keyword">if</span> var:</span><br><span class="line">	doi_list.append(<span class="string">'DOI: '</span> + var)</span><br><span class="line"><span class="keyword">if</span> files:</span><br><span class="line">	<span class="keyword">with</span> open(files, <span class="string">'r'</span>) <span class="keyword">as</span> IN:</span><br><span class="line">		Input = IN.readlines()</span><br><span class="line">		doi_list = [<span class="string">'DOI: '</span> + x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> Input]	</span><br><span class="line"></span><br><span class="line"><span class="comment"># out file </span></span><br><span class="line">out = open(<span class="string">'paper_information.xls'</span>, <span class="string">'w'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">## scraping </span></span><br><span class="line">print(user_full + <span class="string">' is crawling... \nThe warning information appeared later does not matter. \nIt may need some time, please wait patiently:)\nIf there is no output for a long long time, you should stop it and try to run again.\n'</span>)</span><br><span class="line"></span><br><span class="line">browser = webdriver.PhantomJS() <span class="comment"># 因为集群环境我只能用 PhantomJS，在其他平台可以选择。</span></span><br><span class="line">url = <span class="string">'https://pubmed.ncbi.nlm.nih.gov/'</span></span><br><span class="line">        </span><br><span class="line"><span class="comment"># 杂志名称全称</span></span><br><span class="line">j_name = dict()</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'files/J_Medline.txt'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> IN:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> IN:</span><br><span class="line">        line = line.strip(<span class="string">'\n'</span>)</span><br><span class="line">        <span class="keyword">if</span> line.startswith(<span class="string">'JournalTitle'</span>):</span><br><span class="line">            <span class="keyword">if</span> re.search(<span class="string">' \(.*\)'</span>, line):</span><br><span class="line">                match = re.search(<span class="string">'JournalTitle: (.*) \(.*\)'</span>, line) </span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                match = re.search(<span class="string">'JournalTitle: (.*)'</span>, line) <span class="comment"># ncbi 是缩写，然后影响因子是全称，所以得找到这个信息</span></span><br><span class="line">            <span class="comment">#发现有带（London, England）这种信息的。。。。</span></span><br><span class="line">            full = match.group(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> line.startswith(<span class="string">'MedAbbr'</span>):</span><br><span class="line">            match = re.search(<span class="string">'MedAbbr: (.*)'</span>, line)</span><br><span class="line">            abbr = match.group(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> line.startswith(<span class="string">'NlmId'</span>):</span><br><span class="line">            j_name[abbr] = full</span><br><span class="line">            </span><br><span class="line"><span class="comment"># 杂志 IF</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">dt = pd.read_table(<span class="string">'files/IF_2019.txt'</span>, index_col = <span class="number">1</span>)</span><br><span class="line">IF_dict = dt[<span class="string">'Journal Impact Factor'</span>].to_dict()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> doi_list:</span><br><span class="line">    DOI = x</span><br><span class="line">    browser.get(url)</span><br><span class="line">    print(<span class="string">"\nThe pubmed url is opening correctly.\n"</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        browser.find_element_by_xpath(<span class="string">'//*[@name="term"]'</span>).send_keys(x)</span><br><span class="line">        time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">except</span> NoSuchElementException:</span><br><span class="line">        print(<span class="string">'AO, something wrong...'</span>)</span><br><span class="line"></span><br><span class="line">    browser.find_element_by_xpath(<span class="string">'//*[@class="search-btn"]'</span>).click()</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    print(<span class="string">"\nThe page for paper "</span> + x  + <span class="string">" is opiening correctly.\n"</span>)</span><br><span class="line">    soup = BeautifulSoup(browser.page_source, <span class="string">"html.parser"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># journal name abbr</span></span><br><span class="line">    journal = soup.find(id = <span class="string">"full-view-journal-trigger"</span>).get_text().strip()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># title</span></span><br><span class="line">    title = soup.find(class_ = <span class="string">"heading-title"</span>).get_text().strip()</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># IF</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> IF_dict:</span><br><span class="line">        match = re.search(<span class="string">'^'</span> + j_name[journal] + <span class="string">'$'</span>, x, flags=re.IGNORECASE) <span class="comment"># 有的名字包含其他杂志的全称... </span></span><br><span class="line">        <span class="keyword">if</span> match:</span><br><span class="line">            IF = IF_dict[x]</span><br><span class="line">            journal_name = j_name[journal]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            match = re.search(<span class="string">'^'</span> + j_name[journal].replace(<span class="string">'.'</span>,<span class="string">''</span>) + <span class="string">'$'</span>, x, flags=re.IGNORECASE)  <span class="comment"># 有的杂志匹配出来的全称多了个点：Nature reviews. Immunology</span></span><br><span class="line">            <span class="keyword">if</span> match:</span><br><span class="line">                journal_name = j_name[journal].replace(<span class="string">'.'</span>,<span class="string">''</span>)</span><br><span class="line">                IF = IF_dict[x]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 发表时间</span></span><br><span class="line">    <span class="keyword">if</span> soup.find(class_ = <span class="string">"secondary-date"</span>):</span><br><span class="line">        p_time = soup.find(class_ = <span class="string">"secondary-date"</span>).get_text().strip().strip(<span class="string">'Epub '</span>).strip(<span class="string">'.'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        p_time = soup.find(class_ = <span class="string">"cit"</span>).get_text().split(<span class="string">";"</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># PMID </span></span><br><span class="line">    PMID = soup.find(class_ = <span class="string">"current-id"</span>).get_text()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">#原文链接</span></span><br><span class="line">    doi_info = soup.find(class_ = <span class="string">"identifier doi"</span>) </span><br><span class="line">    http = doi_info.find(class_ = <span class="string">"id-link"</span>)[<span class="string">'href'</span>] <span class="comment"># 增加这一步是因为偶尔会出现 NCBI 的链接</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 一作和通讯</span></span><br><span class="line">    authors = soup.find(class_ = <span class="string">"authors-list"</span>).get_text().strip().replace(<span class="string">u'\xa0'</span>, <span class="string">''</span>).replace(<span class="string">u'\xa0'</span>, <span class="string">''</span>).replace(<span class="string">' '</span>, <span class="string">''</span>)</span><br><span class="line">    author_list = re.sub(<span class="string">'\n\w*'</span>, <span class="string">''</span>, authors).split(<span class="string">','</span>)</span><br><span class="line">    first_author = author_list[<span class="number">0</span>]</span><br><span class="line">    corresponding_author = author_list[<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 第一单位</span></span><br><span class="line">    affiliations = soup.find(class_ = <span class="string">"affiliations"</span>).get_text().strip()</span><br><span class="line">    affiliations = re.sub(<span class="string">'[ ]+'</span>, <span class="string">' '</span>, affiliations)</span><br><span class="line">    affiliations_list = re.sub(<span class="string">'[\n]&#123;2,&#125;'</span>, <span class="string">''</span>, affiliations).split(<span class="string">'\n'</span>)</span><br><span class="line">    first_affiliation = affiliations_list[<span class="number">1</span>].lstrip(<span class="string">' 0123456789'</span>)</span><br><span class="line"></span><br><span class="line">    line = <span class="string">'\t'</span>.join([user, title, journal_name, p_time.replace(<span class="string">'.'</span>, <span class="string">''</span>), PMID, DOI, http, IF, first_author, corresponding_author, first_affiliation])</span><br><span class="line">    print(line, file = out)</span><br><span class="line">    print(<span class="string">'\n'</span> + line + <span class="string">'\n'</span>)</span><br><span class="line">    </span><br><span class="line">out.close()</span><br><span class="line">print(<span class="string">"\nDone!, the output is paper_information.xls.\n"</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-scihub-py"><a href="#2-scihub-py" class="headerlink" title="2. scihub.py"></a>2. scihub.py</h3><p>写完上边这个脚本以后，我就在想：都到这一步了，为啥不临门一脚把文献下载也给搞定了呢？  于是 Google 检索了下，发现 Github 上竟然有现成的，本着不重复造轮子的偷懒精神，我就拿过来稍微改动了下，因为不是我写的，就不好意思贴代码了，改动的地方有两个：</p>
+<ol>
+<li>代码中一个用来爬取可用的 sci-hub 的网址失效了，我替换了一个新的；</li>
+<li>以及去爬这个新的网址的时候，有时候会打不开，我增加了失败后重复爬取的功能，免得需要重复运行；</li>
+</ol>
+<p>这个脚本需要软件和相应的库： </p>
+<ol>
+<li>Python3 以及 requests, retrying, pysocks, bs4;</li>
+</ol>
+<p>这个脚本还有利用谷歌学术查询文献的功能，不过我暂时还没用到，只用到了下载的功能，目前支持每次下载一个文献，等我后边有时间再修改一下。</p>
+<p>下载的原理简述： 以 DOI 为例，程序得到一个 DOI 后，去寻找目前所有可用 sci-hub 网址，然后利用 sci-hub 网址 + DOI  得到相应的原文网页，如果是判断格式为 PDF 的话就直接保存。</p>
+<h3 id="Paper-information-sh"><a href="#Paper-information-sh" class="headerlink" title="Paper_information.sh"></a>Paper_information.sh</h3><p>这个脚本用来整合的，因为不想单独运行两个脚本。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>！/usr/bin/bash</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> doi</span><br><span class="line">python3 advanced_paper_informational.py -l "10.1016/S0140-6736(19)32319-0"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> doi file, a list of doi, line break</span><br><span class="line"><span class="meta">#</span>python3 advanced_paper_informational.py -f doilist.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> dowload the pdf, only support one doi in current version +.+, TBD</span><br><span class="line">python3 scihub.py -d "10.1016/S0140-6736(19)32319-0"</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
+<li><a href="https://github.com/Nonewood/Bioinformatics/blob/master/Paper_information/README.md" target="_blank" rel="noopener">Bioinformatics/README.md at master · Nonewood/Bioinformatics · GitHub</a></li>
+<li><a href="https://github.com/zaytoun/scihub.py/blob/master/scihub/scihub.py" target="_blank" rel="noopener">scihub.py/scihub.py at master · zaytoun/scihub.py · GitHub</a></li>
+<li><a href="https://blog.csdn.net/xudailong_blog/article/details/79674107" target="_blank" rel="noopener">Linux下Python3环境安装selenium跟phantomjs_徐代龙的技术专栏-CSDN博客_linuxpythonphantomjs</a></li>
+<li><a href="https://www.jianshu.com/p/3273574b7e4b" target="_blank" rel="noopener">python的retrying库处理尝试多次请求 - 简书</a></li>
+<li><a href="https://blog.csdn.net/qq_36962569/article/details/77200118" target="_blank" rel="noopener">【Python3.6爬虫学习记录】（七）使用Selenium+ChromeDriver爬取知乎某问题的回答_子耶-CSDN博客_chromedriver爬知乎</a></li>
+<li><a href="https://stackoverflow.com/questions/7593611/selenium-testing-without-browser" target="_blank" rel="noopener">python - Selenium testing without browser - Stack Overflow</a></li>
+<li><a href="https://juejin.im/post/5a23cab7f265da431c701fe1" target="_blank" rel="noopener">实战（二）轻松使用requests库和beautifulsoup爬链接 - 掘金</a></li>
+</ol>
+<h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><ol>
+<li>写这个程序写得很开心 🥳；</li>
+<li>脚本还很粗糙，使用过程中可能会遇到问题，后边会在 Giuhub 修改；</li>
+<li>我只在 Linux 上做了测试，是可行的，其他的不一定，我有时间的话，会把非 Linux 的倒腾一下，然后放出来，不过得看时间；</li>
+<li>本来还想尝试可视化，比如弄个网站或者小程序什么的，结果发现还是挺复杂的，暂时放弃，后边看情况吧；</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>(✪ω✪)</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Nonewood 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/文献，爬虫/" rel="tag"># 文献，爬虫</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/06/07/HUMAnN/" rel="next" title="Linux 集群安装 HUMAnN 3.0">
+                <i class="fa fa-chevron-left"></i> Linux 集群安装 HUMAnN 3.0
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 侧边广告 -->
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7093029654692281" data-ad-slot="4703719462" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Nonewood</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">50</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">35</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#写在开头："><span class="nav-number">1.</span> <span class="nav-text">写在开头：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-advanced-paper-informational-py"><span class="nav-number">2.</span> <span class="nav-text">1. advanced_paper_informational.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-scihub-py"><span class="nav-number">3.</span> <span class="nav-text">2. scihub.py</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Paper-information-sh"><span class="nav-number">4.</span> <span class="nav-text">Paper_information.sh</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写在最后"><span class="nav-number">6.</span> <span class="nav-text">写在最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 侧边广告 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7093029654692281" data-ad-slot="4703719462" data-ad-format="auto" data-full-width-responsive="true"></ins>
+     <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nonewood</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">101.2k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script async src="/js/src/fireworks.js"></script>
+
+
+
+ 
+<script>
+  var OriginTitile = document.title;
+  var titleTime;
+  document.addEventListener("visibilitychange", function() {
+    if (document.hidden) {
+      document.title = "(つェ⊂)我藏好了哦~" + OriginTitile;
+      clearTimeout(titleTime);
+    } else {
+      document.title = "(*´∇｀*) 被你发现啦~" + OriginTitile;
+      titleTime = setTimeout(function() {
+        document.title = OriginTitile;
+      }, 2000);
+    }
+  });
+</script>
+
+
+ 
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+<script>
+  function timer() {
+    var ages = moment.preciseDiff(moment(),moment(20190801,"YYYYMMDD"));
+    ages = ages.replace(/years?/, "年");
+    ages = ages.replace(/months?/, "月");
+    ages = ages.replace(/days?/, "天");
+    ages = ages.replace(/hours?/, "小时");
+    ages = ages.replace(/minutes?/, "分");
+    ages = ages.replace(/seconds?/, "秒𓃗𓃵𓆉𓇼𓆡");
+    ages = ages.replace(/\d+/g, '<span style="color:">$&</span>');
+    div.innerHTML = `𓃠𓃰𓃱𓃲𓃟 ${ages}`;
+  }
+  var div = document.createElement("div");
+  //插入到copyright之后
+  var copyright = document.querySelector(".copyright");
+  document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+  timer();
+  setInterval("timer()",1000)
+</script>
+
+
+</body>
+</html>
