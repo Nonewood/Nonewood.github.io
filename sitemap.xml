@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://nonewood.github.io/2020/06/14/rockefeller9/</loc>
+    
+    <lastmod>2020-06-14T09:11:57.432Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://nonewood.github.io/2020/06/13/paper-informational/</loc>
     
-    <lastmod>2020-06-13T03:33:31.394Z</lastmod>
+    <lastmod>2020-06-14T07:48:45.096Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://nonewood.github.io/2020/01/19/breath-becomes-air/</loc>
+    
+    <lastmod>2020-06-14T07:48:19.283Z</lastmod>
     
   </url>
   
@@ -201,13 +215,6 @@
     <loc>http://nonewood.github.io/2020/02/16/paper-scrapy/</loc>
     
     <lastmod>2020-02-16T08:33:54.947Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://nonewood.github.io/2020/01/19/breath-becomes-air/</loc>
-    
-    <lastmod>2020-01-18T23:58:53.198Z</lastmod>
     
   </url>
   
