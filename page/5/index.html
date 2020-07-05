@@ -259,6 +259,186 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/11/barplot-by-multigroup/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/11/barplot-by-multigroup/" itemprop="url">how to display the enrichment of multiple group comparsions?</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-12-11T16:05:05+08:00">
+                2019-12-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
+                    <span itemprop="name">metagenomics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  357 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="如何展示多种比较情况下富集情况？"><a href="#如何展示多种比较情况下富集情况？" class="headerlink" title="如何展示多种比较情况下富集情况？"></a>如何展示多种比较情况下富集情况？</h2><p>🌰（<del>吃</del> ），如何实现下边这篇论文里的 Fig 6 和 Fig 7 。</p>
+<blockquote>
+<p>Jie, Z. <em>et al.</em> The gut microbiome in atherosclerotic cardiovascular disease. <em>Nat. Commun.</em> 8, 845 (2017).</p>
+</blockquote>
+<p>Talk cheap, show code ：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">'ggplot2'</span>)</span><br><span class="line"><span class="keyword">library</span>(<span class="string">'reshape2'</span>)</span><br><span class="line">dt = read.table(<span class="string">'inputfile'</span>, header = <span class="literal">T</span>, sep = <span class="string">'\t'</span>) <span class="comment">#输入格式是：map\tGroup1\tGroup2…\tLevel; map 是小类，Level 是大类，去看论文里的例子，就能明白</span></span><br><span class="line">dt_melt = melt(dt, id.vars = c(<span class="string">'map'</span>, <span class="string">'Level'</span>))</span><br><span class="line"><span class="comment">#order = c('Lipid metabolism', 'Amino acid metabolism', 'Carbohydrate metabolism', 'Metabolism of cofactors and vitamins', 'Xenobiotics biodegradation and metabolism',  'Antimicrobial resistance', 'Membrane transport', 'Cell motility', 'Glycan biosynthesis and metabolism', 'Metabolism of terpenoids and polyketides', 'Energy metabolism') #自定义排序</span></span><br><span class="line">dt_melt$Level =  factor(dt$Level,levels = order)</span><br><span class="line">pdf(<span class="string">'output.pdf'</span>, width = <span class="number">6</span>, height = <span class="number">6</span>) </span><br><span class="line">ggplot(dt_melt, aes(y = value, x = map, fill = value&gt;<span class="number">0</span>)) +</span><br><span class="line">    geom_bar(stat = <span class="string">"identity"</span>) + </span><br><span class="line">    scale_fill_manual(values= c(<span class="string">'#24af2d'</span>,<span class="string">'#e80211'</span>)) + </span><br><span class="line">    geom_hline(aes(yintercept = <span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>, color = <span class="string">'grey'</span>) +  <span class="comment">#设置阈值线，1.65 是单尾的 95% 置信区间；也可以看到论文里有 1.96 ，是双尾的值。 </span></span><br><span class="line">    geom_hline(aes(yintercept = -<span class="number">1.65</span>), linetype = <span class="string">"dashed"</span>, size = <span class="number">0.2</span>,  color = <span class="string">'grey'</span>) + </span><br><span class="line">    coord_flip() + </span><br><span class="line">    labs(x=<span class="string">"Pathway"</span>,y=<span class="string">"Pathway report score"</span>) + </span><br><span class="line">    facet_grid(Level ~ variable, scales = <span class="string">"free"</span>, space = <span class="string">"free_y"</span>) +  <span class="comment">#控制图形的各种间距，可以自己注释掉观察效果</span></span><br><span class="line">    theme_bw() +</span><br><span class="line">    theme(axis.text = element_text(colour = <span class="string">'black'</span>, size = <span class="number">6</span>),</span><br><span class="line">          axis.title = element_text(size = <span class="number">12</span>),</span><br><span class="line">          panel.background = element_rect(colour = <span class="string">"black"</span>, size = <span class="number">0.6</span>),</span><br><span class="line">          <span class="comment">#legend.key = element_blank(),</span></span><br><span class="line">          <span class="comment">#legend.text = element_text(size = 8),</span></span><br><span class="line">          panel.grid =element_blank(),</span><br><span class="line">          legend.title = element_blank(), legend.position=<span class="string">'none'</span>,</span><br><span class="line">          plot.margin = unit(c(<span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span>, <span class="number">0.1</span> ), <span class="string">'in'</span>))  </span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+
+<p>碎碎念：好多写脚本时候的想到的点现在完全都忘记了…果然还是需要多记录呀 +.+<br>完结撒花~</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/12/10/metabolites/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1916,190 +2096,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/09/05/SparCC-cluster/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/09/05/SparCC-cluster/" itemprop="url">集群上使用 SparCC</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T10:41:25+08:00">
-                2019-09-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
-                    <span itemprop="name">metagenomics</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  258 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  1 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <blockquote>
-<p>因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;</p>
-</blockquote>
-<h2 id="脚本如下-待完善"><a href="#脚本如下-待完善" class="headerlink" title="脚本如下, 待完善"></a>脚本如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br><span class="line"></span><br><span class="line"><span class="comment">#退出虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> deactivate</span><br></pre></td></tr></table></figure>
-
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
-<li><a href="https://bitbucket.org/yonatanf/sparcc" target="_blank" rel="noopener">SparCC_bitbucket</a></li>
-<li><a href="https://github.com/hallamlab/utilities/wiki/SparCC" target="_blank" rel="noopener">SparCC · hallamlab/utilities Wiki · GitHub</a></li>
-<li><a href="https://bitbucket.org/yonatanf/sparcc/issues/18/error-tuple-index-out-of-range" target="_blank" rel="noopener">yonatanf / SparCC   / issues   / #18 - Error: tuple index out of range — Bitbucket</a></li>
-<li><a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687" target="_blank" rel="noopener">Inferring Correlation Networks from Genomic Survey Data</a></li>
-<li><a href="https://github.com/zdk123/SpiecEasi" target="_blank" rel="noopener">GitHub - zdk123/SpiecEasi: Sparse InversE Covariance estimation for Ecological Association and Statistical Inference</a></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2157,7 +2153,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2237,7 +2233,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">105.5k</span>
+    <span title="Site words total count">107.3k</span>
   
 </div>
 

@@ -259,6 +259,190 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/09/05/SparCC-cluster/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/09/05/SparCC-cluster/" itemprop="url">集群上使用 SparCC</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-05T10:41:25+08:00">
+                2019-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
+                    <span itemprop="name">metagenomics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  258 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <blockquote>
+<p>因为该软件需要依赖特定版本的 python 和 特定版本的库，所以使用虚拟环境是一种比较省力的选择，尤其是在比较复杂而且不是自己可控的集群环境下;</p>
+</blockquote>
+<h2 id="脚本如下-待完善"><a href="#脚本如下-待完善" class="headerlink" title="脚本如下, 待完善"></a>脚本如下, 待完善</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#设置 conda 默认虚拟环境安装路径</span></span><br><span class="line">conda config  --add envs_dirs yourPath</span><br><span class="line">conda config  --add pkgs_dirs yourPath</span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#然后进行安装</span></span><br><span class="line">conda create --name SparCCEnv python=2.6.9</span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv</span><br><span class="line">conda install numpy=1.9.2</span><br><span class="line">conda install pandas=0.16.2</span><br><span class="line"></span><br><span class="line"><span class="comment">#第三方使用</span></span><br><span class="line">cp yourhomePath/.condarc homePath <span class="comment">#将上一步安装者 home 路径下的 condarc 文件拷贝到第三方的 home 下</span></span><br><span class="line"><span class="built_in">export</span> PATH=condaPath:<span class="variable">$PATH</span> <span class="comment">#到 bin 即可</span></span><br><span class="line"><span class="built_in">source</span> activate SparCCEnv <span class="comment">#进入虚拟环境</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#使用脚本运行，下边这个脚本是我自己写的 如有需要可以联系我</span></span><br><span class="line">python run_sparcc.py profile.xls mgs Outdir</span><br><span class="line"></span><br><span class="line"><span class="comment">#退出虚拟环境</span></span><br><span class="line"><span class="built_in">source</span> deactivate</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ol>
+<li><a href="https://bitbucket.org/yonatanf/sparcc" target="_blank" rel="noopener">SparCC_bitbucket</a></li>
+<li><a href="https://github.com/hallamlab/utilities/wiki/SparCC" target="_blank" rel="noopener">SparCC · hallamlab/utilities Wiki · GitHub</a></li>
+<li><a href="https://bitbucket.org/yonatanf/sparcc/issues/18/error-tuple-index-out-of-range" target="_blank" rel="noopener">yonatanf / SparCC   / issues   / #18 - Error: tuple index out of range — Bitbucket</a></li>
+<li><a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002687" target="_blank" rel="noopener">Inferring Correlation Networks from Genomic Survey Data</a></li>
+<li><a href="https://github.com/zdk123/SpiecEasi" target="_blank" rel="noopener">GitHub - zdk123/SpiecEasi: Sparse InversE Covariance estimation for Ecological Association and Statistical Inference</a></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2019/09/05/skin-microbiome-design/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -653,7 +837,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">52</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -733,7 +917,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">105.5k</span>
+    <span title="Site words total count">107.3k</span>
   
 </div>
 
