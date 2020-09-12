@@ -259,6 +259,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/04/10/phenotype-roc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/10/phenotype-roc/" itemprop="url">pROC绘制多条ROC曲线|multi_roc.R</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-10T10:08:18+08:00">
+                2020-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  670 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>在对微生物数据进行分类器分析时，会碰到基于微生物数据的分类器效果和基于现有表型数据的分类器效果的比较，以说明微生物的数据分类效果更好。这时候需要绘制多个表型数据的 ROC 曲线。需求引出问题，进而被解决。虽然比较简单，代码如下：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#使用 pROC 画表型数据的多条 ROC</span></span><br><span class="line"><span class="keyword">library</span>(pROC) <span class="comment"># install with install.packages("pROC")</span></span><br><span class="line"><span class="keyword">library</span>(randomForest) </span><br><span class="line"><span class="keyword">library</span>(dplyr)</span><br><span class="line">dt = read.table(<span class="string">'Phenotype.xls'</span>, sep = <span class="string">'\t'</span>, head = <span class="literal">T</span>, row.names = <span class="number">1</span>) <span class="comment"># 表型文件，格式：列名为样品名，组别以及表型信息；</span></span><br><span class="line"></span><br><span class="line">temp = rownames(dt)</span><br><span class="line">dt = dt %&gt;% mutate(Disease = ifelse(Group == <span class="string">'NCA'</span>, <span class="number">0</span>, <span class="number">1</span>)) <span class="comment"># 增加一列，将组别信息转化为 0，1</span></span><br><span class="line">rownames(dt)= temp</span><br><span class="line">head(dt)</span><br><span class="line"></span><br><span class="line"><span class="comment">#par(mar=c(3, 3, 3, 2))</span></span><br><span class="line">pdf(<span class="string">"phenotype_roc.pdf"</span>,width=<span class="number">3</span>, height=<span class="number">3</span>, onefile=<span class="literal">FALSE</span>)  <span class="comment"># 因为表型有不少缺失值，剔除</span></span><br><span class="line">sub_dt = dt[complete.cases(dt[<span class="string">'TC'</span>]),]</span><br><span class="line">rf.model &lt;- randomForest(factor(sub_dt$Disease) ~ sub_dt$TC)</span><br><span class="line">roc(sub_dt$Disease, rf.model$votes[,<span class="number">1</span>], plot=<span class="literal">TRUE</span>, legacy.axes=<span class="literal">TRUE</span>, xlab=<span class="string">"1 - specificity"</span>, ylab=<span class="string">"sensitivity"</span>, col=<span class="string">"#3fadaf"</span>, lwd=<span class="number">1</span>, print.auc=<span class="literal">F</span>, print.auc.cex=<span class="number">0.5</span>, cex.lab=<span class="number">0.7</span>, cex.axis = <span class="number">0.7</span>, tck = -<span class="number">0.02</span>, mgp=c(<span class="number">1</span>,<span class="number">0.2</span>,<span class="number">0</span>)) <span class="comment">#调整画图的参数；</span></span><br><span class="line"><span class="comment">#p = roc(sub_dt$Disease, rf.model$votes[,1], plot=TRUE, legacy.axes=TRUE, xlab="1 - specificity", ylab="sensitivity", col="#3fadaf", lwd=1, print.auc=F, print.auc.cex=0.5, cex.lab=0.7, cex.axis = 0.7, tck = -0.02, mgp=c(1,0.2,0)) #调整画图的参数；</span></span><br><span class="line"><span class="comment">#print(p$auc) # 这样可以直接输出 auc 值；</span></span><br><span class="line"></span><br><span class="line">sub_dt = dt[complete.cases(dt[<span class="string">'LDLC'</span>]),]</span><br><span class="line">rf.model &lt;- randomForest(factor(sub_dt$Disease) ~ sub_dt$LDLC)</span><br><span class="line">plot.roc(sub_dt$Disease, rf.model$votes[,<span class="number">1</span>] , col=<span class="string">"#ca5477"</span>, lwd=<span class="number">1</span>, print.auc=<span class="literal">F</span>, print.auc.cex=<span class="number">0.5</span>, add=<span class="literal">TRUE</span>, print.auc.y=<span class="number">0.45</span>) <span class="comment"># 所有的 print.auc 设置为否，因为出来不好看，后边在 legend 需要自定义</span></span><br><span class="line"></span><br><span class="line">sub_dt = dt[complete.cases(dt[<span class="string">'cTnI'</span>]),]</span><br><span class="line">rf.model &lt;- randomForest(factor(sub_dt$Disease) ~ sub_dt$cTnI)</span><br><span class="line">plot.roc(sub_dt$Disease, rf.model$votes[,<span class="number">1</span>], col=<span class="string">"#76a44a"</span>, lwd=<span class="number">1</span>, print.auc=<span class="literal">F</span>, add=<span class="literal">TRUE</span>, print.auc.cex=<span class="number">0.5</span>, print.auc.y=<span class="number">0.4</span>)</span><br><span class="line"></span><br><span class="line">sub_dt = dt[complete.cases(dt[<span class="string">'CKMB'</span>]),]</span><br><span class="line">rf.model &lt;- randomForest(factor(sub_dt$Disease) ~ sub_dt$CKMB)</span><br><span class="line">plot.roc(sub_dt$Disease, rf.model$votes[,<span class="number">1</span>], col=<span class="string">"#946ec6"</span>, lwd=<span class="number">1</span>, print.auc=<span class="literal">F</span>, add=<span class="literal">TRUE</span>, print.auc.cex=<span class="number">0.5</span>,  print.auc.y=<span class="number">0.35</span>)</span><br><span class="line"></span><br><span class="line">sub_dt = dt[complete.cases(dt[<span class="string">'MYO'</span>]),]</span><br><span class="line">rf.model &lt;- randomForest(factor(sub_dt$Disease) ~ sub_dt$MYO)</span><br><span class="line">plot.roc(sub_dt$Disease, rf.model$votes[,<span class="number">1</span>], col=<span class="string">"#c57b3d"</span>, lwd=<span class="number">1</span>, print.auc=<span class="literal">F</span>, add=<span class="literal">TRUE</span>, print.auc.cex=<span class="number">0.5</span>, print.auc.y=<span class="number">0.3</span>)</span><br><span class="line"></span><br><span class="line">legend(<span class="string">"bottomright"</span>, legend=c(<span class="string">"TC_AUC: 0.609"</span>, <span class="string">"LDLC_AUC: 0.616"</span>, <span class="string">"CKMB_AUC: 0.671"</span>, <span class="string">"MYO_AUC: 0.842"</span>, <span class="string">"cTnI_AUC: 0.866"</span>), col=c(<span class="string">"#3fadaf"</span>, <span class="string">"#ca5477"</span>, <span class="string">"#946ec6"</span>, <span class="string">"#c57b3d"</span>, <span class="string">"#76a44a"</span>), lwd=<span class="number">1</span>,  cex=<span class="number">0.31</span>, pt.cex = <span class="number">1</span>, bty = <span class="string">"n"</span>)  <span class="comment"># legend 以及参数</span></span><br><span class="line">dev.off()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这里手动输入 图例元素 还是有点儿笨拙，待优化，时间关系，后边再说，完成任务最重要；</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://pedroconcejero.wordpress.com/2016/03/07/a-roc-curves-tutorial-part-i/" target="_blank" rel="noopener">A ROC curves tutorial – part I – Pedro Concejero</a><br><a href="https://blog.csdn.net/vesper305/article/details/44927047" target="_blank" rel="noopener">https://blog.csdn.net/vesper305/article/details/44927047</a><br><a href="https://www.youtube.com/watch?v=qcvAqAH60Yw" target="_blank" rel="noopener">https://www.youtube.com/watch?v=qcvAqAH60Yw</a><br><a href="https://github.com/StatQuest/roc_and_auc_demo/blob/master/roc_and_auc_demo.R" target="_blank" rel="noopener">roc_and_auc_demo/roc_and_auc_demo.R at master · StatQuest/roc_and_auc_demo · GitHub</a><br><a href="https://rdrr.io/cran/pROC/man/print.html" target="_blank" rel="noopener">https://rdrr.io/cran/pROC/man/print.html</a><br><a href="https://scikit-learn.org/stable/auto_examples/plot_roc_curve_visualization_api.html" target="_blank" rel="noopener">ROC Curve with Visualization API — scikit-learn 0.22.2 documentation</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/04/06/rockefeller/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1999,205 +2153,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/02/16/zeng1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/16/zeng1/" itemprop="url">读书笔记-曾国藩传(1)</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-02-16T17:47:36+08:00">
-                2020-02-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.2k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  7 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>该曾国藩同学了，因为春节假期叠加疫情加上搬家，好多事情都搁置了（qi，人最会给自己找理由了，也最容易欺骗自己了… ）</p>
-<p>看这本书的理由：</p>
-<ol>
-<li>第一个理由：在富兰克林传记的书评里见到过，一个人说推荐三个人的传记，富兰克林，曾国藩，王阳明；又有一说：中国有两个半圣人，孔子，王阳明，曾国藩；这让我很好奇；</li>
-<li>第二个理由是书中作者的自序一部分：<blockquote>
-<p>第二个原因，从个人精神成长角度看，曾国藩也能给我们提供力量。曾国藩这个人的一生，起点极低而抵达的高度很高。曾国藩的<strong>智商平常</strong>，一个秀才考了七次。<strong>身体禀赋很差</strong>，一生与多种严重疾病相伴。<strong>出身也很平常</strong>，祖上几百年间都是平头百姓。年轻的时候，<strong>性格中还有很多毛病</strong>，比如自我管理能力比较差。他通过不懈的个人努力，完成了脱胎换骨、超凡入圣的变化，达到了立功、立德、立言三不朽的境界，这个过程是非常富有启发意义的。</p>
-</blockquote>
-</li>
-</ol>
-<p>这开头看起来就是一个普通人，像芒格一样，我也在找值得我效仿的人，想观察他们的生活，希望能学到点儿东西。</p>
-<p>另外一方面，自己很担心掉落到日常庸碌的陷阱，过着日复一日的生活，加上大家都说生活很难，所以「不用那么努力也行」，「你已经很棒了」，即使你做得不好，仍然可能会有人夸你做得不错（参考 <strong>我孰与城北徐公美</strong> 的故事，就能知道我们有多么容易陷入某种自我欺骗的陷阱了）。</p>
-<blockquote>
-<p>类似的，我们身边的人若是爱护心疼你的话，又或是出于圆滑处世的目的，自然会多多夸奖你，相对而言直言批评的人比较少，诚心接受批评的人也比较少，两种因素相加就很容易让自己自我满足。但是你又不能要求他们对你进行批评（曾国藩同学这么做了，我暂时做不到），所以能靠的只能是自己的自省。我觉得吧，人生终究是一个人的路，其他人可能会在这条路上扮演各种各样的角色，但是一直走在主路上，能对你人生负责的只有你自己，不能把希望寄托于外物或者其他人身上。</p>
-</blockquote>
-<p>然而我觉得这（生活很难，问题很多，有人夸你）不足以构成什么事情都可以妥协，裹足不前的理由，因为生活本来就很难，本来就很复杂，真正应该做的是好好观察生活的本来面目，然后每天努力成长。而看书是一个很好地脱离自己身处环境的途径，就像是出门旅游一样，还不用花钱，特别是传记，能认识到这些伟大的人的生平细节，仔细研读应该会获益良多，也就是得到所谓的道理。</p>
-<p>然而即使看到或者看过某一个道理并不能代表什么，网上有言论说道理有什么用，『懂得那么多道理，还不是过不好这一生。』<br>古话说 『<strong>上士闻道，勤而行之。中士闻道，若存若亡。下士闻道，大笑之，不笑不足以为道。</strong>』<br>好好掂量一下自己位置，再发表言论比较好，人总是倾向于喜欢陶醉在某些无用的情绪之中。</p>
-<p>富兰克林自传里序言说：『<strong>思想产生行为，行为必有效果，要研究思想的正确与否，与其从思想本身来辩论，倒不如看它行为的效果如何。</strong>』所以若是觉得一个道理还不错，可能有用，就应该想办法去实践，看看效果，也就是所谓的知行合一。而且即使做到了也不能张扬，也不需要别人的认同来给自己坚持下去的理由，一直低调行事，默默谦逊自省才是我认为比较好的做法（省时省力）。孙子兵法+ 扁鹊见蔡桓公 都说『<strong>善战者无赫赫之功，善医者无煌煌之名。</strong>』</p>
-<p>以下是书摘正式部分，由于篇幅原因，只摘录我认为相对重要的部分。</p>
-<blockquote>
-<p>今人尚巧。办事越巧妙，越少费力气，越走捷径，当然就越好。很多人办事，都追求高效率，甚至不择手段。然而曾国藩不这样。曾国藩说：“<strong>天下之至拙，能胜天下之至巧。</strong>”就是说，笨拙胜过机巧。办事笨拙，才靠得住。</p>
-</blockquote>
-<p>路过：+1，这里的拙，我认为不是笨，而是踏踏实实，学一点是一点，做一点是一点，不想着偷懒，走捷径。芒格说：每天进步一点点就好了。</p>
-<blockquote>
-<p>他认真研读明代大儒王阳明的《传习录》。王阳明少年时曾问自己的私塾老师：“何为第一等事？”什么是天下最重要的事？塾师回答说：“唯读书登第耳！”那当然是读书做官。王阳明却不以为然，回答说：“登第恐未为第一等事，或（也许是）读书学圣贤耳！”￼</p>
-</blockquote>
-<p>路过：优秀的人总是向优秀的人学习（很大的一个原因是他们看书很多）。另外我很好奇，这些人从小就有这么伟大的理想是怎么一会儿事，我少年时候，基本不知道自己要做什么 +。+</p>
-<blockquote>
-<p>曾国藩反思，评论人夸奖人要慎重，这样人家才会拿自己的话当回事。</p>
-</blockquote>
-<p>路过：去年流行过一段时间「夸夸群」，我当时也认为使劲夸肯定是不会错的做法，直到看到了这句话… 一方面自己的夸奖会降低可信度，另外一方面我觉得对被夸的人来说，也是某种程度的「欺骗」，聪明的人会意识到这个问题的。慎言是比较推荐的做法。</p>
-<blockquote>
-<p>我们看他的日记，几乎没有一天不社交的，经常交往的朋友有一百多人。</p>
-</blockquote>
-<p>路过：我做不到这个… </p>
-<blockquote>
-<p>意思是说，我现在做这么一个小官，每天的工作如同支床石一样，疲倦麻木。我天天想念家乡，如同离了娘的小孩。愁闷极了，不如干脆找几瓶好酒，喝得大醉，什么都不知道好了。</p>
-<p> 这样的文字还有许多。在写给陈源兖的信中，他说自己“时时有归家奉养之志”。</p>
-</blockquote>
-<p>路过：曾国藩同学的困惑之年，也想到辞职退休了，哈哈哈哈哈哈，可以参考下。</p>
-<blockquote>
-<p>“<strong>天下事无所为而成者极少，有所贪有所利而成者居其半，有所激有所逼而成者居其半。</strong>”</p>
-</blockquote>
-<p>路过：不能再赞同，我的状态和第一个比较类似… 吧，能做成事才奇怪了，另外一方面，环境很重要，即使你「无所为」好的环境能「有所激有所逼」，很简单的例子就是要不要来一线城市…</p>
-<blockquote>
-<p>我在这句话里所说的“反思”，用的字面意思，也就是反向思考。曾国藩在创建湘军的时候，并没有首先去想“湘军怎么才有战斗力”，而是先来分析“绿营兵为什么没有战斗力”。</p>
-</blockquote>
-<p>路过：这是芒格所说的逆向思维，不要想自己要什么，多想想自己要规避什么。比如如果你想要过一个还算不错的生活，那你就应该想如何才能过一个糟糕的生活，比如完全不自律，也不承担责任，整日陶醉在没用的情绪中，无所事事等。每个人答案不一样，想到这些，然后避免去做就好了。<br>这和我不知道自己喜欢什么，知道自己讨厌什么的状态有点儿类似。</p>
-<p>未完待续，鉴于篇幅原因，以后一本书分成多次吧，争取每段摘录都写下自己的心得想法，也就是真正的读书笔记。一方面整理自己的思想，一方面锻炼自己的文笔，另外一方面，也能督促自己反省自己。而采取发在网上的做法也是为了督促自己。所有的术阶段的操作，都是为了让自己去寻找道。</p>
-<p>2020年2月16日 于深圳</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2255,7 +2210,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-count">57</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2335,7 +2290,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">112.7k</span>
+    <span title="Site words total count">114k</span>
   
 </div>
 
