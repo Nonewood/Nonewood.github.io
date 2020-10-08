@@ -259,6 +259,206 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/06/13/paper-informational/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/13/paper-informational/" itemprop="url">Linux 集群上文献信息的爬虫和下载</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-13T10:43:36+08:00">
+                2020-06-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.7k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  7 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="写在开头："><a href="#写在开头：" class="headerlink" title="写在开头："></a>写在开头：</h3><p>几年的 <del>科研工作</del> 搬砖经历，不得不和文献打交道，不论是自己读还是做成文档给别人讲，一般都会需要获取文献某些信息如题目，杂志名称，影响因子，一作，通讯以及下载文献原文等，而常规（以往的自己）的做法是，搜索 - 复制 - 粘贴 - 下载（以及 for 循环这个过程），其实<strong>很烦很枯燥很无聊很费时间</strong>（那你以前是怎么忍下来的…），应该把这部分时间节省下来做其他重要的事情，比如睡觉和发呆 +.+ </p>
+<p>最近因为工作的刚需以及加上同事的鞭策，我写了一个程序，只需要输入 DOI 就可以做到上边提到的事情，两个脚本：</p>
+<ol>
+<li>advanced_paper_informational.py， 用来在 Linux 环境下提取文献信息；</li>
+<li>scihub.py，用来下载文献；</li>
+</ol>
+<h3 id="1-advanced-paper-informational-py"><a href="#1-advanced-paper-informational-py" class="headerlink" title="1. advanced_paper_informational.py"></a>1. advanced_paper_informational.py</h3><p>这个脚本需要两个输入文件： </p>
+<ol>
+<li>IF_2019.txt 影响因子文件，每年都会更新，以后下载更新即可；</li>
+<li>J_Medline.txt，NCBI 的杂志缩写和全称对应文件；</li>
+</ol>
+<p>一些软件和相应的库：</p>
+<ol>
+<li>python3 以及相应的库包括  selenium; bs4;</li>
+<li>PhantomJS，在 linux 用来模拟浏览器，我本来想用 chromedriver 来着，结果没有在集群上安装成功；</li>
+</ol>
+<p>这些东西安装成功以后需要添加至环境变量。 </p>
+<p>成功以后你可以用单独的 DOI 或者 DOI 的文件（换行符分割）批量查询。</p>
+<p>这个脚本的原理简述如下：根据文献的 DOI（唯一标识），使用脚本模拟浏览器去 PubMed 检索，根据检索结果提取信息即可，下边是代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver <span class="keyword">import</span> ActionChains </span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.support.ui <span class="keyword">import</span> Select</span><br><span class="line"><span class="keyword">from</span> selenium.webdriver.common.keys <span class="keyword">import</span> Keys </span><br><span class="line"><span class="keyword">import</span> time,os,re</span><br><span class="line"></span><br><span class="line"><span class="comment"># set pars</span></span><br><span class="line"><span class="keyword">import</span> argparse,re,os,math,glob</span><br><span class="line">parser = argparse.ArgumentParser(</span><br><span class="line">    formatter_class=argparse.RawDescriptionHelpFormatter,</span><br><span class="line">    description=<span class="string">'''</span></span><br><span class="line"><span class="string">-------------------</span></span><br><span class="line"><span class="string">Simple Introduction:</span></span><br><span class="line"><span class="string">Crawl the information of paper... You should provide the DOI or a file for DOI (line breaks). </span></span><br><span class="line"><span class="string">Example: python3 advanced_paper_informational.py -l 10.1016/S0140-6736(19)32319-0</span></span><br><span class="line"><span class="string">         python3 advanced_paper_informational.py -f doi_file</span></span><br><span class="line"><span class="string">To be continued.</span></span><br><span class="line"><span class="string">------------------'''</span></span><br><span class="line">)</span><br><span class="line">parser.add_argument(<span class="string">'-l'</span>,<span class="string">'--onedoi'</span>, nargs=<span class="string">'?'</span>, help = <span class="string">"DOI information."</span>)</span><br><span class="line">parser.add_argument(<span class="string">'-f'</span>,<span class="string">'--filelist'</span>,nargs=<span class="string">'?'</span>, help = <span class="string">"the DOI information list file."</span>)</span><br><span class="line">parser.add_argument(<span class="string">"-v"</span>, <span class="string">"--version"</span>,action=<span class="string">'version'</span>, version=<span class="string">'%(prog)s 1.0'</span>)</span><br><span class="line">args = parser.parse_args()</span><br><span class="line">var = args.onedoi</span><br><span class="line">files = args.filelist </span><br><span class="line"></span><br><span class="line"><span class="comment">## define the user（linux） and abbreviatio for print  </span></span><br><span class="line"><span class="keyword">import</span> re</span><br><span class="line">Dict = &#123;<span class="string">'zhangSan'</span>:<span class="string">'ZS'</span>, <span class="string">'LiSi'</span>:<span class="string">'LS'</span>&#125;</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line">user_full = os.popen(<span class="string">'whoami'</span>).readlines()[<span class="number">0</span>].strip()</span><br><span class="line"><span class="keyword">if</span> user_full <span class="keyword">in</span> Dict:</span><br><span class="line">    user = Dict[user_full]</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    user = user_full</span><br><span class="line"></span><br><span class="line"><span class="comment"># doi information </span></span><br><span class="line">doi_list = list()</span><br><span class="line"><span class="keyword">if</span> var:</span><br><span class="line">	doi_list.append(<span class="string">'DOI: '</span> + var)</span><br><span class="line"><span class="keyword">if</span> files:</span><br><span class="line">	<span class="keyword">with</span> open(files, <span class="string">'r'</span>) <span class="keyword">as</span> IN:</span><br><span class="line">		Input = IN.readlines()</span><br><span class="line">		doi_list = [<span class="string">'DOI: '</span> + x.strip() <span class="keyword">for</span> x <span class="keyword">in</span> Input]	</span><br><span class="line"></span><br><span class="line"><span class="comment"># out file </span></span><br><span class="line">out = open(<span class="string">'paper_information.xls'</span>, <span class="string">'w'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">## scraping </span></span><br><span class="line">print(user_full + <span class="string">' is crawling... \nThe warning information appeared later does not matter. \nIt may need some time, please wait patiently:)\nIf there is no output for a long long time, you should stop it and try to run again.\n'</span>)</span><br><span class="line"></span><br><span class="line">browser = webdriver.PhantomJS() <span class="comment"># 因为集群环境我只能用 PhantomJS。</span></span><br><span class="line">url = <span class="string">'https://pubmed.ncbi.nlm.nih.gov/'</span></span><br><span class="line">        </span><br><span class="line"><span class="comment"># 杂志名称全称</span></span><br><span class="line">j_name = dict()</span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'files/J_Medline.txt'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> IN:</span><br><span class="line">    <span class="keyword">for</span> line <span class="keyword">in</span> IN:</span><br><span class="line">        line = line.strip(<span class="string">'\n'</span>)</span><br><span class="line">        <span class="keyword">if</span> line.startswith(<span class="string">'JournalTitle'</span>):</span><br><span class="line">            <span class="keyword">if</span> re.search(<span class="string">' \(.*\)'</span>, line):</span><br><span class="line">                match = re.search(<span class="string">'JournalTitle: (.*) \(.*\)'</span>, line) </span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                match = re.search(<span class="string">'JournalTitle: (.*)'</span>, line) <span class="comment"># ncbi 是缩写，然后影响因子是全称，所以得找到这个信息</span></span><br><span class="line">            <span class="comment">#发现有带（London, England）这种信息的。。。。</span></span><br><span class="line">            full = match.group(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> line.startswith(<span class="string">'MedAbbr'</span>):</span><br><span class="line">            match = re.search(<span class="string">'MedAbbr: (.*)'</span>, line)</span><br><span class="line">            abbr = match.group(<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">if</span> line.startswith(<span class="string">'NlmId'</span>):</span><br><span class="line">            j_name[abbr] = full</span><br><span class="line">            </span><br><span class="line"><span class="comment"># 杂志 IF</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">dt = pd.read_table(<span class="string">'files/IF_2019.txt'</span>, index_col = <span class="number">1</span>)</span><br><span class="line">IF_dict = dt[<span class="string">'Journal Impact Factor'</span>].to_dict()</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> doi_list:</span><br><span class="line">    DOI = x</span><br><span class="line">    browser.get(url)</span><br><span class="line">    print(<span class="string">"\nThe pubmed url is opening correctly.\n"</span>)</span><br><span class="line">    time.sleep(<span class="number">3</span>)</span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        browser.find_element_by_xpath(<span class="string">'//*[@name="term"]'</span>).send_keys(x)</span><br><span class="line">        time.sleep(<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">except</span> NoSuchElementException:</span><br><span class="line">        print(<span class="string">'AO, something wrong...'</span>)</span><br><span class="line"></span><br><span class="line">    browser.find_element_by_xpath(<span class="string">'//*[@class="search-btn"]'</span>).click()</span><br><span class="line">    time.sleep(<span class="number">2</span>)</span><br><span class="line">    print(<span class="string">"\nThe page for paper "</span> + x  + <span class="string">" is opiening correctly.\n"</span>)</span><br><span class="line">    soup = BeautifulSoup(browser.page_source, <span class="string">"html.parser"</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># journal name abbr</span></span><br><span class="line">    journal = soup.find(id = <span class="string">"full-view-journal-trigger"</span>).get_text().strip()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># title</span></span><br><span class="line">    title = soup.find(class_ = <span class="string">"heading-title"</span>).get_text().strip()</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># IF</span></span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> IF_dict:</span><br><span class="line">        match = re.search(<span class="string">'^'</span> + j_name[journal] + <span class="string">'$'</span>, x, flags=re.IGNORECASE) <span class="comment"># 有的名字包含其他杂志的全称... </span></span><br><span class="line">        <span class="keyword">if</span> match:</span><br><span class="line">            IF = IF_dict[x]</span><br><span class="line">            journal_name = j_name[journal]</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            match = re.search(<span class="string">'^'</span> + j_name[journal].replace(<span class="string">'.'</span>,<span class="string">''</span>) + <span class="string">'$'</span>, x, flags=re.IGNORECASE)  <span class="comment"># 有的杂志匹配出来的全称多了个点：Nature reviews. Immunology</span></span><br><span class="line">            <span class="keyword">if</span> match:</span><br><span class="line">                journal_name = j_name[journal].replace(<span class="string">'.'</span>,<span class="string">''</span>)</span><br><span class="line">                IF = IF_dict[x]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 发表时间</span></span><br><span class="line">    <span class="keyword">if</span> soup.find(class_ = <span class="string">"secondary-date"</span>):</span><br><span class="line">        p_time = soup.find(class_ = <span class="string">"secondary-date"</span>).get_text().strip().strip(<span class="string">'Epub '</span>).strip(<span class="string">'.'</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        p_time = soup.find(class_ = <span class="string">"cit"</span>).get_text().split(<span class="string">";"</span>)[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># PMID </span></span><br><span class="line">    PMID = soup.find(class_ = <span class="string">"current-id"</span>).get_text()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">#原文链接</span></span><br><span class="line">    doi_info = soup.find(class_ = <span class="string">"identifier doi"</span>) </span><br><span class="line">    http = doi_info.find(class_ = <span class="string">"id-link"</span>)[<span class="string">'href'</span>] <span class="comment"># 增加这一步是因为偶尔会出现 NCBI 的链接</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># 一作和通讯</span></span><br><span class="line">    authors = soup.find(class_ = <span class="string">"authors-list"</span>).get_text().strip().replace(<span class="string">u'\xa0'</span>, <span class="string">''</span>).replace(<span class="string">u'\xa0'</span>, <span class="string">''</span>).replace(<span class="string">' '</span>, <span class="string">''</span>)</span><br><span class="line">    author_list = re.sub(<span class="string">'\n\w*'</span>, <span class="string">''</span>, authors).split(<span class="string">','</span>)</span><br><span class="line">    first_author = author_list[<span class="number">0</span>]</span><br><span class="line">    corresponding_author = author_list[<span class="number">-1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 第一单位</span></span><br><span class="line">    affiliations = soup.find(class_ = <span class="string">"affiliations"</span>).get_text().strip()</span><br><span class="line">    affiliations = re.sub(<span class="string">'[ ]+'</span>, <span class="string">' '</span>, affiliations)</span><br><span class="line">    affiliations_list = re.sub(<span class="string">'[\n]&#123;2,&#125;'</span>, <span class="string">''</span>, affiliations).split(<span class="string">'\n'</span>)</span><br><span class="line">    first_affiliation = affiliations_list[<span class="number">1</span>].lstrip(<span class="string">' 0123456789'</span>)</span><br><span class="line"></span><br><span class="line">    line = <span class="string">'\t'</span>.join([user, title, journal_name, p_time.replace(<span class="string">'.'</span>, <span class="string">''</span>), PMID, DOI, http, IF, first_author, corresponding_author, first_affiliation])</span><br><span class="line">    print(line, file = out)</span><br><span class="line">    print(<span class="string">'\n'</span> + line + <span class="string">'\n'</span>)</span><br><span class="line">    </span><br><span class="line">out.close()</span><br><span class="line">print(<span class="string">"\nDone!, the output is paper_information.xls.\n"</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-scihub-py"><a href="#2-scihub-py" class="headerlink" title="2. scihub.py"></a>2. scihub.py</h3><p>写完上边这个脚本以后，我就在想：都到这一步了，为啥不临门一脚把文献下载也给搞定了呢？  于是 Google 检索了下，发现 Github 上竟然有现成的，本着不重复造轮子的偷懒精神，我就拿过来稍微改动了下，因为不是我写的，就不好意思贴代码了，改动的地方有两个：</p>
+<ol>
+<li>代码中一个用来爬取可用的 sci-hub 的网址失效了，我替换了一个新的；</li>
+<li>以及去爬这个新的网址的时候，有时候会打不开，我增加了失败后重复爬取的功能，免得需要重复运行；</li>
+</ol>
+<p>这个脚本需要软件和相应的库： </p>
+<ol>
+<li>Python3 以及 requests, retrying, pysocks, bs4;</li>
+</ol>
+<p>这个脚本还有利用谷歌学术查询文献的功能，不过我暂时还没用到，只用到了下载的功能，目前支持每次下载一个文献，等我后边有时间再修改一下。</p>
+<p>下载的原理简述： 以 DOI 为例，程序得到一个 DOI 后，去寻找目前所有可用 sci-hub 网址，然后利用 sci-hub 网址 + DOI  得到相应的原文网页，如果是判断格式为 PDF 的话就直接保存。</p>
+<h3 id="Paper-information-sh"><a href="#Paper-information-sh" class="headerlink" title="Paper_information.sh"></a>Paper_information.sh</h3><p>这个脚本用来整合的，因为不想单独运行两个脚本。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">！/usr/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> doi</span></span><br><span class="line">python3 advanced_paper_informational.py -l "10.1016/S0140-6736(19)32319-0"</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> doi file, a list of doi, line <span class="built_in">break</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">python3 advanced_paper_informational.py -f doilist.txt</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> dowload the pdf, only support one doi <span class="keyword">in</span> current version +.+, TBD</span></span><br><span class="line">python3 scihub.py -d "10.1016/S0140-6736(19)32319-0"</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><ol>
+<li><a href="https://github.com/Nonewood/Bioinformatics/blob/master/Paper_information/README.md" target="_blank" rel="noopener">Bioinformatics/README.md at master · Nonewood/Bioinformatics · GitHub</a></li>
+<li><a href="https://github.com/zaytoun/scihub.py/blob/master/scihub/scihub.py" target="_blank" rel="noopener">scihub.py/scihub.py at master · zaytoun/scihub.py · GitHub</a></li>
+<li><a href="https://blog.csdn.net/xudailong_blog/article/details/79674107" target="_blank" rel="noopener">Linux下Python3环境安装selenium跟phantomjs_徐代龙的技术专栏-CSDN博客_linuxpythonphantomjs</a></li>
+<li><a href="https://www.jianshu.com/p/3273574b7e4b" target="_blank" rel="noopener">python的retrying库处理尝试多次请求 - 简书</a></li>
+<li><a href="https://blog.csdn.net/qq_36962569/article/details/77200118" target="_blank" rel="noopener">【Python3.6爬虫学习记录】（七）使用Selenium+ChromeDriver爬取知乎某问题的回答_子耶-CSDN博客_chromedriver爬知乎</a></li>
+<li><a href="https://stackoverflow.com/questions/7593611/selenium-testing-without-browser" target="_blank" rel="noopener">python - Selenium testing without browser - Stack Overflow</a></li>
+<li><a href="https://juejin.im/post/5a23cab7f265da431c701fe1" target="_blank" rel="noopener">实战（二）轻松使用requests库和beautifulsoup爬链接 - 掘金</a></li>
+</ol>
+<h3 id="写在最后"><a href="#写在最后" class="headerlink" title="写在最后"></a>写在最后</h3><ol>
+<li>写这个程序写得很开心 🥳；</li>
+<li>脚本还很粗糙，使用过程中可能会遇到问题，后边会在 Giuhub 修改；</li>
+<li>我只在 Linux 上做了测试，是可行的，其他的不一定，我有时间的话，会把非 Linux 的倒腾一下，然后放出来，不过得看时间；</li>
+<li>本来还想尝试可视化，比如弄个网站或者小程序什么的，结果发现还是挺复杂的，暂时放弃，后边看情况吧；</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/06/07/HUMAnN/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -710,7 +910,7 @@
           
             <h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 
@@ -1938,231 +2138,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/04/25/rockefeller3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/04/25/rockefeller3/" itemprop="url">第四封-现在就去做</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-25T20:53:34+08:00">
-                2020-04-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  2.5k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  8 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>读书笔记-洛克菲勒写给儿子的38封信（4）</p>
-<blockquote>
-<p><strong>聪明人说的话总是容易被我记牢</strong>，曾经有位聪明人说过：“教育包含着方方面面，但是它本身却不需要教给你任何一面。”这个聪明人向我们展示了一条真理：<strong>如果你自己不采取行动的话，世界上任何可行的哲学也是没有用处的。</strong></p>
-</blockquote>
-<p>路过：Again: 只是知道知识或者道理没有任何用处。</p>
-<blockquote>
-<p>我一直都相信，机会是靠自己争取得来的。<strong>无论是再好的构想都存在缺陷，即便是非常普通的计划，但是如果能够得到很好的执行并且发展，都会远远比半途而废的计划要好得多。</strong></p>
-</blockquote>
-<p>路过：机会是靠自己争取得来的。主动去尝试永远比踏在原地要好，对任何事情都适用。</p>
-<blockquote>
-<p>可是遗憾的是，很多人却并没有记住这个道理，结果最终自己沦为了平庸的人，<strong>看看那些整日碌碌无为的普通人们，你能够发现，他们的生活是被动的，他们说的往往比做的要多，甚至是只说不做，他们几乎个个都是找借口的行家，一遇到问题，他们就会用各种借口来拖延，直到最后他们证明这件事不应该，或者自己没有能力去做的时候已经来不及了。</strong></p>
-</blockquote>
-<p>路过：像是上周说的心理暗示一样，你一开始就不想做或者觉得自己做不到的话，『借口』和『事实』会像是关不上的水龙头冒出的水一样，证明你确实做不到。</p>
-<blockquote>
-<p>积极行动是我身上的一个标识，我从来不喜欢去纸上谈兵最终导致想法付诸空谈，因为我知道，<strong>没有行动的话就不会有结果。</strong>世界上<strong>所有的东西都是由一个想法慢慢付诸行动所得来的</strong>。人只要活着，就必须要行动。</p>
-</blockquote>
-<blockquote>
-<p>行动和充分的准备可以看成一个物体的两面，任何一面都需要去进行，做太多的准备却迟迟不肯行动，到最后势必只会浪费时间。</p>
-<p> 换句话来说，<strong>准备一定要有节制</strong>，我们不能落入不断演练、计划的窠臼，而必须要勇敢地面对现实，<strong>事实上，不管我们计划得多么周密，最后的结果和解决方案仍然是我们不可预测的。</strong></p>
-</blockquote>
-<blockquote>
-<p>缺乏行动的人通常都有这样一个坏习惯，<strong>喜欢维持现状，害怕事情发生改变，我认为这其实是一种自我欺骗和自我毁灭的坏习惯</strong>，因为一切事物都处在变化当中，就像是人会生会死一样，没有什么事情是不变的。</p>
-</blockquote>
-<p>路过：要认清现实，并不是你不犯人，人就不犯你。很多道理都是相通的，担心风险而把钱捂起来，其实正在损失钱。 不过自己舒服最重要，如果实在觉得改变太麻烦，或者想清楚了，也可以待着不动，其实想不清楚也所谓。关键看你想要的是什么。</p>
-<blockquote>
-<p>很多缺乏行动的人大多太过于天真，喜欢等待事情自然地发生，他们天真地认为，别人会帮助他们、关心他们，可是事实上，除了他们自己，<strong>没有人对他们的事情感兴趣，人们只会对自己的事情感兴趣。</strong></p>
-</blockquote>
-<p>路过：默写并背诵。是金子总会发光的？ maybe， 但是也有可能没有被发现的时间长过你的一生，并且和牛粪（没有鲜花的那种）作伴，而且有可能自己郁郁不得志，写了一本无人问津的传记，叫《被牛粪雪藏的一生》。 还有两个提示：1. 别太在意别人的看法；2. 无需从别人那里获得肯定或者否定。</p>
-<blockquote>
-<p>就像是一桩生意那样，我们的获利比重比较大的时候，我们就更需要去采取主动行动，因为我们的成败和别人没有关系，他们是不会在乎的。所以在这个时候，<strong>我们最好推自己一把，如果我们总是懈怠、退缩，等待着别人主动来推动事情发展的话，那么结果一定是令人失望的。</strong> </p>
-</blockquote>
-<p>路过：芒格说，逆向思维很重要。如果你想做成一件事情，不去想如何如何才能做成这件事情。而是应该想，如何如何才能搞砸这件事情。 这是一个定理，用来证明上边这句话的证明过程是：如果你想让自己在意的事情结果令自己失望，那么你就懈怠，退缩，主动权交给别人，这样你肯定会失望，说不定还会获得额外分数，对自己这个人也失望。</p>
-<blockquote>
-<p>一个人，<strong>只有依靠自己，才不会让自己失望</strong>，如果能增加自己控制命运的机会的话，那更是再好不过了，聪明的人会努力地促使事情向成功的一方面发展。</p>
-</blockquote>
-<p>路过：试过才知道，把希望寄托在外物或者别人身上会是一件多么糟糕的事情。</p>
-<blockquote>
-<p>其实，人生随时都是机会，但是每个机会都是不完美的，那些被动的人平庸了一辈子，就是因为<strong>他们想要等到每一件事情都百分之百有利的时候才行动，万无一失以后才去做。</strong></p>
-<p>等到所有条件都完美了才去做，<strong>和永远等下去没有什么区别，并且最终还会把机会拱手让给别人。</strong></p>
-</blockquote>
-<blockquote>
-<p>如果想要变成那种“我现在就去做的人”，就要停止你现在一切的白日梦，从现在就开始做，<strong>例如“明天、后天、下礼拜、将来”这些话，跟“永远都做不到”是一个意思。</strong></p>
-</blockquote>
-<p>路过：多么打脸，尤其工作以后，甚至是上大学以后，人的精力会被分散得很厉害，导致许多事情会日复一日地搁置，现在才能懂《明日歌》写得多么有哲理。</p>
-<blockquote>
-<p><strong>每个人都有失去自信、怀疑自己能力的时候，尤其是在逆境的时候</strong>，但是真正懂得行动的人，却能够用自己坚强的毅力去克服它，并且告诉自己，<strong>每个人都有成功失败，每个人都有失败得很惨的时候，要告诉自己，不管我们事前做了多少准备、思考了多久，在我们真正着手做的时候，都难以避免地会犯错误。</strong></p>
-<p>而那些被动的人，并不会将失败看成学习和成长的机会，却一直在<strong>不停地告诫着自己，或者我真的不行了</strong>，从而使自己失去了积极参与未来的行动。</p>
-</blockquote>
-<blockquote>
-<p>很多人都相信心想事成这句话，但是我却将它当成一个谎言，<strong>好主意一毛钱就能买到一堆</strong>，最初的想法只是后面一系列行动的起步，接下来还需要第二阶段的准备、计划以及第三阶段的行动。<br>在我们这个世界当中，<strong>从来都不缺少有好想法的人，但是能成功地将想法付诸行动的人却很少。</strong></p>
-</blockquote>
-<p>路过：便宜廉价的想法观点到处都是，所以没用。</p>
-<blockquote>
-<p><strong>人们用来评断你的能力的依据，并不是你脑袋里装了多少东西，而是你行动的能力。</strong></p>
-</blockquote>
-<p>路过：类似的，不是看你看了多少书，而是看你做了多少事情。 从这个观点来看，「好人」可能无用。 </p>
-<blockquote>
-<p>那些在工商界、政府、军队中的领袖，都是那些踏实肯干的人，能够采取主动的人，而那些站在一旁袖手旁观的人，是永远也成不了领导的。</p>
-</blockquote>
-<p>路过：即使不是想成为领导，也需要主动踏实的做事情。</p>
-<blockquote>
-<p><strong>习惯对我们来说，就像是一条绳索，我们每天编织一根绳子，最后它会粗大得无法扯断</strong>。习惯的绳索不是将我们带到人生高峰就是带我们抵达深谷，这主要是看自己的习惯是好习惯还是坏习惯。坏习惯能够摆布我们，左右事情的成败，它很容易养成，但是却很难伺候。而好习惯很难养成，但是却很容易维持下去。</p>
-</blockquote>
-<blockquote>
-<p>要养成现在就去做的习惯，最重要的是，要有积极主动的精神，戒除掉精神散漫的习惯，要勇于去做一个主动做事的人，要勇敢地去做事，不要等到万事准备妥当了再去行动，要记住，永远没有完美的事情。</p>
-<p><strong>培养行动的习惯，不需要特殊的智慧或者什么专门的技巧，只需要你努力地去做，让好的习惯在生活当中开花结果。</strong></p>
-</blockquote>
-<p>(此时老约翰59岁，小约翰24岁)</p>
-<p>写在后边，</p>
-<ol>
-<li>这份信的标题是『现在就去做』，我基本在大多数地方都做了标记，对我来说确实起到了提醒和训诫的作用。</li>
-<li>其实信与信的观点有重叠的部分，比如上一封信提到『工作越是困难或不愉快，就越要努力地去做好，如果等待的时间越久，就变得越困难、越可怕。』</li>
-<li>加上了每封信的年龄，此时我的比小约翰还要大，有种微妙的时光交错感，并且感觉自己占了便宜。</li>
-</ol>
-<p>2020年4月25日 下午8:58 @SZ</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2220,7 +2195,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">59</span>
+                  <span class="site-state-item-count">60</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2300,7 +2275,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">116.9k</span>
+    <span title="Site words total count">118.2k</span>
   
 </div>
 
