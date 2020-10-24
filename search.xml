@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>尾声就是开始</title>
+    <url>/2020/10/24/rockefeller18/</url>
+    <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>一周就要结束了，新的一周即将开始。</p>
+<p>下午看了张桂梅的故事，哭得我稀里哗啦。后来因为岁数见长，情绪很少变化，但是事实证明还是有些事情可以无视种种护盾，直击要害。我也不知道为什么会这样，特别是看到那些土头土脸的家长和孩子，就很心酸… 而看到有人无私地为这些人考虑和做点儿事情，又很感动。 （无法用言语表达）</p>
+<p>大概因为这些小孩和我的经历比较相似吧，不过她们的生活更苦些。<br>出来以后越发觉得，可以通过读书走到外边真是太好了，希望更多的小孩子一直能有这样的路径吧，也希望我自己能找机会在这方面做点儿事情。</p>
+<p>相比之下，感觉自己还是很多事情都没做好，惭愧惭愧。</p>
+<hr>
+<h3 id="第二十九封-尾声就是开始"><a href="#第二十九封-尾声就是开始" class="headerlink" title="第二十九封 尾声就是开始"></a>第二十九封 尾声就是开始</h3><blockquote>
+<p>“尾声只是开始”这句话在我看来，是想试图表明一个道理，<strong>那就是成功是一个不断繁衍的过程。</strong>这就像是一头多产的母牛，当它开始生下自己第一头小牛的时候，马上又会怀上另一头小牛，如此生生不息地循环往复。<strong>所谓的尾声，既是上一段路程的结尾，同时也是下一段路程的开端。</strong>每个伟大的成功人士，都是经由一个个微小的成功而组成的，他们用尾声来庆祝自己一段时间的胜利，同时又在尾声当中毅然决然地踏上新的征程，这是每一个创造伟大成就的人所拥有的品质。</p>
+</blockquote>
+<blockquote>
+<p>我的经验告诉我，有三种策略能够让我们获取到优势：</p>
+<p>第一，要在一开始的时候就下定决心，关注每个竞争者和竞争者的资源。</p>
+<p>第二，要研究和检讨对方的状况，然后学会利用这样的知识，来形成自己的一种优势。</p>
+<p>第三，你一定要拥有正确的心态，在一开始的时候，<strong>就一定要下定决心，去追求最后的胜利。</strong></p>
+</blockquote>
+<blockquote>
+<p><strong>最好是好的敌人。</strong>很多人都喜欢去追求最好的东西，从而会放弃掉好的东西。其实这种做法是十分不明智的，因为好总是要比不好强得多。<strong>现实就是，理想的机会很少会主动地送上门来，却常常有那么多的不尽理想，但是还算好的机会虽然有很多的不足，却远远比没有机会强得多。</strong></p>
+</blockquote>
+<blockquote>
+<p>约翰，看看那些失败的人吧，你会发现，<strong>大多数人之所以会失败，并不是因为他们犯错了，而是因为他们没有投入全部的身心，企业也是这样的道理。</strong></p>
+</blockquote>
+<p>爱你的父亲 1908年8月31日 （此时老约翰70岁，小约翰35岁）</p>
+<hr>
+<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>一开始写这个的目的之一就是强制自己去梳理看过的书同时劝诫自己，要坚持下去。</p>
+<p>2020年10月24日 下午10:16  晚安。 </p>
+]]></content>
+      <tags>
+        <tag>读书笔记</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>未必有希望才能坚持</title>
     <url>/2020/10/08/rockefeller17/</url>
     <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>一个人的时候，难免会踌躇不前，不确定自己是否走在了相对正确的路上。这个时候就想观察一下身边的人的生活状态，结果更加迷糊了，就好像那个蒙着眼睛走路的游戏，自己以为是在往前走，但是有可能是在绕圈，原地踏步… 躺平最容易，不管是否蒙着布，似乎也舒服，但是我现在不想往那边走。 </p>
@@ -683,7 +715,7 @@
     <url>/2020/06/04/MetaPhlAn/</url>
     <content><![CDATA[<h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 ]]></content>
@@ -1375,8 +1407,8 @@
 <p>参考链接：<br><a href="http://www.r-tutor.com/elementary-statistics/goodness-fit/chi-squared-test-independence" target="_blank" rel="noopener">Chi-squared Test of Independence | R Tutorial</a><br><a href="http://www.sthda.com/english/wiki/chi-square-test-of-independence-in-r" target="_blank" rel="noopener">Chi-Square Test of Independence in R - Easy Guides - Wiki - STHDA</a><br><a href="https://blog.csdn.net/z54572/article/details/61199246" target="_blank" rel="noopener">Fisher精确检验的通俗理解 - z54572的专栏 - CSDN博客</a><br><a href="https://likan.info/cn/post/2017-04-01-tabular-data/" target="_blank" rel="noopener">列联表数据的分析 - 战立侃</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>R</tag>
+        <tag>python</tag>
       </tags>
   </entry>
   <entry>
@@ -3689,8 +3721,8 @@
         <category>Mac</category>
       </categories>
       <tags>
-        <tag>shell</tag>
         <tag>Mac</tag>
+        <tag>shell</tag>
         <tag>linux</tag>
       </tags>
   </entry>
