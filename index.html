@@ -259,6 +259,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/10/23/arbitrage/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/10/23/arbitrage/" itemprop="url">uqer实现期现套利</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-10-23T14:40:26+08:00">
+                2021-10-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  795 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>核心思想是股指期货和指数的基差会周期性变化，那么贴水的时候持有股指期货，升水的时候持有指数的可交易标的，可以实现套利的目的。</p>
+<p>分三步：</p>
+<ol>
+<li>基于分钟行情计算基差；</li>
+<li>上传到有uqer生成交易逻辑，进行回测；</li>
+<li>中间踩了不少坑，时间关系不细说；</li>
+</ol>
+<p>总体来说，实现期现套利的过程比较麻烦，bigquant上不能跨品种回测，然后uqer普通用户有没有分钟行情数据（但是可以自己上传信号文件实现有益目的），然后内存太小了，也没法很好的进行后续的参数优化，最终能实现大概10%的年化，16.2%的回撤。</p>
+<p>主要是记录一下，脚本如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 期现套利</span></span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line">start = <span class="string">'2017-01-01'</span>                  <span class="comment"># 回测起始时间</span></span><br><span class="line">end = <span class="string">'2021-09-22'</span>                    <span class="comment"># 回测结束时间</span></span><br><span class="line">benchmark = <span class="string">'ZZ500'</span>                   <span class="comment"># 策略参考标准</span></span><br><span class="line">universe = [<span class="string">'510500.XSHG'</span>] + [<span class="string">'ICM0'</span>]              <span class="comment"># 证券池，也可以在这里添加多个证券, M0 主力合约, L0 当月合约</span></span><br><span class="line">capital_base = <span class="number">1000000</span>                 <span class="comment"># 起始资金, 期货和etf各100w</span></span><br><span class="line">freq = <span class="string">'m'</span>                         <span class="comment"># 日线策略</span></span><br><span class="line">refresh_rate = <span class="number">1</span>                     <span class="comment"># 每个交易日调仓</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 账户初始化配置</span></span><br><span class="line">stock_commission = Commission(buycost=<span class="number">0</span>, sellcost=<span class="number">0</span>, unit=<span class="string">'perValue'</span>)</span><br><span class="line">futures_commission = Commission(buycost=<span class="number">0.000023</span>, sellcost=<span class="number">0.000023</span>, unit=<span class="string">'perValue'</span>)</span><br><span class="line">slippage = Slippage(value=<span class="number">0</span>, unit=<span class="string">'perValue'</span>)</span><br><span class="line"><span class="comment">#argin_rate = &#123;'IC': 0.20&#125;</span></span><br><span class="line"></span><br><span class="line">accounts = &#123;</span><br><span class="line">    <span class="string">'stock_account'</span>: AccountConfig(account_type=<span class="string">'security'</span>, capital_base=capital_base, commission=stock_commission, slippage=slippage),</span><br><span class="line">    <span class="string">'futures_account'</span>: AccountConfig(account_type=<span class="string">'futures'</span>, capital_base=capital_base, commission=futures_commission, slippage=slippage)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 读取文件</span></span><br><span class="line">dt = pd.read_csv(<span class="string">'基差_etf1.csv'</span>)</span><br><span class="line">dt = dt.set_index(<span class="string">'date'</span>) </span><br><span class="line"></span><br><span class="line">date_list = list()</span><br><span class="line"></span><br><span class="line">stock_buy_date = list()</span><br><span class="line">fut_buy_date = list()</span><br><span class="line"></span><br><span class="line">stock_sell_date = list()</span><br><span class="line">fut_sell_date = list()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 贴水阈值</span></span><br><span class="line">low_value = <span class="number">-20</span></span><br><span class="line"><span class="comment"># 升水阈值</span></span><br><span class="line">high_value = <span class="number">15</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 移仓日ic不交易</span></span><br><span class="line">change_date = list()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(account)</span>:</span> </span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_data</span><span class="params">(account)</span>:</span> </span><br><span class="line">    stock_account = account.get_account(<span class="string">'stock_account'</span>)</span><br><span class="line">    future_account = account.get_account(<span class="string">"futures_account"</span>)</span><br><span class="line">    today = account.now.strftime(<span class="string">'%Y-%m-%d'</span>)</span><br><span class="line">    minu = account.now.strftime(<span class="string">'%Y-%m-%d %H:%M:%S'</span>)</span><br><span class="line">    <span class="comment">#print(minu)</span></span><br><span class="line">    <span class="comment">#print(type(minu))</span></span><br><span class="line">    <span class="keyword">if</span> minu <span class="keyword">not</span> <span class="keyword">in</span> dt.index:</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        basis = dt.loc[minu].basis</span><br><span class="line">    stock_pos = stock_account.get_positions()   </span><br><span class="line">    future_pos = future_account.get_positions()    </span><br><span class="line">    </span><br><span class="line">    <span class="comment"># etf </span></span><br><span class="line">    etf = <span class="string">'510500.XSHG'</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 获取主连, 映射</span></span><br><span class="line">    main_contract_IC = account.get_symbol(<span class="string">'ICM0'</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 检查是否换合约</span></span><br><span class="line">    <span class="keyword">if</span> account.mapping_changed(<span class="string">'ICM0'</span>):</span><br><span class="line">        symbol_before, symbol_after = account.get_rolling_tuple(<span class="string">'ICM0'</span>)</span><br><span class="line">        <span class="comment">#rint(symbol_before, 'changed to', symbol_after)</span></span><br><span class="line">        Position = future_account.get_position(symbol_before)</span><br><span class="line">        <span class="keyword">if</span> Position&gt; <span class="number">0</span>:</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#print(minu, ': switch', symbol_before, symbol_after)</span></span><br><span class="line"></span><br><span class="line">            future_account.switch_position(symbol_before, symbol_after) <span class="comment">#移仓指令</span></span><br><span class="line">            change_date.append(today)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">#basis = DataAPI.MktFutIdxBasisGet(secID=u"",ticker=main_contract_IC,beginDate=today,endDate=today,field=['basis'],pandas="1")['basis'].iloc[0]</span></span><br><span class="line">    <span class="comment"># 买卖etf</span></span><br><span class="line">    <span class="comment"># 升水的时候买etf, 买入后</span></span><br><span class="line">    <span class="keyword">if</span> basis &gt;= high_value <span class="keyword">and</span> etf <span class="keyword">not</span> <span class="keyword">in</span> stock_account.get_positions() <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> stock_buy_date:</span><br><span class="line">        <span class="comment">#print(minu, 'buy etf', basis, account.current_price(etf))</span></span><br><span class="line">        amount = int(stock_account.cash/account.current_price(etf) / <span class="number">100</span>) * <span class="number">100</span> </span><br><span class="line">        <span class="comment"># 计算买入数量</span></span><br><span class="line">        <span class="comment">#print('numbers:', amount)</span></span><br><span class="line">        stock_account.order_pct(etf, <span class="number">0.99</span>)</span><br><span class="line">        stock_buy_date.append(today)</span><br><span class="line">        <span class="comment">#stock_account.order(etf, 10000) </span></span><br><span class="line">    <span class="comment"># 贴水的时候卖etf , 卖出后不再卖出 </span></span><br><span class="line">    <span class="keyword">elif</span> basis &lt;= low_value <span class="keyword">and</span> etf <span class="keyword">in</span> stock_account.get_positions() <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> stock_buy_date <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> stock_sell_date:</span><br><span class="line">        <span class="comment">#print(minu, 'sell etf', basis, account.current_price(etf))</span></span><br><span class="line">        stock_account.order_to(etf, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">        stock_sell_date.append(today)</span><br><span class="line">       </span><br><span class="line">    <span class="comment"># 买卖期货, 分开写,逻辑清晰一些</span></span><br><span class="line">    <span class="keyword">if</span> basis &gt;= high_value <span class="keyword">and</span> main_contract_IC <span class="keyword">in</span> future_account.get_positions() <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> fut_sell_date <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> fut_buy_date <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> change_date:</span><br><span class="line">        <span class="comment"># 当天买入后，不再卖出</span></span><br><span class="line">        <span class="comment"># 当天卖出后，不再卖出..</span></span><br><span class="line">        <span class="comment">#print(minu, 'sell ic', basis, account.current_price(main_contract_IC))</span></span><br><span class="line">        future_account.order(main_contract_IC, <span class="number">-1</span>, <span class="string">'close'</span>)</span><br><span class="line">        fut_sell_date.append(today)</span><br><span class="line">    <span class="keyword">elif</span> basis &lt;= low_value <span class="keyword">and</span> main_contract_IC <span class="keyword">not</span> <span class="keyword">in</span> future_account.get_positions() <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> fut_buy_date <span class="keyword">and</span> today <span class="keyword">not</span> <span class="keyword">in</span> change_date:  </span><br><span class="line">        <span class="comment"># 当天买入后，不再买入</span></span><br><span class="line">        <span class="comment">#print(minu, 'buy ic', basis, account.current_price(main_contract_IC))</span></span><br><span class="line">        future_account.order(main_contract_IC, <span class="number">1</span>, <span class="string">'open'</span>)</span><br><span class="line">        fut_buy_date.append(today)</span><br><span class="line">    <span class="string">'''</span></span><br><span class="line"><span class="string">    stock_pos = stock_account.get_positions() </span></span><br><span class="line"><span class="string">    </span></span><br><span class="line"><span class="string">    print('==========================', minu , '============================================')</span></span><br><span class="line"><span class="string">    print('stock position:')</span></span><br><span class="line"><span class="string">    print(stock_pos)</span></span><br><span class="line"><span class="string">    print('stock cash:')</span></span><br><span class="line"><span class="string">    fut_pos = future_account.get_positions() </span></span><br><span class="line"><span class="string">    print('future position:')</span></span><br><span class="line"><span class="string">    print(fut_pos)</span></span><br><span class="line"><span class="string">    print(stock_account.pending_blotter)</span></span><br><span class="line"><span class="string">    print(account.current_price(etf))</span></span><br><span class="line"><span class="string">    print('---------------------------------------------------------------------------------')</span></span><br><span class="line"><span class="string">    '''</span></span><br></pre></td></tr></table></figure>
+
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/08/15/Bodhi3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1827,193 +1988,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/11/07/rockefeller19/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/11/07/rockefeller19/" itemprop="url">拖后腿和装修</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-07T12:54:45+08:00">
-                2020-11-07
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.4k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  5 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>以后这里记录一下自己最近读完的书，鼓励和监督自己持续读下去。</p>
-<p>最近看了一个纪录片，起源是在某个群里看到了一个女生的自我介绍：<br><a href="https://m.douban.com/group/topic/196171117/?dt_platform=com.douban.activity.wechat_friends&dt_dapp=1" target="_blank" rel="noopener">小姐姐独自书写着属于自己的书，我给你展现书的序</a> (很长)，里边提到了《大法官金斯伯格》。</p>
-<blockquote>
-<p>国庆期间看了纪录片《大法官金斯伯格》，数次泪崩，金斯伯格与她丈夫马丁的爱情，就是我最想要追求的那种关系。</p>
-</blockquote>
-<p>然后我就去搜了看了下，B站就有，确实不错。看完纪录片后，觉得还不过瘾，又去找她的书来看，好在微信读书就有：《异见时刻：“声名狼藉”的金斯伯格大法官》。</p>
-<p>不想梗概或者总结什么，推荐（特别是女生）阅读，她和丈夫马丁的关系也是我想要的关系。 附马丁去世之前留给金斯伯格的一段话：</p>
-<blockquote>
-<p>6/17/10<br>My dearest Ruth –</p>
-<p>You are the only person I have loved in my life, setting aside, a bit, parents and kids and their kids, and I have admired and loved you almost since the day we first met at Cornell some 56 years ago.</p>
-<p>What a treat it has been to watch you progress to the very top of the legal world!!</p>
-<p>I will be in JH Medical Center until Friday, June 25, I believe, and between then and now I shall think hard on my remaining health and life, and whether on balance the time has come for me to tough it out or to take leave of life because the loss of quality now simply overwhelms. <strong>I hope you will support where I come out, but I understand you may not. I will not love you a jot less.</strong></p>
-<p>Marty</p>
-</blockquote>
-<p>接下来是读书笔记的正文：</p>
-<h3 id="第-30-封-不要让小人拖你的后腿"><a href="#第-30-封-不要让小人拖你的后腿" class="headerlink" title="第 30 封 不要让小人拖你的后腿"></a>第 30 封 不要让小人拖你的后腿</h3><blockquote>
-<p>在我年轻的时候，我就不会同两种人交往。</p>
-<p>第一种是那种向现实妥协，并且安于现状的人。<strong>他们坚信着自己的条件是不足的，认为能够创造成就的人都是那些幸运的人，他们没有这个福气，这种人通常会守着一个有保障且平凡的岗位，日复一日、年复一年地混日子。</strong>他们<strong>也了解到自己需要一份更加具有挑战性的工作，那样才能够帮助自己继续成长，但是因为那些层层的阻力，让他们觉得自己确实不适合做大事。</strong></p>
-<p><strong>明智的人，永远都不会坐下来哀伤。</strong>但是这种人通常只会抱怨自己的命运不济，却从来学不会欣赏自己，将自己看成很有分量的人，他们已经失去了那种让自己全力以赴的感觉，以及自我鼓励的本能，反而不断地让消极占据了自己的内心。</p>
-<p>第二种人，<strong>就是不能把挑战进行到底的人</strong>，他们曾经也具有很大的志向，也曾经为了自己能够创造成就而努力，制订计划，<strong>但是过了十几年或者是几十年后，随着工作的阻力慢慢增加，在为了向上攀爬而艰苦奋斗的时候，他们通常会觉得这样做十分不值，因此放弃掉自己的努力，变得自暴自弃起来。</strong></p>
-<p>这两种人有着共同的特征，并且这种特征特别容易感染到其他人，<strong>那就是消极</strong>。</p>
-</blockquote>
-<p>路过：我发现，投资真的是人生的一个镜像，类比的话：第一种就是我不玩投资，我也不了解，我觉得太复杂，避而远之。第二种就是：亏大发了，割肉止痛，敬而远之。</p>
-<blockquote>
-<p>我一直觉得，每个人的个性以及野心，与他处在什么样的身份地位，和他与什么人交往有关。<strong>如果经常和消极的人来往，那么你自己也会变得消极。常常和小人物来往，那么你就会多出很多卑微的习惯。</strong>反过来说的话，如果经常和大人物接触的话，就会提高自己的思想水平。经常和那些雄心万丈的人来往，也能够让你具有迈向成功所必需的野心以及行动。</p>
-</blockquote>
-<p>路过：不只是和交往的人，而应该是和自己交往的「微环境」，包括你接触的媒体，看的书，知识输入的来源，都会影响。 好的做法是有意识地给自己缔造一个自己喜欢（向上生长）环境，毕竟现实中的房子都要装修，你的精神家园为什么不装修嘞。 交友如此，读书亦是如此。<br>比如我不想锻炼的时候，知道大法官金斯伯格 80 多岁还能做 20 个俯卧撑，坚持去健身房，你还有啥脸面给自己找借口… 没有…</p>
-<blockquote>
-<p><strong>你要重视自己身边的环境，就像是食物能够满足你身体的需求一样，精神活动也能够滋润你心理的健康，要让你的环境给你的工作服务，而不是让它们成为你的拖累，不要让那些扯你后腿的人来搞得自己萎靡不振</strong>，要让环境帮你的方法是，多去接近那些成功的人，不要和那些消极的人往来。</p>
-</blockquote>
-<blockquote>
-<p>每件事情都要做得尽量的好，因为你负担不起那些因为贪小失大所累积的种种额外负担。</p>
-</blockquote>
-<p>爱你的父亲  1902年5月11日 （此时老约翰64岁，小约翰29岁）</p>
-<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>滴，加满了油，继续出发。<br>正在看的书📚是保罗·盖蒂《How to be rich》，打算下次写的时候把它看完~ </p>
-<p><a href="https://b23.tv/ep340570" target="_blank" rel="noopener">女大法官金斯伯格 RBG_纪录片_bilibili_哔哩哔哩</a></p>
-<p>2020年11月7日 下午12:54 </p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2071,7 +2045,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">71</span>
+                  <span class="site-state-item-count">72</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2093,7 +2067,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2151,7 +2125,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">128.7k</span>
+    <span title="Site words total count">129.5k</span>
   
 </div>
 
