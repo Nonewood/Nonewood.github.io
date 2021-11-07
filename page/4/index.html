@@ -259,6 +259,206 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/05/29/cytoscape/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/29/cytoscape/" itemprop="url">使用 Cytoscape 画网络互作</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-05-29T11:43:10+08:00">
+                2020-05-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/metagenomics/" itemprop="url" rel="index">
+                    <span itemprop="name">metagenomics</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1.1k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  4 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="一、写在开头"><a href="#一、写在开头" class="headerlink" title="一、写在开头"></a>一、写在开头</h3><p>因为项目的原因，必须得画网络互作图，之前一直想用脚本实现，不想手动在可视化的软件界面（因为觉得麻烦），但是又一直找不到合适的，即使找到了也不知道怎么用于我目前项目的数据，就一直拖着。</p>
+<p>后来看到好多文献都是用 Cytoscape 这个软件画，我想，那行吧，我学习一下，就利用同事的教程生成了配置文件然后请教了一些问题（特别感谢），花了不少的时间终于鼓捣出来了，虽然结果依旧不美观，但是至少有产出了。</p>
+<p>写这个文档，是因为后来发现自己年纪大了，总是有忘记事情的倾向，如果不做记录，隔一段时间不用了，肯定马上就忘了，所有后来总是有记录的习惯，脚本也好，日记也好，技术文档也罢。下边是正式的记录内容：</p>
+<h3 id="二、网络互作图简易教程"><a href="#二、网络互作图简易教程" class="headerlink" title="二、网络互作图简易教程"></a>二、网络互作图简易教程</h3><ol>
+<li><p>生成 Edges 和 Nodes 文件，两种文件格式如下（同事脚本生成的）：<br>Edges 文件列名:  Source  Target  Correlation     LineWidth       LineColor<br>Nodes 文件列名：Node    NodeFontFace    NodeSize        NodeColor</p>
+</li>
+<li><p>导入文件<br>Edges 文件导入方法：File -&gt; Import -&gt; Network from File<br>Nodes 文件导入方法：File -&gt; Import -&gt; Table from File</p>
+</li>
+<li><p>设置格式<br>Style 里可以选择默认的网络图模板；<br>Node 和 Edge 可以分别设置节点和边的属性；</p>
+</li>
+<li><p>布局（拖）网络互作图<br>可以删除一些和任何其他节点没有相关性的点，工具栏 Layout 可以选择各种 Layout，因为要看不同门的属水平的网络互作情况，我用的是 Layout -&gt; Group Attributes Layout -&gt; 列名（我的是 Node color , 因为按照不同的门给的颜色），另外在 Mac 上可以 按住 cmd  + 触摸板 选择多个进行同时拖动（我过了好久才弄明白）…</p>
+</li>
+<li><p>如何设置让节点其他网络图相同的位置相同？<br>Layout -&gt; Copycat Layout 就可以选择了，如果没有的话可以去  Apps -&gt; App Manager 下载相应的工具， App Manager 还有其他许多的工具可以下载使用，我还没有尝试太多其他的。</p>
+</li>
+<li><p>如何分析网络互作图，比如计算点度中心性（degree centrality），接近中心性（closeness centrality）之类的数据 ?<br>Tools -&gt; NetworkAnalyzer -&gt; Network analysis -&gt; Analyze Network -&gt; Treat the network as undirected （我的网络图是无向的）<br>然后就可以在下边的 Table Panel 看到关于 Node 和 Edge 的各种计算得出的信息了。</p>
+</li>
+<li><p>后续分析以及可视化（比较不同的网络图）<br>可以分析共有的节点和特有的节点，这个可以使用 Venn 图或者 Upset 这个包；<br>也可以比较衡量网络互作图的各种属性的值，比如接近中心性（closeness centrality）；<br>也可以比较两种网络图相关性值的分布，我画了箱线图，发现一个组的相关系数和另外一组的显著差异；<br>以及其他的。</p>
+</li>
+</ol>
+<p>附：如何用 upset 画图？<br>1）首先用 python 生成画图的文件, 格式是：行名是边，列名是分组，中间是 0,1 代表有无。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成画 upset 的文件， </span></span><br><span class="line">se = pd.DataFrame(columns=[<span class="string">'CS'</span>, <span class="string">'NS'</span>]) <span class="comment"># 创建一个数据框</span></span><br><span class="line">edge = list(set(list(dt[<span class="string">'edge'</span>]) + list(df[<span class="string">'edge'</span>]))) <span class="comment"># 所有的 边的对</span></span><br><span class="line">cs_edge = [<span class="number">1</span> <span class="keyword">if</span> x <span class="keyword">in</span> list(dt[<span class="string">'edge'</span>]) <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> edge]  <span class="comment"># 生成 0，1，下同 </span></span><br><span class="line">cs_edge</span><br><span class="line">ns_edge = [<span class="number">1</span> <span class="keyword">if</span> x <span class="keyword">in</span> list(df[<span class="string">'edge'</span>]) <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> x <span class="keyword">in</span> edge] </span><br><span class="line">se[<span class="string">'CS'</span>] = cs_edge</span><br><span class="line">se[<span class="string">'NS'</span>] = ns_edge</span><br><span class="line">se.index = edge</span><br><span class="line">se.to_csv(<span class="string">'edge.xls'</span>, sep = <span class="string">'\t'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>2）然后再用 R 的包画图（比较简单）：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">library</span>(<span class="string">"UpSetR"</span>)</span><br><span class="line">pdf(<span class="string">"upset.pdf"</span>, width=<span class="number">3</span>,height=<span class="number">3</span>)</span><br><span class="line">gene &lt;- read.csv(<span class="string">'edge.xls'</span>, header = <span class="literal">T</span>, sep = <span class="string">'\t'</span>)</span><br><span class="line">upset(gene, order.by = <span class="string">"freq"</span>, </span><br><span class="line">      mb.ratio = c(<span class="number">0.70</span>, <span class="number">0.30</span>), </span><br><span class="line">      <span class="comment">#point.size = 2, line.size = 1,</span></span><br><span class="line">      sets.bar.color=c(<span class="string">"#24abe1"</span>, <span class="string">"#f3796f"</span>), mainbar.y.label = <span class="string">"Edges Intersections"</span>, sets.x.label = <span class="string">"Edges Size"</span>)</span><br><span class="line">dev.off()</span><br></pre></td></tr></table></figure>
+
+<p>3） 最后竖起你的大拇指，夸自己一下，完成撒花。</p>
+<h3 id="三、参考资料"><a href="#三、参考资料" class="headerlink" title="三、参考资料"></a>三、参考资料</h3><p><a href="https://kateto.net/tutorials/" target="_blank" rel="noopener">https://kateto.net/tutorials/</a><br><a href="https://zhuanlan.zhihu.com/p/31198752" target="_blank" rel="noopener">谁是社会网络中最重要的人？ - 知乎</a><br><a href="http://bioinformatics.psb.ugent.be/webtools/Venn/" target="_blank" rel="noopener">Draw Venn Diagram</a><br><a href="https://www.r-bloggers.com/hacking-our-way-through-upsetr/" target="_blank" rel="noopener">Hacking our way through UpSetR | R-bloggers</a><br><a href="https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html" target="_blank" rel="noopener">https://cran.r-project.org/web/packages/UpSetR/vignettes/basic.usage.html</a></p>
+<h3 id="四、联系方式"><a href="#四、联系方式" class="headerlink" title="四、联系方式"></a>四、联系方式</h3><p>我想适当开放一下，可以通过以下方式联系我，但是不保证解决问题.. （因为菜）<br>邮箱:  <a href="mailto:Pengzai16@gmail.com" target="_blank" rel="noopener">Pengzai16@gmail.com</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/05/23/rockefeller6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1999,216 +2199,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/22/the-snowball3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/03/22/the-snowball3/" itemprop="url">读书笔记-滚雪球：巴菲特和他的财富人生（3）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-22T10:15:12+08:00">
-                2020-03-22
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  3k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  10 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>写作的目的在于持续的自省，由于种种原因，对于没有立刻见效的好方子，人总是倾向于无法坚持或者放弃。不随着情绪，而是按照纪律去做事情，我想应该能够收获更多，这和投资是一样的。</p>
-<blockquote>
-<p>会议快结束的时候，董事们打开雪茄盒开始分发雪茄，他们吞云吐雾，沃伦坐在一旁却气得快冒烟了。“<strong>那是用我的钱买的雪茄。</strong>”他想。在返回机场的路上，他从钱包里拿出孩子们的照片，看着他们，他的血压才降下去。</p>
-</blockquote>
-<blockquote>
-<p>我记得那时又分发雪茄了。<strong>我为每一根雪茄支付30%的钱，而我是唯一不抽雪茄的人。他们应该为我的泡泡糖支付1/3的钱。</strong></p>
-</blockquote>
-<p>路过：所以，赚钱不是没有道理的，且不说你没有人家赚钱的能力，你连人家省钱的能力都没有….. 当你说想暴富时，你在想什么呢？ </p>
-<blockquote>
-<p>沃伦赞成妻子的各种兴趣，为她的慷慨和在奥马哈的领导角色而自豪，他感激她对孩子们的关注，让他能够解放出来专注于自己的工作。他常常也会在单子上再加上一件事情，<strong>不过和她不一样，他从不会让自己承担过多的事务。当新的事务进来，他会让其他的出去。但是，有两个例外：钱和朋友。</strong></p>
-</blockquote>
-<p>路过：我也一直认为留白很重要，生活也罢，事业也罢，感情也罢，太多无用的东西会占据我们的时间和精力，而且会因此失去重要的机会，应该保持足够简单的同时去追求自己感兴趣的事情。另一个角度，你很难说那些总是活跃表现的人贡献大一点，还是默默做事的人贡献大一点，每个人按照自己的兴趣在不同的位置发挥不同的作用，我还是更喜欢后者。</p>
-<blockquote>
-<p>芒格觉得格雷厄姆的缺点在于，他认为未来<strong>“更多的是危险，而不是充满机会”</strong>。他说：“格雷厄姆最喜欢克洛伊索斯的故事，在和波斯打仗失败后，克洛伊索斯看着自己被摧毁的帝国，回忆起梭伦说的话，<strong>‘除非结束，否则没有人的生活是幸福的’</strong>。”￼芒格开始努力让巴菲特撇掉格雷厄姆沉闷的悲观主义，这种悲观主义是干弯腰捡“烟蒂”而只能吸上最后一口的苦差事的精神支撑。</p>
-</blockquote>
-<p>路过：我发现我也有悲观主义的倾向，洛克菲勒也说相信，而非希望，自己会成功很重要，它会促使你想出来各种办法抵达成功。墨菲定律说你觉得什么会发生，那么它就会发生。 我已经在考虑自我心理暗示对自己起的作用，而解决办法就是，像是补充体能去吃饭一样，去补充自信积极的精神能量，比如书籍，比如积极的人。</p>
-<blockquote>
-<p>布朗会给巴菲特打电话，让他知道他们已经得到了5美元一股的某股票的卖盘报价。<br>“嗯，4.75美元买入。”巴菲特会毫不犹豫地回答。如钓鱼甩竿一样，这样做是为了测出这个卖家到底有多饥饿。<br>询问了顾客是否愿意接受这个更低的价格后，布朗将会告知巴菲特这样的回复：“对不起，低于5美元，对方不接受。”<br>“不予考虑。”巴菲特将会回答。<br>几天以后，布朗又会再次致电巴菲特：“4.75美元卖出价，已经搞定，那我们就以4.75美元买入。”<br>“对不起，”巴菲特这回将立刻回答，“4.5美元买入。”<br>布朗又要回致卖方，而对方肯定会表示，“怎么回事？4.75美元怎么了？”<br>“我们仅仅是传递信息。4.5美元买入。”<br>电话一个回合接着一个回合，直到一周以后，布朗又来了，“搞定，4.5美元买入”。<br>“对不起，”巴菲特将会回答，同时又压了0.125美元，“4.375美元买入。”<br>就这样，他以巴菲特特有的方式不断压价。<strong>他很少，几乎不会因为非常想得到一只股票而提高报价。￼</strong></p>
-</blockquote>
-<p>路过：后来芒格说，他和沃伦差点儿因为这个没有买到好公司，承认这是他们的不足之处。不过这也能说明他们重视成本，扪心而问，你自己买的时候，有认真计较这 0.25， 0.125 价格的区别吗？ </p>
-<blockquote>
-<p>他吸收信息而且动辄拿给朋友们大量的剪报和阅读材料——<strong>他认为他们会感兴趣</strong>，后来才猛地醒悟过来他们已经远远落后于他的步伐了。</p>
-</blockquote>
-<p>路过：我也有类似的感受，当然我不是说我认识的人落后，而是没人懂我感兴趣的点，或许大家在各自的生活被各自认为重要的事情占据着，前进的道路上只有我自己一个人。留白是很重要的能力，留白指的是自己接受新事物的能力和态度。</p>
-<blockquote>
-<p>对长期的朋友他表现出无比的忠诚，人们尤其会被他内心的诚实所打动。</p>
-</blockquote>
-<p>路过：与其说是好的品德，不如说是好的策略，我坚信这样的做法会让我的人生获益。</p>
-<blockquote>
-<p><strong>我喜欢反复吃同样的食物。我可以每天都吃火腿汉堡，连续当早饭吃50天</strong>。 在她位于格伦韦尔比农场的别墅里吃饭时，凯瑟琳会让厨师做龙虾。<strong>我不会吃，老出错，总也夹不到，倒霉得很，怎么也吃不到嘴里。</strong>她会告诉我把它翻过来夹。”在遇到9道菜的正餐时——每一道菜都搭配有相应的酒，并且放在固定的餐桌上，而桌旁则坐满了达官显赫和名流人士，以及新闻界的明星记者——“这常常让他十分尴尬。”格拉迪丝·凯泽说。<strong>他从来都没有适应这种奢华的生活。</strong></p>
-</blockquote>
-<p>路过：1. 相比较某些人倡导或者喜欢的多姿多彩的生活，我更喜欢在生活的某些方面保持足够的单调简单。2. 有时候，聚餐发现有的人什么都懂，能够凯凯而谈，特别是领导，会觉得是很不错的能力，毕竟这样的人更容易引起人的注意，但是呢，后来觉得也还好，有长必有短。3. 你没有问题的，你需要做的就是认清楚自己，然后适应自己。</p>
-<blockquote>
-<p><strong>他喜欢自己乡巴佬的身份，并且很高兴自己被龙虾搞得狼狈不堪。</strong>他的天真表现为一种纯真和无辜的神态。<strong>不过他在社交方面的纯真无邪也是真的——主要是因为他对周围的世界完全不了解。</strong></p>
-</blockquote>
-<p>路过：天才都是这样的吗…</p>
-<blockquote>
-<p>它每天的发行量高达15万份，而它已经创刊大约50年了。它不只是价值两美元的商品，更是必需品。如果你十分关注赛马或者你是赛马的裁判员，那么你就需要《每日赛讯》。<strong>他想卖多少钱都可以，人们都会买的。从本质上来看，这就像把毒品卖给吸毒成瘾的人一样。</strong><br><strong>因此，每年沃尔特就会对着镜子说：“镜子，镜子，墙上的镜子，今年秋天《每日赛讯》要涨多少钱？”</strong><br><strong>而镜子总会说：“沃尔特，涨两毛五吧！”</strong></p>
-</blockquote>
-<p>路过：单纯觉得好笑。(其实好多东西本质上都和毒品一样，唯独毒品被批评了… 为什么，因为它做得太过了… 稍微好一点，就会有「理性」的人类出来赞美和讴歌它。)</p>
-<blockquote>
-<p>“想改变一下”和“并没有完全离开”，这就是巴菲特式的含糊其词，他们两个人都在避免捅破那层窗户纸，避免让对方失望。<br>接着她就离开了。</p>
-</blockquote>
-<p>路过：后来巴菲特和他妻子的感情出问题了，如果不看书，鲜有报道去关注他的私人生活。虽然不清楚内幕，但是我觉得对于沃伦这种某些方面足够简单的人，一定伤害很大。股神也会遭遇普通人遭遇的事情咯。</p>
-<blockquote>
-<p>苏珊和沃伦在电话里可以一直说几个小时。现在沃伦明白，只要她愿意回来，他可以为她做任何事情，答应她的任何条件、任何要求——甚至可以搬到加州去，或者学习跳舞。但是很显然，已经太晚了。<strong>他无法给予她所想要的东西，无论是什么都不行了。她解释说自己需要自由，她需要过独立的生活，满足自己的需要，找到自我，她不可能一边照顾他的生活又一边做这些事情。</strong></p>
-</blockquote>
-<p>路过：当事情刚开始浮出水面的时候，其实已经结束了。或者说侦探电影里，凶手就出现在第一幕。所以在的时候要好好珍惜。</p>
-<blockquote>
-<p>因此，他漫无目的地在房子里转来转去，吃饭穿衣都成了问题。他整天头昏脑涨来到办公室。在员工面前，他还要控制自己——不过别人还是能看出来他晚上根本没有睡好。<strong>他每天都哭泣着给苏珊打电话。</strong></p>
-</blockquote>
-<p>路过：过分依赖是多么卑微。他们都说投资要有安全边际，其他事情又何尝不是呢？ 只是为了保护自己。</p>
-<blockquote>
-<p>这是可以避免的，这本来就不应该发生，<strong>这是我所犯过的最大的过错。</strong>从根本上来说，无论我做了什么，只要是和苏珊的离开有关的，都是我一生中所犯的最大过错。</p>
-<p>其中部分原因就是缺乏理解，我确定，95%都是我的过错——这一点是毫无疑问的。甚至可以说99%都是我的过错。<strong>我对她太不关心了，而她总是对我十分关心，几乎是关心我所有的方面。</strong>你知道，我的工作变得越来越有意思。当苏珊离开时，她对我的需要比我应该给予的要少。我的配偶成了第二位的。她和我生活了这么多年，在照顾孩子上她的功劳占90%。不过，却很奇怪，虽然我的付出很少，但是我对孩子们的影响却很大，这和付出的时间不成比例。<strong>然后，她失业了，实际上是因为孩子们长大成人，她也就没事干了。</strong></p>
-<p>在一定意义上，也到了她做自己喜欢做的事情的时候了。她一直都在从事大量的志愿工作，但是最后，却没有真正起到什么作用。她不想学城里许多女人一样，成为一个大人物的太太。她不希望因为自己是一个著名人士的妻子，就自然成了一个著名的女士。她喜欢和人们接触，而每个人也都喜欢同她来往。</p>
-<p>她爱我，并且依然爱我，但是我们的关系却很不可思议。<strong>但是……这不应该发生，这完全是我的错。</strong></p>
-</blockquote>
-<p>路过：喏，失去了才会后悔和反思。要珍惜那些你认为重要的人，因为不像东西丢了可以买新的，人一旦丢了，就没有重来的机会了。人必然会犯错误，然而我多么贪婪地希望每一件事情都尽力处理好。</p>
-<p>2020年3月22日 上午10:16 于深圳</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2266,7 +2256,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">74</span>
+                  <span class="site-state-item-count">75</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2288,7 +2278,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">38</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2346,7 +2336,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">132.9k</span>
+    <span title="Site words total count">135.1k</span>
   
 </div>
 
