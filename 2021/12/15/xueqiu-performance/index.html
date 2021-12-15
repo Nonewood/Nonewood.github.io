@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="google-site-verification" content="9HGY4GvHBQiYcf3ysSZmtQCkRadM6n5ZDPoYRlcr71E">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="‘雪球组合’， ‘模拟’， ‘量化’,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="为啥干这个？工作和个人需要，基于雪球模拟组合实现自动化的股票调仓，主要分几步：1）登录雪球，创建模拟组合，手动添加股票，获取填写的 cURL；2)  转化为 python 的post  请求；3）运行程序，检查结果即可； 咋干？1）创建组合图见公众号链接，下同2）手动添加股票3）开发者工具，找到添加股票的请求4）获取 cURL 1234567891011121314151617curl &apos;http">
+<meta name="keywords" content="‘雪球组合’， ‘模拟’， ‘量化’">
+<meta property="og:type" content="article">
+<meta property="og:title" content="雪球模拟盘脚本化调仓">
+<meta property="og:url" content="http://nonewood.github.io/2021/12/15/xueqiu-performance/index.html">
+<meta property="og:site_name" content="朝简单处想 往认真处行">
+<meta property="og:description" content="为啥干这个？工作和个人需要，基于雪球模拟组合实现自动化的股票调仓，主要分几步：1）登录雪球，创建模拟组合，手动添加股票，获取填写的 cURL；2)  转化为 python 的post  请求；3）运行程序，检查结果即可； 咋干？1）创建组合图见公众号链接，下同2）手动添加股票3）开发者工具，找到添加股票的请求4）获取 cURL 1234567891011121314151617curl &apos;http">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-12-15T13:48:25.460Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="雪球模拟盘脚本化调仓">
+<meta name="twitter:description" content="为啥干这个？工作和个人需要，基于雪球模拟组合实现自动化的股票调仓，主要分几步：1）登录雪球，创建模拟组合，手动添加股票，获取填写的 cURL；2)  转化为 python 的post  请求；3）运行程序，检查结果即可； 咋干？1）创建组合图见公众号链接，下同2）手动添加股票3）开发者工具，找到添加股票的请求4）获取 cURL 1234567891011121314151617curl &apos;http">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://nonewood.github.io/2021/12/15/xueqiu-performance/">
+
+
+
+
+
+<script data-ad-client="ca-pub-7093029654692281" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-7126877795421398",
+          enable_page_level_ads: true
+     });
+</script>
+
+  <title>雪球模拟盘脚本化调仓 | 朝简单处想 往认真处行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">朝简单处想 往认真处行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/12/15/xueqiu-performance/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">雪球模拟盘脚本化调仓</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-12-15T21:38:26+08:00">
+                2021-12-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  533 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="为啥干这个？"><a href="#为啥干这个？" class="headerlink" title="为啥干这个？"></a>为啥干这个？</h3><p>工作和个人需要，基于雪球模拟组合实现自动化的股票调仓，主要分几步：<br>1）登录雪球，创建模拟组合，手动添加股票，获取填写的 cURL；<br>2)  转化为 python 的post  请求；<br>3）运行程序，检查结果即可；</p>
+<h3 id="咋干？"><a href="#咋干？" class="headerlink" title="咋干？"></a>咋干？</h3><p>1）创建组合<br>图见公众号链接，下同<br>2）手动添加股票<br>3）开发者工具，找到添加股票的请求<br>4）获取 cURL</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">curl 'https://tc.xueqiu.com/tc/snowx/MONI/transaction/add.json' \</span><br><span class="line">  -H 'authority: tc.xueqiu.com' \</span><br><span class="line">  -H 'sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"' \</span><br><span class="line">  -H 'accept: application/json, text/plain, */*' \</span><br><span class="line">  -H 'content-type: application/x-www-form-urlencoded' \</span><br><span class="line">  -H 'sec-ch-ua-mobile: ?0' \</span><br><span class="line">  -H 'user-agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36' \</span><br><span class="line">  -H 'sec-ch-ua-platform: "macOS"' \</span><br><span class="line">  -H 'origin: https://xueqiu.com' \</span><br><span class="line">  -H 'sec-fetch-site: same-site' \</span><br><span class="line">  -H 'sec-fetch-mode: cors' \</span><br><span class="line">  -H 'sec-fetch-dest: empty' \</span><br><span class="line">  -H 'referer: https://xueqiu.com/performance' \</span><br><span class="line">  -H 'accept-language: zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,zh-TW;q=0.6' \</span><br><span class="line">  -H 'cookie: your cookie here' \</span><br><span class="line">  --data-raw 'type=1&amp;date=2021-12-15&amp;gid=4383054580870984&amp;symbol=SZ002157&amp;price=9.49&amp;shares=100&amp;commission_rate=0.1' \</span><br><span class="line">  --compressed</span><br></pre></td></tr></table></figure>
+
+<p>5）转化python的格式<br><a href="https://tool.lu/curl/" target="_blank" rel="noopener">https://tool.lu/curl/</a></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line">headers = &#123;</span><br><span class="line">    <span class="string">'authority'</span>: <span class="string">'tc.xueqiu.com'</span>,</span><br><span class="line">    <span class="string">'sec-ch-ua'</span>: <span class="string">'" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"'</span>,</span><br><span class="line">    <span class="string">'accept'</span>: <span class="string">'application/json, text/plain, */*'</span>,</span><br><span class="line">    <span class="string">'content-type'</span>: <span class="string">'application/x-www-form-urlencoded'</span>,</span><br><span class="line">    <span class="string">'sec-ch-ua-mobile'</span>: <span class="string">'?0'</span>,</span><br><span class="line">    <span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36'</span>,</span><br><span class="line">    <span class="string">'sec-ch-ua-platform'</span>: <span class="string">'"macOS"'</span>,</span><br><span class="line">    <span class="string">'origin'</span>: <span class="string">'https://xueqiu.com'</span>,</span><br><span class="line">    <span class="string">'sec-fetch-site'</span>: <span class="string">'same-site'</span>,</span><br><span class="line">    <span class="string">'sec-fetch-mode'</span>: <span class="string">'cors'</span>,</span><br><span class="line">    <span class="string">'sec-fetch-dest'</span>: <span class="string">'empty'</span>,</span><br><span class="line">    <span class="string">'referer'</span>: <span class="string">'https://xueqiu.com/performance'</span>,</span><br><span class="line">    <span class="string">'accept-language'</span>: <span class="string">'zh-CN,zh;q=0.9,en;q=0.8,ja;q=0.7,zh-TW;q=0.6'</span>,</span><br><span class="line">    <span class="string">'cookie'</span>: <span class="string">'your cookie here'</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data = &#123;</span><br><span class="line">  <span class="string">'type'</span>: <span class="string">'1'</span>, <span class="comment"># 1是买，2是卖</span></span><br><span class="line">  <span class="string">'date'</span>: <span class="string">'2021-12-15'</span>,</span><br><span class="line">  <span class="string">'gid'</span>: <span class="string">'4383054580870984'</span>,</span><br><span class="line">  <span class="string">'symbol'</span>: <span class="string">'SZ002714'</span>,</span><br><span class="line">  <span class="string">'price'</span>: <span class="string">'9.49'</span>,</span><br><span class="line">  <span class="string">'shares'</span>: <span class="string">'100'</span>,</span><br><span class="line">  <span class="string">'tax_rate'</span>: <span class="string">'0'</span>,</span><br><span class="line">  <span class="string">'commission_rate'</span>: <span class="string">'0.1'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">response = requests.post(<span class="string">'https://tc.xueqiu.com/tc/snowx/MONI/transaction/add.json'</span>, headers=headers, data=data)</span><br></pre></td></tr></table></figure>
+
+<p>批量处理的时候，只需要脚本处理 data 的字典内容即可，太简单了，不展开说；</p>
+<h3 id="注意的点"><a href="#注意的点" class="headerlink" title="注意的点"></a>注意的点</h3><p>1）cookies 一段时间可能失效，需要手动更新下；<br>2）基金，etf 都可以；</p>
+<h3 id="吃水不忘挖井人"><a href="#吃水不忘挖井人" class="headerlink" title="吃水不忘挖井人"></a>吃水不忘挖井人</h3><p><a href="https://github.com/yyri/stockScripts" target="_blank" rel="noopener">https://github.com/yyri/stockScripts</a></p>
+<h3 id="公众号链接"><a href="#公众号链接" class="headerlink" title="公众号链接"></a>公众号链接</h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>(✪ω✪)</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Nonewood 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/‘雪球组合’，-‘模拟’，-‘量化’/" rel="tag"># ‘雪球组合’， ‘模拟’， ‘量化’</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/11/18/search-file-and-zip/" rel="next" title="shell 和 windows 查找文件并且压缩">
+                <i class="fa fa-chevron-left"></i> shell 和 windows 查找文件并且压缩
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 侧边广告 -->
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7093029654692281" data-ad-slot="4703719462" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Nonewood</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#为啥干这个？"><span class="nav-number">1.</span> <span class="nav-text">为啥干这个？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#咋干？"><span class="nav-number">2.</span> <span class="nav-text">咋干？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#注意的点"><span class="nav-number">3.</span> <span class="nav-text">注意的点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#吃水不忘挖井人"><span class="nav-number">4.</span> <span class="nav-text">吃水不忘挖井人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#公众号链接"><span class="nav-number">5.</span> <span class="nav-text">公众号链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 侧边广告 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7093029654692281" data-ad-slot="4703719462" data-ad-format="auto" data-full-width-responsive="true"></ins>
+     <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nonewood</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">135.7k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script async src="/js/src/fireworks.js"></script>
+
+
+
+ 
+<script>
+  var OriginTitile = document.title;
+  var titleTime;
+  document.addEventListener("visibilitychange", function() {
+    if (document.hidden) {
+      document.title = "(つェ⊂)我藏好了哦~" + OriginTitile;
+      clearTimeout(titleTime);
+    } else {
+      document.title = "(*´∇｀*) 被你发现啦~" + OriginTitile;
+      titleTime = setTimeout(function() {
+        document.title = OriginTitile;
+      }, 2000);
+    }
+  });
+</script>
+
+
+ 
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+<script>
+  function timer() {
+    var ages = moment.preciseDiff(moment(),moment(20190801,"YYYYMMDD"));
+    ages = ages.replace(/years?/, "年");
+    ages = ages.replace(/months?/, "月");
+    ages = ages.replace(/days?/, "天");
+    ages = ages.replace(/hours?/, "小时");
+    ages = ages.replace(/minutes?/, "分");
+    ages = ages.replace(/seconds?/, "秒𓃗𓃵𓆉𓇼𓆡");
+    ages = ages.replace(/\d+/g, '<span style="color:">$&</span>');
+    div.innerHTML = `𓃠𓃰𓃱𓃲𓃟 ${ages}`;
+  }
+  var div = document.createElement("div");
+  //插入到copyright之后
+  var copyright = document.querySelector(".copyright");
+  document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+  timer();
+  setInterval("timer()",1000)
+</script>
+
+
+</body>
+</html>
