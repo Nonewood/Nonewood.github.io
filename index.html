@@ -259,6 +259,159 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/11/xueqiu-performancev1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/11/xueqiu-performancev1/" itemprop="url">雪球模拟组合查询和交易脚本-python</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-11T08:21:59+08:00">
+                2022-01-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  408 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Talk-cheap-show-code"><a href="#Talk-cheap-show-code" class="headerlink" title="Talk cheap, show code"></a>Talk cheap, show code</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用前需要替换 cookie 和 组合 id, 怎么找见下边截图/链接</span></span><br><span class="line">cookie = your_cookies</span><br><span class="line">group_id = yout_group_id</span><br><span class="line"></span><br><span class="line"><span class="comment"># 持仓查询函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hold_stock</span><span class="params">()</span>:</span></span><br><span class="line">    headers = &#123;</span><br><span class="line">        ‘authority’: ‘tc.xueqiu.com’,</span><br><span class="line">        ‘sec-ch-ua’: ‘” Not A;Brand”;v=“<span class="number">99</span>”, “Chromium”;v=“<span class="number">96</span>”, “Google Chrome”;v=“<span class="number">96</span>”’,</span><br><span class="line">        ‘accept’: ‘application/json, text/plain, */*’,</span><br><span class="line">    <span class="comment">#    ‘accept’: ‘application/json, charset=UTF-8’,</span></span><br><span class="line">        ‘sec-ch-ua-mobile’: ‘?0’,</span><br><span class="line">        ‘user-agent’: ‘Mozilla/<span class="number">5.0</span> (Windows NT <span class="number">6.1</span>; Win64; x64) AppleWebKit/<span class="number">537.36</span> (KHTML, like Gecko) Chrome/<span class="number">96.0</span><span class="number">.4664</span><span class="number">.45</span> Safari/<span class="number">537.36</span>’,</span><br><span class="line">        ‘sec-ch-ua-platform’: ‘”Windows”’,</span><br><span class="line">        ‘origin’: ‘https://xueqiu.com’,</span><br><span class="line">        ‘sec-fetch-site’: ‘same-site’,</span><br><span class="line">        ‘sec-fetch-mode’: ‘cors’,</span><br><span class="line">        ‘sec-fetch-dest’: ‘empty’,</span><br><span class="line">        ‘referer’: ‘https://xueqiu.com/performance’,</span><br><span class="line">        ‘accept-language’: ‘zh-CN,zh;q=<span class="number">0.9</span>,en;q=<span class="number">0.8</span>,zh-TW;q=<span class="number">0.7</span>’,</span><br><span class="line">        ‘cookie’: cookie,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    params = (</span><br><span class="line">        (‘gid’, group_id),</span><br><span class="line">    )</span><br><span class="line">    response = requests.get(‘https://tc.xueqiu.com/tc/snowx//MONI/performances.json’, headers=headers, params=params)</span><br><span class="line">    response.encoding = “utf<span class="number">-8</span>”</span><br><span class="line">    content = json.loads(response.text)</span><br><span class="line">    res_stock = content[‘result_data’][‘performances’][<span class="number">1</span>][‘list’]</span><br><span class="line">    res_asset = content[‘result_data’][‘performances’][<span class="number">1</span>][‘assets’]</span><br><span class="line">    <span class="keyword">return</span> res_asset, res_stock</span><br><span class="line"></span><br><span class="line"><span class="comment"># 交易函数</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">trade</span><span class="params">(direction, date, comment, stock_code, price, shares, tax_rate)</span>:</span></span><br><span class="line">    headers = &#123;</span><br><span class="line">        ‘authority’: ‘tc.xueqiu.com’,</span><br><span class="line">        ‘sec-ch-ua’: ‘” Not A;Brand”;v=“<span class="number">99</span>”, “Chromium”;v=“<span class="number">96</span>”, “Google Chrome”;v=“<span class="number">96</span>”’,</span><br><span class="line">        ‘accept’: ‘application/json, text/plain, */*’,</span><br><span class="line">        ‘content-type’: ‘application/x-www-form-urlencoded’,</span><br><span class="line">        ‘sec-ch-ua-mobile’: ‘?0’,</span><br><span class="line">        ‘user-agent’: ‘Mozilla/<span class="number">5.0</span> (Windows NT <span class="number">6.1</span>; Win64; x64) AppleWebKit/<span class="number">537.36</span> (KHTML, like Gecko) Chrome/<span class="number">96.0</span><span class="number">.4664</span><span class="number">.45</span> Safari/<span class="number">537.36</span>’,</span><br><span class="line">        ‘sec-ch-ua-platform’: ‘”Windows”’,</span><br><span class="line">        ‘origin’: ‘https://xueqiu.com’,</span><br><span class="line">        ‘sec-fetch-site’: ‘same-site’,</span><br><span class="line">        ‘sec-fetch-mode’: ‘cors’,</span><br><span class="line">        ‘sec-fetch-dest’: ‘empty’,</span><br><span class="line">        ‘referer’: ‘https://xueqiu.com/performance’,</span><br><span class="line">        ‘accept-language’: ‘zh-CN,zh;q=<span class="number">0.9</span>,en;q=<span class="number">0.8</span>,zh-TW;q=<span class="number">0.7</span>’,</span><br><span class="line">        ‘cookie’: cookie,</span><br><span class="line">    &#125;</span><br><span class="line">    data = &#123;</span><br><span class="line">      ‘type’: direction, <span class="comment"># 1 是买 2 是卖</span></span><br><span class="line">      ‘date’: date,</span><br><span class="line">      ‘comment’: comment, <span class="comment"># 备注</span></span><br><span class="line">      ‘gid’: group_id,</span><br><span class="line">      ‘symbol’: stock_code,</span><br><span class="line">      ‘price’: price,</span><br><span class="line">      ‘shares’: shares,</span><br><span class="line">      ‘tax_rate’: tax_rate, <span class="comment"># 卖是千一, 买是 0</span></span><br><span class="line">      ‘commission_rate’: ‘<span class="number">0.1</span>’, <span class="comment"># 买卖都是万一</span></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    response = requests.post(‘https://tc.xueqiu.com/tc/snowx/MONI/transaction/add.json’, headers=headers, data=data)</span><br></pre></td></tr></table></figure>
+
+<h2 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h2><p>时间少，要做的事情有很多，希望能靠谱，做事，就不废话了…</p>
+<h2 id="公众号链接（贴图）"><a href="#公众号链接（贴图）" class="headerlink" title="公众号链接（贴图）"></a>公众号链接（贴图）</h2>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/12/15/xueqiu-performance/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1766,182 +1919,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/12/27/rockefeller24/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/12/27/rockefeller24/" itemprop="url">生活的盐</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-12-27T16:35:15+08:00">
-                2020-12-27
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  966 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>阅读状态📚：看完了《黑天鹅》，好些地方没看懂，也不做评价。<br>接下来打算看《思考，快与慢》，《高效能人士的七个习惯》。<br>要像呼吸一样阅读。</p>
-<p>今天循环了一首歌《送你一朵小红花》，喜欢这种娓娓唱出生活的歌，有句歌词和我最近生活中的观察相关，记录一下：</p>
-<blockquote>
-<p>送你一朵小红花<br>开在你心底最深的泥沙<br>奖励你能感受<br><strong>每个命运的挣扎</strong></p>
-</blockquote>
-<p>晚上下班回来要么打车要么骑车，就能看到一些事情：</p>
-<p>打车🚖：<br>1）一个司机得知我晚上打车可以报销，提出带我遛弯的想法，我说要取之有道，他说他这也是道；<br>2）一个司机因为没接到拼车的乘客绕了路，想要提前终止订单，我给他说不用不用，并且下车后给了五星好评（一般不评价）；<br>3）有次很晚打车，是位女司机（很少见到），我问怎么这么晚还出来？她说您这是最后一单了（很少听到您），我下车的时候给她说早点儿回去休息；<br>4）有次在等其他乘客的时候，司机在电话里讲：我的车身上贴个皮卡丘，很好找的；<br>5）还有位司机每次等红绿灯的时候都会停下来看抖音；</p>
-<p>单车🚲：<br>1）前边骑车的一个人用音箱放着《沧海一声笑》，周围车流涌动…<br>2）一辆 888 路的公交路过我，想要拍照结果一路没赶上，最后只能以 888 后边还有个「停止服务」安慰自己；<br>3）大概 12 点回小区的时候，看到一个外卖小哥还在送外卖，那个时候好想给他打个招呼，告诉他好巧，我们都是打工人；</p>
-<p>写的时候又想起来，之前在深圳跑步，路过一个女生在哭泣，等我跑完折返的时候，她还在那里，好想过去拍一拍，安慰一下。</p>
-<p>嗯，这就是生活，像是纪录片一样，每个人都有各自的模样，不需要评价，也无需回答。</p>
-<p>以下是读书笔记正文</p>
-<hr>
-<h3 id="第38封-谁都能成为大人物"><a href="#第38封-谁都能成为大人物" class="headerlink" title="第38封 谁都能成为大人物"></a>第38封 谁都能成为大人物</h3><blockquote>
-<p>在《马太福音》当中有这样一句圣言：“<strong>你们是世上的盐。</strong>”</p>
-<p>这个比喻非常平凡，同时却又那样的发人深省。<strong>盐是有味道的，同时又可以洁物、防腐。</strong>基督想以此教诲他的门徒们，应该学会肩负怎样的使命，以及发挥出什么样的影响，他们到世上来就是要净化、美化他们所在的世界，他们要让自己所处的这个世界避免腐败，并且给予世人更加健康、更加新鲜的生活气息。</p>
-</blockquote>
-<p>（此时老约翰68岁，小约翰33岁）</p>
-<blockquote>
-<p>我希望在座的各位都知道，<strong>我们要活得有意义，我们是活在感觉当中的，而不仅仅是苍白的数字。</strong>我们是活在思想当中的，而不是在空气当中。我们应该正确地认识自己的目标，用自己心脏的跳动来认识时间。</p>
-<p>如果你记不住我今天所说的话，那么也请千万不要忘记我后面这几句话：<strong>思考最多、感觉最高贵、行为也最正当的人，生活才是最充实的！</strong></p>
-</blockquote>
-<p>路过：这两段是附在后边的一篇演讲稿的。</p>
-<hr>
-<h3 id="写在后边："><a href="#写在后边：" class="headerlink" title="写在后边："></a>写在后边：</h3><p>这本书整理完了，从今年 4 月 6 日开始写的第一篇，到现在已经年末了。<br>是的，2020 年就要结束了。</p>
-<p>下一本应该是一本传记，我喜欢以这样的方式观察别人的一生。</p>
-<p>2020年12月27日 下午4:33 @XA </p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1999,7 +1976,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">77</span>
+                  <span class="site-state-item-count">78</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2021,7 +1998,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-count">45</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2065,7 +2042,7 @@
     <footer id="footer" class="footer">
       <div class="footer-inner">
         <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
@@ -2079,7 +2056,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">135.7k</span>
+    <span title="Site words total count">136.1k</span>
   
 </div>
 
