@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+  <meta name="google-site-verification" content="9HGY4GvHBQiYcf3ysSZmtQCkRadM6n5ZDPoYRlcr71E">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="python,量化,通达信,bigquant,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="写在开头主要实现的东西是：1）朋友给了个通达信公式，想看能不能致富；2）手动去执行选股肉眼观察，效果还行；3）有文化的我们知道只凭肉眼看肯定不靠谱，就想回测看看效果，就去测了； 涉及知识点：通达信的公式编辑，选股，以及bigquant上的回测 通达信看效果貌似还行选股公式是这样子的： 1234DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);DEA:= EMA(DIFF,9)">
+<meta name="keywords" content="python,量化,通达信,bigquant">
+<meta property="og:type" content="article">
+<meta property="og:title" content="朋友说他有个致富公式… 让我给看看">
+<meta property="og:url" content="http://nonewood.github.io/2022/01/16/tdx-to-python/index.html">
+<meta property="og:site_name" content="朝简单处想 往认真处行">
+<meta property="og:description" content="写在开头主要实现的东西是：1）朋友给了个通达信公式，想看能不能致富；2）手动去执行选股肉眼观察，效果还行；3）有文化的我们知道只凭肉眼看肯定不靠谱，就想回测看看效果，就去测了； 涉及知识点：通达信的公式编辑，选股，以及bigquant上的回测 通达信看效果貌似还行选股公式是这样子的： 1234DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);DEA:= EMA(DIFF,9)">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2022-01-16T02:45:42.227Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="朋友说他有个致富公式… 让我给看看">
+<meta name="twitter:description" content="写在开头主要实现的东西是：1）朋友给了个通达信公式，想看能不能致富；2）手动去执行选股肉眼观察，效果还行；3）有文化的我们知道只凭肉眼看肯定不靠谱，就想回测看看效果，就去测了； 涉及知识点：通达信的公式编辑，选股，以及bigquant上的回测 通达信看效果貌似还行选股公式是这样子的： 1234DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);DEA:= EMA(DIFF,9)">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://nonewood.github.io/2022/01/16/tdx-to-python/">
+
+
+
+
+
+<script data-ad-client="ca-pub-7093029654692281" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({
+          google_ad_client: "ca-pub-7126877795421398",
+          enable_page_level_ads: true
+     });
+</script>
+
+  <title>朋友说他有个致富公式… 让我给看看 | 朝简单处想 往认真处行</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">朝简单处想 往认真处行</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/16/tdx-to-python/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">朋友说他有个致富公式… 让我给看看</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-16T10:35:26+08:00">
+                2022-01-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  716 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>主要实现的东西是：<br>1）朋友给了个通达信公式，想看能不能致富；<br>2）手动去执行选股肉眼观察，效果还行；<br>3）有文化的我们知道只凭肉眼看肯定不靠谱，就想回测看看效果，就去测了；</p>
+<p>涉及知识点：通达信的公式编辑，选股，以及bigquant上的回测</p>
+<h3 id="通达信看效果貌似还行"><a href="#通达信看效果貌似还行" class="headerlink" title="通达信看效果貌似还行"></a>通达信看效果貌似还行</h3><p>选股公式是这样子的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);</span><br><span class="line">DEA:= EMA(DIFF,9);</span><br><span class="line">MACD:= 2*(DIFF-DEA);</span><br><span class="line">REF(C&lt;=O,2) AND REF(H&lt;REF(H,1) AND L&lt;REF(L,1),1) AND L&gt;REF(L,1) AND C&gt;O AND C&gt;REF(H,2) AND REF(EVERY(C/REF(C,1)&lt;1,3),3) AND DIFF&gt;0 AND DEA&gt;0;</span><br></pre></td></tr></table></figure>
+
+<p>打开通达信，Ctrl + F , 条件选股， 新建公式<br>把这个公式粘贴进去， 测试公式， 保存<br>[图片见文末参考链接]</p>
+<p>Ctrl  T,  选择刚建好的公式，执行选股，多试几个日期，发现，哎呦不错；<br>[图片见文末参考链接]</p>
+<h3 id="那么回测试试呢？"><a href="#那么回测试试呢？" class="headerlink" title="那么回测试试呢？"></a>那么回测试试呢？</h3><p>首先需要将通达信公式语言转化成 python 语言；<br>回测平台选的是 bigquant, 因为我自己相对比较熟；<br>翻译的过程中要是有不懂的语句，网上查下（文末附链接）；<br>然后核对的时候看选出的股票能不能对上，就能知道有没有转化正确；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 通达信公式</span><br><span class="line">DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);</span><br><span class="line">DEA:= EMA(DIFF,9);</span><br><span class="line">MACD:= 2*(DIFF-DEA);</span><br><span class="line">REF(C&lt;=O,2) AND REF(H&lt;REF(H,1) AND L&lt;REF(L,1),1) AND L&gt;REF(L,1) AND C&gt;O AND C&gt;REF(H,2) AND REF(EVERY(C/REF(C,1)&lt;1,3),3) AND DIFF&gt;0 AND DEA&gt;0;</span><br><span class="line"></span><br><span class="line"># python</span><br><span class="line">x.close_2 &lt;= x.open_2 and (x.high_1 &lt; x.high_2 and x.low_1 &lt; x.low_2) and x.low_0 &gt; x.low_1 and x.close_0 &gt; x.open_0 and x.close_0 &gt; x.high_2 and x.close_5 &lt; x.close_6 and x.close_4 &lt; x.close_5 and x.close_3 &lt; x.close_4 and (x.dif &gt; 0 and x.dea &gt;0)</span><br></pre></td></tr></table></figure>
+
+<p><strong>Bigquant 实现</strong><br>Bigquant最后实现的效果如下，下边挑重点的截图简单说一下<br>[图片见文末参考链接]</p>
+<p>1）特征列表，需要把公式里涉及的特征都体现在特征列表里边<br>[图片见文末参考链接]<br>2）自定义python模块中生成一下信号<br>[图片见文末参考链接]<br>3）回测函数中定义好自己的回测逻辑就可以回测了</p>
+<p><strong>回测结果</strong><br>[图片见文末参考链接]</p>
+<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>真正能拿到财富代码的公式肯定不会这么简单，这篇只是方法的记录文章罢了；<br>转化公式的时候发现貌似没有通达信公式-&gt; python语言的现成工具，感觉可以做一个；</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p>通达信公式<br><a href="https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html" target="_blank" rel="noopener">https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html</a><br>公众号文章链接</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>(✪ω✪)</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="/images/alipay.jpg" alt="Nonewood 支付宝">
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/量化/" rel="tag"># 量化</a>
+          
+            <a href="/tags/通达信/" rel="tag"># 通达信</a>
+          
+            <a href="/tags/bigquant/" rel="tag"># bigquant</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/01/15/xueqiu-performance-accum-rate/" rel="next" title="雪球模拟组合收益率爬取">
+                <i class="fa fa-chevron-left"></i> 雪球模拟组合收益率爬取
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- 侧边广告 -->
+<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7093029654692281" data-ad-slot="4703719462" data-ad-format="auto" data-full-width-responsive="true"></ins>
+<script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Nonewood</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">46</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#写在开头"><span class="nav-number">1.</span> <span class="nav-text">写在开头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通达信看效果貌似还行"><span class="nav-number">2.</span> <span class="nav-text">通达信看效果貌似还行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#那么回测试试呢？"><span class="nav-number">3.</span> <span class="nav-text">那么回测试试呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写在后边"><span class="nav-number">4.</span> <span class="nav-text">写在后边</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+      <!-- 侧边广告 -->
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-7093029654692281" data-ad-slot="4703719462" data-ad-format="auto" data-full-width-responsive="true"></ins>
+     <script>
+     (adsbygoogle = window.adsbygoogle || []).push({});
+     </script>
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Nonewood</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">137.4k</span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  <script async src="/js/src/fireworks.js"></script>
+
+
+
+ 
+<script>
+  var OriginTitile = document.title;
+  var titleTime;
+  document.addEventListener("visibilitychange", function() {
+    if (document.hidden) {
+      document.title = "(つェ⊂)我藏好了哦~" + OriginTitile;
+      clearTimeout(titleTime);
+    } else {
+      document.title = "(*´∇｀*) 被你发现啦~" + OriginTitile;
+      titleTime = setTimeout(function() {
+        document.title = OriginTitile;
+      }, 2000);
+    }
+  });
+</script>
+
+
+ 
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment-precise-range-plugin@1.3.0/moment-precise-range.min.js"></script>
+<script>
+  function timer() {
+    var ages = moment.preciseDiff(moment(),moment(20190801,"YYYYMMDD"));
+    ages = ages.replace(/years?/, "年");
+    ages = ages.replace(/months?/, "月");
+    ages = ages.replace(/days?/, "天");
+    ages = ages.replace(/hours?/, "小时");
+    ages = ages.replace(/minutes?/, "分");
+    ages = ages.replace(/seconds?/, "秒𓃗𓃵𓆉𓇼𓆡");
+    ages = ages.replace(/\d+/g, '<span style="color:">$&</span>');
+    div.innerHTML = `𓃠𓃰𓃱𓃲𓃟 ${ages}`;
+  }
+  var div = document.createElement("div");
+  //插入到copyright之后
+  var copyright = document.querySelector(".copyright");
+  document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+  timer();
+  setInterval("timer()",1000)
+</script>
+
+
+</body>
+</html>
