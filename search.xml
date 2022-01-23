@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>画了几个ETF的图</title>
+    <url>/2022/01/24/etf-plot/</url>
+    <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>做几个 ETF 的数据，记录一下；<br>想尽量复现自己见到的不错的数据；</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import requests, json</span><br><span class="line"></span><br><span class="line">def get_price(code, start_date, end_date):</span><br><span class="line">    url = &apos;https://q.stock.sohu.com/hisHq?code=cn_%s&amp;start=%s&amp;end=%s&amp;stat=1&amp;order=D&amp;period=d&amp;callback=historySearchHandler&amp;rt=jsonp&amp;r=0.5903327949924708&amp;0.9198253567636039&apos; % (code, start_date, end_date)</span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    #import pdb; pdb.set_trace()</span><br><span class="line">    json_content = json.loads(response.text.strip(&apos;\n&apos;).strip(&apos;historySearchHandler(&apos;).strip(&apos;)&apos;))[0][&apos;hq&apos;]</span><br><span class="line">    df = pd.DataFrame(columns = &quot;日期	开盘	收盘	涨跌额	涨跌幅	最低	最高	成交量(手)	成交金额(万)&quot;.split(&quot;\t&quot;))</span><br><span class="line">    for info in json_content:</span><br><span class="line">        column_dict = &#123;&apos;日期&apos;: info[0], &apos;开盘&apos;: info[1], &apos;收盘&apos;: info[2], &apos;涨跌额&apos;: info[3], &apos;涨跌幅&apos;: info[4], &apos;最低&apos;: info[5], &apos;最高&apos;: info[6], &apos;成交量(手)&apos;: info[7], &apos;成交金额(万)&apos;: info[8]&#125;</span><br><span class="line">        df = df.append(column_dict, ignore_index = True)</span><br><span class="line">    df[&apos;日期&apos;] = pd.to_datetime(df[&apos;日期&apos;])</span><br><span class="line">    #df.index = pd.to_datetime(df[&apos;日期&apos;])</span><br><span class="line">    return df</span><br><span class="line"></span><br><span class="line"># eg</span><br><span class="line">df_513130 = get_price(&apos;513130&apos;, &apos;20190101&apos;, &apos;20220121&apos;)</span><br><span class="line"></span><br><span class="line"># 然后画图</span><br></pre></td></tr></table></figure>
+
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p><strong>2021年以来</strong><br>见参考链接</p>
+<p><strong>全部时间</strong><br>见参考链接</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>摘录今天书里看到一句话</p>
+<blockquote>
+<p><strong>运气和交易有关吗？</strong><br>交易和其他任何工作一样。你刻苦努力，付出时间和精力，你的运气自然就来了。我在首笔100手交易中非常幸运地成为赢家，但我为什么会有好运呢？因为之前我能一整天站在交易所内，不断观察学习，六个多月天天如此，从而形成和提升了我的市场感觉。机会一旦来临，我就不会迟疑，能立刻把握。机会和运气只留给有准备的人。</p>
+</blockquote>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3>]]></content>
+      <tags>
+        <tag>etf</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>朋友说他有个致富公式… 让我给看看</title>
     <url>/2022/01/16/tdx-to-python/</url>
     <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>主要实现的东西是：<br>1）朋友给了个通达信公式，想看能不能致富；<br>2）手动去执行选股肉眼观察，效果还行；<br>3）有文化的我们知道只凭肉眼看肯定不靠谱，就想回测看看效果，就去测了；</p>
@@ -20,8 +37,8 @@
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p>通达信公式<br><a href="https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html" target="_blank" rel="noopener">https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html</a><br>公众号文章链接<br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483958&idx=1&sn=aa7b875e3a31dbbdc146fd73a776b856&chksm=e94bbd91de3c3487b3dbc769890c90a6284b5607b400716c068032e86d32585829ee572c0a6f&token=1620949572&lang=zh_CN#rd" target="_blank" rel="noopener">朋友说他有个致富公式… 让我给看看</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>量化</tag>
+        <tag>python</tag>
         <tag>通达信</tag>
         <tag>bigquant</tag>
       </tags>
@@ -35,8 +52,8 @@
 <h3 id="补充阅读"><a href="#补充阅读" class="headerlink" title="补充阅读"></a>补充阅读</h3><p>windows 定时脚本设置<br><a href="https://www.cnblogs.com/sui776265233/p/13602893.html" target="_blank" rel="noopener">https://www.cnblogs.com/sui776265233/p/13602893.html</a><br>linux 定时脚本设置<br><a href="https://www.jianshu.com/p/d93e2b177814" target="_blank" rel="noopener">https://www.jianshu.com/p/d93e2b177814</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>量化</tag>
+        <tag>python</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -49,8 +66,8 @@
 <h2 id="公众号链接（贴图）"><a href="#公众号链接（贴图）" class="headerlink" title="公众号链接（贴图）"></a>公众号链接（贴图）</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483943&idx=1&sn=f0095ba9f133f9805bfcffe3b97f61c9&chksm=e94bbd80de3c3496948fe638bc832f0ff359a281362b47c23e26320f46a47ea2e951459fe7ea&token=2018691164&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合查询和交易脚本-python</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>量化</tag>
+        <tag>python</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -1263,7 +1280,7 @@
     <url>/2020/06/04/MetaPhlAn/</url>
     <content><![CDATA[<h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 ]]></content>

@@ -259,6 +259,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/24/etf-plot/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/24/etf-plot/" itemprop="url">画了几个ETF的图</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-24T01:58:40+08:00">
+                2022-01-24
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  436 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>做几个 ETF 的数据，记录一下；<br>想尽量复现自己见到的不错的数据；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">import pandas as pd</span><br><span class="line">import requests, json</span><br><span class="line"></span><br><span class="line">def get_price(code, start_date, end_date):</span><br><span class="line">    url = &apos;https://q.stock.sohu.com/hisHq?code=cn_%s&amp;start=%s&amp;end=%s&amp;stat=1&amp;order=D&amp;period=d&amp;callback=historySearchHandler&amp;rt=jsonp&amp;r=0.5903327949924708&amp;0.9198253567636039&apos; % (code, start_date, end_date)</span><br><span class="line">    response = requests.get(url)</span><br><span class="line">    #import pdb; pdb.set_trace()</span><br><span class="line">    json_content = json.loads(response.text.strip(&apos;\n&apos;).strip(&apos;historySearchHandler(&apos;).strip(&apos;)&apos;))[0][&apos;hq&apos;]</span><br><span class="line">    df = pd.DataFrame(columns = &quot;日期	开盘	收盘	涨跌额	涨跌幅	最低	最高	成交量(手)	成交金额(万)&quot;.split(&quot;\t&quot;))</span><br><span class="line">    for info in json_content:</span><br><span class="line">        column_dict = &#123;&apos;日期&apos;: info[0], &apos;开盘&apos;: info[1], &apos;收盘&apos;: info[2], &apos;涨跌额&apos;: info[3], &apos;涨跌幅&apos;: info[4], &apos;最低&apos;: info[5], &apos;最高&apos;: info[6], &apos;成交量(手)&apos;: info[7], &apos;成交金额(万)&apos;: info[8]&#125;</span><br><span class="line">        df = df.append(column_dict, ignore_index = True)</span><br><span class="line">    df[&apos;日期&apos;] = pd.to_datetime(df[&apos;日期&apos;])</span><br><span class="line">    #df.index = pd.to_datetime(df[&apos;日期&apos;])</span><br><span class="line">    return df</span><br><span class="line"></span><br><span class="line"># eg</span><br><span class="line">df_513130 = get_price(&apos;513130&apos;, &apos;20190101&apos;, &apos;20220121&apos;)</span><br><span class="line"></span><br><span class="line"># 然后画图</span><br></pre></td></tr></table></figure>
+
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p><strong>2021年以来</strong><br>见参考链接</p>
+<p><strong>全部时间</strong><br>见参考链接</p>
+<h3 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h3><p>摘录今天书里看到一句话</p>
+<blockquote>
+<p><strong>运气和交易有关吗？</strong><br>交易和其他任何工作一样。你刻苦努力，付出时间和精力，你的运气自然就来了。我在首笔100手交易中非常幸运地成为赢家，但我为什么会有好运呢？因为之前我能一整天站在交易所内，不断观察学习，六个多月天天如此，从而形成和提升了我的市场感觉。机会一旦来临，我就不会迟疑，能立刻把握。机会和运气只留给有准备的人。</p>
+</blockquote>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/16/tdx-to-python/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1710,185 +1869,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/08/15/Bodhi3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/08/15/Bodhi3/" itemprop="url">选择的可能性</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-08-15T13:37:06+08:00">
-                2021-08-15
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="写在前边"><a href="#写在前边" class="headerlink" title="写在前边"></a>写在前边</h3><p>关注的一个博主说最近做决策时的两个标准：<br>1）选择难的；<br>2）选择带来更多可能性的。</p>
-<p>想说说第二个，我觉得很多不同领域的道理是相通的。</p>
-<p>比如投资里边有个概念：很多新手关注收益率，其实更重要的是资产配置和风险管理。所以你要按照风险偏好买股票，买债券，买货基，还有活期保险等，配置不同的仓位以及不买P2P这种可能把老本赔没了的产品。</p>
-<p>工作也是，上一份工作加班特别多，大量地消耗自己的时间，身体和精力。既然投资需要资产配置，那为啥可以让一份工作占据了自己所有的生活和时间。前同事们以调侃的方式说掉头发，说自己体检的异常项越来越多，我不知道有啥好笑的，甚至有点儿害怕（误）。</p>
-<p>生活和关系也是咯，不把自己「押」在一种生活方式（反例是：之前女性的家庭主妇）和一种人际关系。</p>
-<p>爱情，友情，亲情统统都要，让这些”行星”以一种合理的方式绕着自己的系统。（反例是：最近因为分手上热搜的事情。我觉得可以，但是没必要，不应该让自己因为一个人走丢了就溃不成兵。）</p>
-<p>所有的这些我觉得都可以归纳为可能性。</p>
-<p>小孩子比大人有更多可能性（知道这个道理后，我就从来不会觉得小孩子是小孩子）；</p>
-<p>有钱比没钱有更多可能性（所以我开始省钱）；</p>
-<p>城里的人比俺们村里的人有更多可能性（所以俺挺羡慕他们接了一手好牌，但是牌怎么打看自己）。</p>
-<p>属于自己的时间多比少有更多的可能性，所以我辞职了（也有其他原因）。<br>现在的问题在于：我能不能把这多出来的时间做出来新的可能性，我不知道… 方向是这个。</p>
-<p>One more thing: 投资里还有个概念，说与其自己乱买股票，不如买宽基，行业ETF（甚至是定投的方式）, 深以为然。同理，如果<strong>不知道自己想要什么样的生活</strong>，可以试着大概按照大多数人的生活方式去生活（该读书时读书，该工作时工作），至少不会出大错，免得被生活教做人。 如果天赋异禀，另说。</p>
-<hr>
-<p>以下是简短的读书摘要，还是曹德旺的《心若菩提》：</p>
-<blockquote>
-<p>离开了学校，仍然想读书，怎么办呢? 我就捡哥哥读过的书念。哥哥大我两岁。但和我不同，他从小就是个乖孩子，很听话。母亲和老师都喜欢他。</p>
-</blockquote>
-<blockquote>
-<p>还想读书却不能读了。我就把哥哥读过的书带在身边，边放牛边捡柴之余边自学。看不懂的字，就问哥哥。 哥哥不在身边时，就用《新华字典》和《辞海》查找。</p>
-<p><strong>那时的《字典》一本8角钱，是割了一年多的马草攒下的;《辞海》3元钱，是割了三年多的马草才攒够了钱买下的。</strong>我靠字典自学读书的习惯，就是这样养成的。一个一个的字，从它们认得我到我认得它们，也是这么一字一字查出来的。</p>
-<p><strong>那时，只要是印有字的纸，我都会拿起来读，我的很多知识的积累，都来自于这样的自学。一直到现在，我仍然爱看各种书籍</strong>，并有一个怪癖到我家千万别向我借书或要书，再好的朋友我都不会给，真是有一点爱书如命。</p>
-</blockquote>
-<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>读书也是增加了可能性，特别是人就那么点儿时间。<br>记录是为了更好的审视自己。<br>以上</p>
-<p>2021年8月15日 下午1:27 @XA<br>记录是为了更好地审视自己</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1941,7 +1926,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">80</span>
+                  <span class="site-state-item-count">81</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2021,7 +2006,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">137.4k</span>
+    <span title="Site words total count">137.9k</span>
   
 </div>
 
