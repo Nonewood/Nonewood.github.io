@@ -70,7 +70,7 @@
 
 
 
-  <meta name="keywords" content="R,python,">
+  <meta name="keywords" content="python,爬虫,pdf,">
 
 
 
@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051library(dplyr)li">
-<meta name="keywords" content="R,python">
+<meta name="description" content="写在开头问题：有时候会碰到有意思的研报/论文，为网页 pdf 文档，想要抓取其中的某些信息， 手动摘录的话，又太慢了；问题存在的唯一意义就是 「解决它」；简单记录下； 代码123456789101112131415161718192021222324import requestsfrom io import StringIO, BytesIOfrom pdfminer.converter impo">
+<meta name="keywords" content="python,爬虫,pdf">
 <meta property="og:type" content="article">
-<meta property="og:title" content="离散型表型变量的差异检验">
-<meta property="og:url" content="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/index.html">
+<meta property="og:title" content="Python 爬取网页 PDF 文本">
+<meta property="og:url" content="http://nonewood.github.io/2022/01/27/python-pdf-web/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
-<meta property="og:description" content="对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051library(dplyr)li">
+<meta property="og:description" content="写在开头问题：有时候会碰到有意思的研报/论文，为网页 pdf 文档，想要抓取其中的某些信息， 手动摘录的话，又太慢了；问题存在的唯一意义就是 「解决它」；简单记录下； 代码123456789101112131415161718192021222324import requestsfrom io import StringIO, BytesIOfrom pdfminer.converter impo">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-03-15T03:22:09.802Z">
+<meta property="og:updated_time" content="2022-01-27T12:51:49.978Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="离散型表型变量的差异检验">
-<meta name="twitter:description" content="对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051library(dplyr)li">
+<meta name="twitter:title" content="Python 爬取网页 PDF 文本">
+<meta name="twitter:description" content="写在开头问题：有时候会碰到有意思的研报/论文，为网页 pdf 文档，想要抓取其中的某些信息， 手动摘录的话，又太慢了；问题存在的唯一意义就是 「解决它」；简单记录下； 代码123456789101112131415161718192021222324import requestsfrom io import StringIO, BytesIOfrom pdfminer.converter impo">
 
 
 
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/">
+  <link rel="canonical" href="http://nonewood.github.io/2022/01/27/python-pdf-web/">
 
 
 
@@ -136,7 +136,7 @@
      });
 </script>
 
-  <title>离散型表型变量的差异检验 | 朝简单处想 往认真处行</title>
+  <title>Python 爬取网页 PDF 文本 | 朝简单处想 往认真处行</title>
   
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/27/python-pdf-web/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Nonewood">
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">离散型表型变量的差异检验</h1>
+          <h1 class="post-title" itemprop="name headline">Python 爬取网页 PDF 文本</h1>
         
 
         <div class="post-meta">
@@ -292,8 +292,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-15T11:13:01+08:00">
-                2020-03-15
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-27T20:50:40+08:00">
+                2022-01-27
               </time>
             
 
@@ -329,7 +329,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  624 字
+                  595 字
                 </span>
               
 
@@ -345,7 +345,7 @@
                   <span class="post-meta-item-text">阅读时长 &asymp;</span>
                 
                 <span title="阅读时长">
-                  3 分钟
+                  2 分钟
                 </span>
               
             </div>
@@ -366,13 +366,15 @@
       
 
       
-        <p>对离散型变量进行差异检验，理论频数小于 5 用 fisher ， 否则用卡方检验； 输出两种文件，一种是表型每种分类的的个数以及百分比，另外一种是差异检验的结果，暂且不用多重校正。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">library(dplyr)</span><br><span class="line">library(data.table)</span><br><span class="line">dt = read.table(&apos;../Samle_Information_categorical.xls&apos;, sep = &apos;\t&apos;, header = T)</span><br><span class="line">group = &apos;NS:FS:CS&apos; #the colname of group is &apos;Group&apos;</span><br><span class="line">group_list = unlist(strsplit(group, &quot;:&quot;))</span><br><span class="line">indice_index = 3 #表型开始的列的位置，从 1 开始</span><br><span class="line"></span><br><span class="line">fileConn&lt;-file(&quot;diff_results.xls&quot;,&apos;w&apos;)</span><br><span class="line">head = paste(&apos;Characteristic&apos;, &apos;P value&apos;, &apos;Method&apos;, sep =&apos;\t&apos;)</span><br><span class="line">writeLines(head, fileConn)</span><br><span class="line"></span><br><span class="line"># 计算连续变量的 sd 和 mean ... 但是我目前不需要这个...</span><br><span class="line">#temp = dt[c(&apos;Group&apos;, &apos;Age&apos;)]</span><br><span class="line">#ag = aggregate(. ~ Group, temp, function(x) c(mean = round(mean(x),2), sd = round(sd(x),2)))</span><br><span class="line">#ag_flat &lt;- do.call(&quot;data.frame&quot;, ag) # flatten</span><br><span class="line"></span><br><span class="line">for (index in indice_index:ncol(dt))&#123;</span><br><span class="line">    indice = colnames(dt)[index]</span><br><span class="line">	sub_dt = dt[c(&apos;Group&apos;,indice)] # 提取</span><br><span class="line"></span><br><span class="line">	freq = sub_dt %&gt;%</span><br><span class="line">    group_by(Group, eval(parse(text = indice))) %&gt;%  # 将变量转化为内置变量（大概这么叫吧）</span><br><span class="line">    summarise(n = n()) %&gt;%                           # 天呐这个功能太好用了...</span><br><span class="line">    mutate(freq = round(n / sum(n)*100,2)) %&gt;%       #另一个常见的操作是添加新的列。这就是mutate()函数的工作了。</span><br><span class="line">    mutate(item = paste(n,&apos;(&apos;, freq, &apos;)&apos;, sep = &apos;&apos;))</span><br><span class="line">	colnames(freq)[2] = indice</span><br><span class="line"></span><br><span class="line">#freq</span><br><span class="line">	need = freq[c(&apos;Group&apos;,indice,&apos;item&apos;)]</span><br><span class="line">#need</span><br><span class="line">	dt_cast = dcast(need, eval(parse(text = indice))~Group, value.var=&apos;item&apos;, fill=0) #太牛批了</span><br><span class="line">	colnames(dt_cast)[1] = indice</span><br><span class="line">	dt_cast = dt_cast[c(indice,group_list)]</span><br><span class="line">#dt_cast</span><br><span class="line">	write.table(dt_cast, file = paste(indice, &quot;information.xls&quot;, sep = &quot;_&quot;),sep=&quot;\t&quot;,quote = F, row.names = F)</span><br><span class="line"></span><br><span class="line">#计算 P 值</span><br><span class="line">	ctable = table(sub_dt)</span><br><span class="line"></span><br><span class="line">	if (any(ctable &lt; 5))&#123;</span><br><span class="line">    	p = fisher.test(ctable, simulate.p.value = TRUE, B = 1e6)$p.value</span><br><span class="line">	    line = paste(indice, p, &apos;fisher&apos;, sep =&apos;\t&apos;)</span><br><span class="line">	    writeLines(line, fileConn)</span><br><span class="line">	&#125; else &#123;</span><br><span class="line">    	p = chisq.test(ctable)$p.value</span><br><span class="line">    	line = paste(indice, p,&apos;chisq&apos;, sep =&apos;\t&apos;)</span><br><span class="line">		print(indice)</span><br><span class="line">    	writeLines(line, fileConn)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">close(fileConn)</span><br></pre></td></tr></table></figure>
+        <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p><strong>问题：</strong>有时候会碰到有意思的研报/论文，为网页 pdf 文档，想要抓取其中的某些信息， 手动摘录的话，又太慢了；<br>问题存在的唯一意义就是 「解决它」；<br>简单记录下；</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> StringIO, BytesIO</span><br><span class="line"><span class="keyword">from</span> pdfminer.converter <span class="keyword">import</span> TextConverter</span><br><span class="line"><span class="keyword">from</span> pdfminer.pdfinterp <span class="keyword">import</span> PDFPageInterpreter, PDFResourceManager</span><br><span class="line"><span class="keyword">from</span> pdfminer.pdfpage <span class="keyword">import</span> PDFPage</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_score</span><span class="params">(url)</span>:</span></span><br><span class="line">    pdf_content = BytesIO(requests.get(url).content)</span><br><span class="line">    row = dict()</span><br><span class="line">    resource_manager = PDFResourceManager()</span><br><span class="line">    fake_file_handle = StringIO()</span><br><span class="line">    converter = TextConverter(resource_manager, fake_file_handle)   </span><br><span class="line">    page_interpreter = PDFPageInterpreter(resource_manager, converter)</span><br><span class="line">    <span class="comment"># 这里是在翻页</span></span><br><span class="line">    <span class="keyword">for</span> page <span class="keyword">in</span> PDFPage.get_pages(pdf_content,</span><br><span class="line">                            caching=<span class="literal">True</span>,</span><br><span class="line">                            check_extractable=<span class="literal">True</span>):</span><br><span class="line">        page_interpreter.process_page(page)</span><br><span class="line">        <span class="comment"># 我这里只取了第一页</span></span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">	  <span class="comment"># 获取第一页的内容</span></span><br><span class="line">    text = fake_file_handle.getvalue()</span><br><span class="line">    <span class="comment"># 这里做文本的处理即可</span></span><br><span class="line">    <span class="keyword">return</span> text</span><br></pre></td></tr></table></figure>
 
-<p>随后用 python3 对其结果进行整理即可</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line">group = [<span class="string">'NS'</span>,<span class="string">'FS'</span>,<span class="string">'CS'</span>] <span class="comment"># 组名</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">with</span> open(<span class="string">'diff_results.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> IN, open(<span class="string">'Final_result.xls'</span>,<span class="string">'w'</span>) <span class="keyword">as</span> out:</span><br><span class="line">	head = IN.readline().strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">	print(<span class="string">'\t'</span>.join([head[<span class="number">0</span>], <span class="string">'\t'</span>.join(group), head[<span class="number">1</span>]]), file = out)</span><br><span class="line">	<span class="keyword">for</span> line <span class="keyword">in</span> IN:</span><br><span class="line">		line = line.strip(<span class="string">'\n'</span>).split(<span class="string">'\t'</span>)</span><br><span class="line">		outline = <span class="string">'\t'</span>.join([line[<span class="number">0</span>] + <span class="string">',n(%)'</span>, <span class="string">'\t'</span>*len(group)]) </span><br><span class="line">		print(outline + <span class="string">'%.2e'</span> % float(line[<span class="number">1</span>]), file = out) <span class="comment">#格式化输出，科学计数法，保留两位小数点... </span></span><br><span class="line">		<span class="keyword">with</span> open(line[<span class="number">0</span>] + <span class="string">'_information.xls'</span>, <span class="string">'r'</span>) <span class="keyword">as</span> indice:</span><br><span class="line">			indice.readline()</span><br><span class="line">			<span class="keyword">for</span> line <span class="keyword">in</span> indice:</span><br><span class="line">				line = line.strip(<span class="string">'\n'</span>)</span><br><span class="line">				print(line, file = out)</span><br><span class="line">	<span class="comment">#	os.remove(line[0] + '_information.xls')</span></span><br></pre></td></tr></table></figure>
-
-<p>参考链接：<br><a href="http://www.r-tutor.com/elementary-statistics/goodness-fit/chi-squared-test-independence" target="_blank" rel="noopener">Chi-squared Test of Independence | R Tutorial</a><br><a href="http://www.sthda.com/english/wiki/chi-square-test-of-independence-in-r" target="_blank" rel="noopener">Chi-Square Test of Independence in R - Easy Guides - Wiki - STHDA</a><br><a href="https://blog.csdn.net/z54572/article/details/61199246" target="_blank" rel="noopener">Fisher精确检验的通俗理解 - z54572的专栏 - CSDN博客</a><br><a href="https://likan.info/cn/post/2017-04-01-tabular-data/" target="_blank" rel="noopener">列联表数据的分析 - 战立侃</a></p>
+<h3 id="写在结尾"><a href="#写在结尾" class="headerlink" title="写在结尾"></a>写在结尾</h3><p>摘录书里的一个小片段，每天学习一点点：</p>
+<blockquote>
+<p>大约在我15岁的时候，我们全家去太阳谷滑雪；假期的最后那天，爸爸和我冒着风雪开车出去，他绕了十分钟的路去给我们开的那辆红色吉普车加油。当时他正争分夺秒地让我们全家能赶得上回家的飞机呢，所以到加油站后当我发现油箱里还有半箱油时，我感到很吃惊。<strong>我问爸爸，还有那么多汽油，我们为什么要停下来；他教导我说：“查理，你要是借了别人的车，别忘了加满油再还给人家。”</strong></p>
+<p>我在斯坦福念大一时，有个熟人把车借给我。倒不是因为他跟我关系很好，而是因为一个我们都认识的朋友迫使他这么做。那辆奥迪佛克斯是红色的，油箱里还有一半油。所以我想起了吉普车的事，先把油加满了，再将车还回去。他发现了。自那以后，我们共同度过了很多美好的时光，我结婚的时候，他是我的伴郎。</p>
+<p>从斯坦福毕业之后，我才知道当年度假时我们住的是瑞克·格伦的房子，开的是瑞克·格伦的吉普。瑞克是爸爸的朋友，当他回到太阳谷，就算吉普车的汽油比他离开的时候少，他也自然不会介意，甚至可能都不会发现。但爸爸无论什么事情都做得公平和周到。所以那天我不仅学到了如何交朋友，还学到了如何维护友谊。</p>
+</blockquote>
 
       
     </div>
@@ -414,9 +416,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/R/" rel="tag"># R</a>
-          
             <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/爬虫/" rel="tag"># 爬虫</a>
+          
+            <a href="/tags/pdf/" rel="tag"># pdf</a>
           
         </div>
       
@@ -429,8 +433,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/03/14/the-snowball2-md/" rel="next" title="读书笔记-滚雪球：巴菲特和他的财富人生（2）">
-                <i class="fa fa-chevron-left"></i> 读书笔记-滚雪球：巴菲特和他的财富人生（2）
+              <a href="/2022/01/24/etf-plot/" rel="next" title="画了几个ETF的图">
+                <i class="fa fa-chevron-left"></i> 画了几个ETF的图
               </a>
             
           </div>
@@ -438,10 +442,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/03/15/con-result/" rel="prev" title="连续型表型变量差异检验的结果整理">
-                连续型表型变量差异检验的结果整理 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -500,8 +500,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -561,6 +570,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#写在开头"><span class="nav-number">1.</span> <span class="nav-text">写在开头</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码"><span class="nav-number">2.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写在结尾"><span class="nav-number">3.</span> <span class="nav-text">写在结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       

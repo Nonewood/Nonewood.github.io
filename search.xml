@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Python 爬取网页 PDF 文本</title>
+    <url>/2022/01/27/python-pdf-web/</url>
+    <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p><strong>问题：</strong>有时候会碰到有意思的研报/论文，为网页 pdf 文档，想要抓取其中的某些信息， 手动摘录的话，又太慢了；<br>问题存在的唯一意义就是 「解决它」；<br>简单记录下；</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">from</span> io <span class="keyword">import</span> StringIO, BytesIO</span><br><span class="line"><span class="keyword">from</span> pdfminer.converter <span class="keyword">import</span> TextConverter</span><br><span class="line"><span class="keyword">from</span> pdfminer.pdfinterp <span class="keyword">import</span> PDFPageInterpreter, PDFResourceManager</span><br><span class="line"><span class="keyword">from</span> pdfminer.pdfpage <span class="keyword">import</span> PDFPage</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_score</span><span class="params">(url)</span>:</span></span><br><span class="line">    pdf_content = BytesIO(requests.get(url).content)</span><br><span class="line">    row = dict()</span><br><span class="line">    resource_manager = PDFResourceManager()</span><br><span class="line">    fake_file_handle = StringIO()</span><br><span class="line">    converter = TextConverter(resource_manager, fake_file_handle)   </span><br><span class="line">    page_interpreter = PDFPageInterpreter(resource_manager, converter)</span><br><span class="line">    <span class="comment"># 这里是在翻页</span></span><br><span class="line">    <span class="keyword">for</span> page <span class="keyword">in</span> PDFPage.get_pages(pdf_content,</span><br><span class="line">                            caching=<span class="literal">True</span>,</span><br><span class="line">                            check_extractable=<span class="literal">True</span>):</span><br><span class="line">        page_interpreter.process_page(page)</span><br><span class="line">        <span class="comment"># 我这里只取了第一页</span></span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">	  <span class="comment"># 获取第一页的内容</span></span><br><span class="line">    text = fake_file_handle.getvalue()</span><br><span class="line">    <span class="comment"># 这里做文本的处理即可</span></span><br><span class="line">    <span class="keyword">return</span> text</span><br></pre></td></tr></table></figure>
+
+<h3 id="写在结尾"><a href="#写在结尾" class="headerlink" title="写在结尾"></a>写在结尾</h3><p>摘录书里的一个小片段，每天学习一点点：</p>
+<blockquote>
+<p>大约在我15岁的时候，我们全家去太阳谷滑雪；假期的最后那天，爸爸和我冒着风雪开车出去，他绕了十分钟的路去给我们开的那辆红色吉普车加油。当时他正争分夺秒地让我们全家能赶得上回家的飞机呢，所以到加油站后当我发现油箱里还有半箱油时，我感到很吃惊。<strong>我问爸爸，还有那么多汽油，我们为什么要停下来；他教导我说：“查理，你要是借了别人的车，别忘了加满油再还给人家。”</strong></p>
+<p>我在斯坦福念大一时，有个熟人把车借给我。倒不是因为他跟我关系很好，而是因为一个我们都认识的朋友迫使他这么做。那辆奥迪佛克斯是红色的，油箱里还有一半油。所以我想起了吉普车的事，先把油加满了，再将车还回去。他发现了。自那以后，我们共同度过了很多美好的时光，我结婚的时候，他是我的伴郎。</p>
+<p>从斯坦福毕业之后，我才知道当年度假时我们住的是瑞克·格伦的房子，开的是瑞克·格伦的吉普。瑞克是爸爸的朋友，当他回到太阳谷，就算吉普车的汽油比他离开的时候少，他也自然不会介意，甚至可能都不会发现。但爸爸无论什么事情都做得公平和周到。所以那天我不仅学到了如何交朋友，还学到了如何维护友谊。</p>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>python</tag>
+        <tag>爬虫</tag>
+        <tag>pdf</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>画了几个ETF的图</title>
     <url>/2022/01/24/etf-plot/</url>
     <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>做几个 ETF 的数据，记录一下；<br>想尽量复现自己见到的不错的数据；</p>
@@ -12,7 +31,8 @@
 <blockquote>
 <p><strong>运气和交易有关吗？</strong><br>交易和其他任何工作一样。你刻苦努力，付出时间和精力，你的运气自然就来了。我在首笔100手交易中非常幸运地成为赢家，但我为什么会有好运呢？因为之前我能一整天站在交易所内，不断观察学习，六个多月天天如此，从而形成和提升了我的市场感觉。机会一旦来临，我就不会迟疑，能立刻把握。机会和运气只留给有准备的人。</p>
 </blockquote>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3>]]></content>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s/pUBfuXdX_GQ-yXJxMPp6TA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/pUBfuXdX_GQ-yXJxMPp6TA</a></p>
+]]></content>
       <tags>
         <tag>etf</tag>
       </tags>
@@ -1204,8 +1224,8 @@
 ]]></content>
       <tags>
         <tag>python</tag>
-        <tag>文献</tag>
         <tag>linux</tag>
+        <tag>文献</tag>
         <tag>爬虫</tag>
       </tags>
   </entry>
@@ -1280,7 +1300,7 @@
     <url>/2020/06/04/MetaPhlAn/</url>
     <content><![CDATA[<h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 ]]></content>
