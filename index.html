@@ -259,6 +259,161 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/30/weixin-sougou/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/30/weixin-sougou/" itemprop="url">一年（大概）前看过某个公众号的某个文章，但是我忘了…</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-30T09:37:19+08:00">
+                2022-01-30
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  508 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="写在前边"><a href="#写在前边" class="headerlink" title="写在前边"></a>写在前边</h3><p>1）先说问题：大概去年某个时间在微信上看过一篇文章，当时候觉得有意思，但是没有收藏；只记得几个关键字，想用微信直接搜，结果又太多了；就…「想得却不可得，你奈人生何？」<br>2）好在搜狗可以搜微信文章，大概是这样，就想试着用程序爬一下：<br>3）结论：方法是成功了，结果却没有拿到，原因在于搜狗貌似搜索没有检索到微信这篇文章（叹气），就简单记录下爬取搜的方法吧。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">import sys</span><br><span class="line">import time</span><br><span class="line">import re</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">from selenium import webdriver</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line"># 登陆, 不然只能查 10 页的搜索结果</span><br><span class="line">driver = webdriver.Firefox() # 这里一定要用火狐的驱动，chrome 的登陆后会被识别... </span><br><span class="line">url = &apos;https://weixin.sogou.com&apos;</span><br><span class="line">driver.get(url)</span><br><span class="line">time.sleep(5)</span><br><span class="line">driver.find_element_by_id(&apos;loginBtn&apos;).click()</span><br><span class="line">time.sleep(10)</span><br><span class="line"></span><br><span class="line"># 翻页，并且获取每页的公众号和链接（貌似只返回 100 页）</span><br><span class="line">df = pd.DataFrame(columns = [&apos;name&apos;, &apos;link&apos;])</span><br><span class="line">keyword = &apos;南京 买房 规划局&apos;</span><br><span class="line">for page_number in range(0, sys.maxsize):</span><br><span class="line">    print(page_number)</span><br><span class="line">    time.sleep(10)</span><br><span class="line">    url = &apos;https://weixin.sogou.com/weixin?query=&apos;+keyword+&apos;&amp;s_from=input&amp;_sug_=y&amp;type=2&amp;page=&apos;+str(page_number)+&apos;&amp;ie=utf8&apos;</span><br><span class="line">    driver.get(url)</span><br><span class="line">    soup = BeautifulSoup(driver.page_source, &quot;html.parser&quot;)</span><br><span class="line">    contents = soup.find_all(class_ = &quot;txt-box&quot;)</span><br><span class="line">    for content in contents:</span><br><span class="line">        content_dict = dict()</span><br><span class="line">        link_and_name = content.find_all(&apos;a&apos;)</span><br><span class="line">        link = link_and_name[0][&apos;href&apos;]</span><br><span class="line">        name = link_and_name[1].text</span><br><span class="line">        content_dict[&apos;name&apos;] = name</span><br><span class="line">        content_dict[&apos;link&apos;] = link</span><br><span class="line">        df = df.append(content_dict, ignore_index = True)</span><br><span class="line"></span><br><span class="line"># 然后去看有没有自己想要的公众号；</span><br></pre></td></tr></table></figure>
+
+<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>1）上边的脚本还是有些问题，比如如果短时间翻页太多，会让你输验证码；拿到的链接其实不是真实公众号文章的链接，需要再做一下处理，时间关系，我就没有实现，相应的一些解决办法在参考链接里；<br>2）看到好的文章，句子啊，记得平时做好记录；</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://blog.csdn.net/m0_46521785/article/details/113776386" target="_blank" rel="noopener">https://blog.csdn.net/m0_46521785/article/details/113776386</a><br><a href="https://www.pythonf.cn/read/129313" target="_blank" rel="noopener">https://www.pythonf.cn/read/129313</a><br><a href="https://segmentfault.com/a/1190000023622107" target="_blank" rel="noopener">https://segmentfault.com/a/1190000023622107</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/27/python-pdf-web/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1692,182 +1847,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/10/24/Simons/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/10/24/Simons/" itemprop="url">詹姆斯·西蒙斯</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-10-24T10:28:36+08:00">
-                2021-10-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  1.6k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  5 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="Timeline"><a href="#Timeline" class="headerlink" title="Timeline"></a>Timeline</h3><p><strong>出生</strong><br>1938年4月25日，生于波士顿郊区牛顿镇，是一个制鞋厂老板的儿子，3 岁就立志成为数学家。</p>
-<p>从牛顿高中牛业后，他进人麻省理工学院，从师于著名的数学家安布罗斯和辛格。</p>
-<p><strong>20岁</strong><br>1958年，他获得了学士学位。</p>
-<p><strong>23岁</strong><br>仅仅三年（1961年）后，他就拿到了加州大学伯克利分校的博士学位。</p>
-<p><strong>24岁</strong><br>一年后（1961年）他成为哈佛大学数学系的教授。</p>
-<p>早在1961年，他和麻省理工学院的同学投资于哥伦比亚地砖和管线公司；在伯克利，他尝试做股票交易，但是<strong>交易结果并不太好</strong>。</p>
-<p><strong>27岁</strong><br>1964年，他离开了大学校园，进人美国国防部下属的一个非营利组织一国防逻辑分析协会，并进行代码破解工作。没过多久，《时代周刊》上关于越南战争的残酷报道让他意识到他的工作实际上正在帮助美军在越南的军事行动，反战的他于是向《新闻周刊》写信说应该结束战争。当他把反战想法告诉老板时，很自然地就被解雇了。他又回到了学术界，成为纽约州立石溪大学的数学系主任，在那里做了8年的纯数学研究。</p>
-<p><strong>37岁</strong><br>1974年，他与陈省身联合发表了著名的论文《典型群和几何不变式》，创立了著名的陈-西蒙斯理论，该几何理论对理论物理学具有重要意义，广泛应用于从超引力到黑洞。</p>
-<p><strong>38岁</strong><br>1976年，西蒙斯获得了每5年一次的全美数学科学维布伦奖金，这是美国数学世界里的最高荣耀。</p>
-<p>（在理论研究之余，他开始醉心于股票和期货交易。）</p>
-<p><strong>40岁</strong><br>1978年，他离开石溪大学创立私人投资基金 Limroy，该基金投资领城广江，涉及从风险投资到外汇交易；最初主要采用基本面分析方法，例如，通过分析美联储货币政策和利率走向来判断市场价格走势。</p>
-<p><strong>50岁</strong><br>十年后（1988年），西蒙斯决定成立一个纯粹量化投资的对冲基金。他关闭了Limroy，并在1988年3月成立了大奖章基金，最初主要涉及期货交易。</p>
-<p>1988年该基金盈利8.8%。</p>
-<p><strong>51岁</strong><br>1989年则开始亏损，西蒙斯不得不在 1989年6月份停止交易。在接下来的6个月中，西蒙斯和普林斯顿大学的数学家勒费尔重新开发了交易策略，并从基本面分析转向量化分析。</p>
-<p>（大奖章基金主要通过研究市场历史资料来发现统计相关性，以预测期货、货币、股票市场的短期运动，并通过数千次快速的日内短线交易来捕捉稍纵即逝的市场机会，交易量之大甚至有时能占到整个纳斯达克交易量的10%。当交易开始时，交易模型决定买卖品种和时机，20名交易员则遵守指令在短时间内大量地交易各种美国和海外的期货，包括商品期货、金融期货、股票和债券。但在某些特定情况下，比如市场处在极端波动的时候，交易会切换到手工状态。）</p>
-<p><strong>55岁</strong><br>经过几年眩目的增长，大奖章基金在1993年达到2.7亿美元，并开始停止接受新资金。</p>
-<p><strong>56岁</strong><br>1994年，西蒙斯的文艺复兴科技公司从12个雇员增加到36个，并交易40种金融产品。</p>
-<p><strong>74岁</strong><br>现在（书的印刷时间2012年），公司有150个雇员，交易60种金融产品，基金规模则有50 亿美元。在150名雇员中有三分之一是拥有自然科学博士学位的顶尖科学家，涵盖数学、理论物理学、量子物理学和统计学等领域。所有雇员中只有两位是华尔街老手，而且该公司既不从商学院中雇用职员，也不从华尔街雇用职员，这在美国投资公司中几乎是独一无二的。</p>
-<h3 id="成就"><a href="#成就" class="headerlink" title="成就"></a>成就</h3><p>无论是1998年俄罗斯债券危机，还是本世纪初的互联网泡沫，大奖章基金历经数次金融危机，始终屹立不倒，令有效市场假说都黯然失色。</p>
-<p>1989年到2009年间，他操盘的大奖章基金平均年回报率高达35%，较同期标普500指数年均回报率高20多个百分点，比金融大鳄索罗斯和股神巴菲特的操盘表现都高出10余个百分点。</p>
-<p>即便是在次贷危机爆发的2008年，该基金的回报率仍高达80%。从2002年底至2005年底，规模为50亿美元的大奖章基金己经为投资者支付了60多亿美元的回报。</p>
-<p>这个回报率是在扣除了5%的资产管理费和44%的投资收益分成以后得出的，并且己经经过了車计。值得一提的是，西蒙斯收取的这两项费用应该是对冲基金界最高的，相当于平均收费标准的两倍以上。</p>
-<h3 id="语录"><a href="#语录" class="headerlink" title="语录"></a>语录</h3><p><strong>和流行的 “买人并长期持有”的投资理念截然相反，西蒙斯认为市场的异常状态通常都是微小而且短暂的</strong>，‘’我们随时都在买人卖出和卖出买人，我们依靠活跃赚钱‘’，西蒙斯说。</p>
-<p>“文艺复兴科技公司没有也不需要那么高的杠杆比例，公司在操作时从来没有任何先人为主的概念，<strong>而是只寻找那些可以复制的微小的获利瞬间</strong>，我们绝不以 “市场恢复正常’作为赌注投人资金，有一天市场终会正常的，但谁知道是哪一天。”</p>
-<p>西蒙斯透露，公司对交易品种的选择有3个标准：即公开交易品种、流动性高，同时符合模型设置的某些要求。他表示：<strong>“我是模型先生，不想进行基本面分析。模型的最重要的优势是可以降低风险。而依靠个人判断选股，你可能一夜暴富，也可能在第二天又输得精光。”</strong></p>
-<p>摘录自《量化投资-技术与策略》</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1925,7 +1904,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1947,7 +1926,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-count">49</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2005,7 +1984,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">138.5k</span>
+    <span title="Site words total count">139k</span>
   
 </div>
 

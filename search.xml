@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>一年（大概）前看过某个公众号的某个文章，但是我忘了…</title>
+    <url>/2022/01/30/weixin-sougou/</url>
+    <content><![CDATA[<h3 id="写在前边"><a href="#写在前边" class="headerlink" title="写在前边"></a>写在前边</h3><p>1）先说问题：大概去年某个时间在微信上看过一篇文章，当时候觉得有意思，但是没有收藏；只记得几个关键字，想用微信直接搜，结果又太多了；就…「想得却不可得，你奈人生何？」<br>2）好在搜狗可以搜微信文章，大概是这样，就想试着用程序爬一下：<br>3）结论：方法是成功了，结果却没有拿到，原因在于搜狗貌似搜索没有检索到微信这篇文章（叹气），就简单记录下爬取搜的方法吧。</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import sys</span><br><span class="line">import time</span><br><span class="line">import re</span><br><span class="line">from bs4 import BeautifulSoup</span><br><span class="line">from selenium import webdriver</span><br><span class="line">import pandas as pd</span><br><span class="line"></span><br><span class="line"># 登陆, 不然只能查 10 页的搜索结果</span><br><span class="line">driver = webdriver.Firefox() # 这里一定要用火狐的驱动，chrome 的登陆后会被识别... </span><br><span class="line">url = &apos;https://weixin.sogou.com&apos;</span><br><span class="line">driver.get(url)</span><br><span class="line">time.sleep(5)</span><br><span class="line">driver.find_element_by_id(&apos;loginBtn&apos;).click()</span><br><span class="line">time.sleep(10)</span><br><span class="line"></span><br><span class="line"># 翻页，并且获取每页的公众号和链接（貌似只返回 100 页）</span><br><span class="line">df = pd.DataFrame(columns = [&apos;name&apos;, &apos;link&apos;])</span><br><span class="line">keyword = &apos;南京 买房 规划局&apos;</span><br><span class="line">for page_number in range(0, sys.maxsize):</span><br><span class="line">    print(page_number)</span><br><span class="line">    time.sleep(10)</span><br><span class="line">    url = &apos;https://weixin.sogou.com/weixin?query=&apos;+keyword+&apos;&amp;s_from=input&amp;_sug_=y&amp;type=2&amp;page=&apos;+str(page_number)+&apos;&amp;ie=utf8&apos;</span><br><span class="line">    driver.get(url)</span><br><span class="line">    soup = BeautifulSoup(driver.page_source, &quot;html.parser&quot;)</span><br><span class="line">    contents = soup.find_all(class_ = &quot;txt-box&quot;)</span><br><span class="line">    for content in contents:</span><br><span class="line">        content_dict = dict()</span><br><span class="line">        link_and_name = content.find_all(&apos;a&apos;)</span><br><span class="line">        link = link_and_name[0][&apos;href&apos;]</span><br><span class="line">        name = link_and_name[1].text</span><br><span class="line">        content_dict[&apos;name&apos;] = name</span><br><span class="line">        content_dict[&apos;link&apos;] = link</span><br><span class="line">        df = df.append(content_dict, ignore_index = True)</span><br><span class="line"></span><br><span class="line"># 然后去看有没有自己想要的公众号；</span><br></pre></td></tr></table></figure>
+
+<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>1）上边的脚本还是有些问题，比如如果短时间翻页太多，会让你输验证码；拿到的链接其实不是真实公众号文章的链接，需要再做一下处理，时间关系，我就没有实现，相应的一些解决办法在参考链接里；<br>2）看到好的文章，句子啊，记得平时做好记录；</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://blog.csdn.net/m0_46521785/article/details/113776386" target="_blank" rel="noopener">https://blog.csdn.net/m0_46521785/article/details/113776386</a><br><a href="https://www.pythonf.cn/read/129313" target="_blank" rel="noopener">https://www.pythonf.cn/read/129313</a><br><a href="https://segmentfault.com/a/1190000023622107" target="_blank" rel="noopener">https://segmentfault.com/a/1190000023622107</a></p>
+]]></content>
+      <tags>
+        <tag>爬虫</tag>
+        <tag>微信</tag>
+        <tag>搜狗</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Python 爬取网页 PDF 文本</title>
     <url>/2022/01/27/python-pdf-web/</url>
     <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p><strong>问题：</strong>有时候会碰到有意思的研报/论文，为网页 pdf 文档，想要抓取其中的某些信息， 手动摘录的话，又太慢了；<br>问题存在的唯一意义就是 「解决它」；<br>简单记录下；</p>
@@ -57,8 +72,8 @@
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p>通达信公式<br><a href="https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html" target="_blank" rel="noopener">https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html</a><br>公众号文章链接<br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483958&idx=1&sn=aa7b875e3a31dbbdc146fd73a776b856&chksm=e94bbd91de3c3487b3dbc769890c90a6284b5607b400716c068032e86d32585829ee572c0a6f&token=1620949572&lang=zh_CN#rd" target="_blank" rel="noopener">朋友说他有个致富公式… 让我给看看</a></p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>python</tag>
+        <tag>量化</tag>
         <tag>通达信</tag>
         <tag>bigquant</tag>
       </tags>
@@ -72,8 +87,8 @@
 <h3 id="补充阅读"><a href="#补充阅读" class="headerlink" title="补充阅读"></a>补充阅读</h3><p>windows 定时脚本设置<br><a href="https://www.cnblogs.com/sui776265233/p/13602893.html" target="_blank" rel="noopener">https://www.cnblogs.com/sui776265233/p/13602893.html</a><br>linux 定时脚本设置<br><a href="https://www.jianshu.com/p/d93e2b177814" target="_blank" rel="noopener">https://www.jianshu.com/p/d93e2b177814</a></p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>python</tag>
+        <tag>量化</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -86,8 +101,8 @@
 <h2 id="公众号链接（贴图）"><a href="#公众号链接（贴图）" class="headerlink" title="公众号链接（贴图）"></a>公众号链接（贴图）</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483943&idx=1&sn=f0095ba9f133f9805bfcffe3b97f61c9&chksm=e94bbd80de3c3496948fe638bc832f0ff359a281362b47c23e26320f46a47ea2e951459fe7ea&token=2018691164&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合查询和交易脚本-python</a></p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>python</tag>
+        <tag>量化</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -1300,7 +1315,7 @@
     <url>/2020/06/04/MetaPhlAn/</url>
     <content><![CDATA[<h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 ]]></content>

@@ -259,6 +259,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/15/con-result/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/03/15/con-result/" itemprop="url">连续型表型变量差异检验的结果整理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-15T11:26:13+08:00">
+                2020-03-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  174 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>能够脚本化处理的，一定要脚本化，接入同事差异检验的结果，整理成文章发表的格式</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> re</span><br><span class="line">group_list = <span class="string">'NS:FS:CS'</span>.split(<span class="string">':'</span>)</span><br><span class="line">indice = <span class="string">'Age:BMI'</span>.split(<span class="string">':'</span>)</span><br><span class="line">out = open(<span class="string">'Final_Result.NS-FS-CS.mixcon.xls'</span>, <span class="string">'w'</span>)</span><br><span class="line">dt = pd.read_table(<span class="string">'Result.NS-FS-CS.mixcon.xls'</span>, sep = <span class="string">'\t'</span>, index_col = <span class="number">0</span>)</span><br><span class="line">print(<span class="string">'Characteristic\t'</span> + <span class="string">'\t'</span>.join(group_list) + <span class="string">'\tP value'</span>, file = out)</span><br><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> indice:</span><br><span class="line">    sub_dt = dt.loc[x]</span><br><span class="line">    line = <span class="string">''</span></span><br><span class="line">    <span class="keyword">for</span> group <span class="keyword">in</span> group_list:</span><br><span class="line">        Mean = <span class="string">'mean('</span>+ group + <span class="string">')'</span> </span><br><span class="line">        Sd = <span class="string">'sd('</span>+ group + <span class="string">')'</span> </span><br><span class="line">        <span class="keyword">for</span> colname <span class="keyword">in</span> sub_dt.index:</span><br><span class="line">            <span class="keyword">if</span> colname == Mean:</span><br><span class="line">                group_mean = str(round(sub_dt[colname],<span class="number">2</span>))</span><br><span class="line">                line = line + <span class="string">'\t'</span>+ group_mean</span><br><span class="line">            <span class="keyword">if</span> colname == Sd:</span><br><span class="line">                group_sd = <span class="string">'('</span>+str(round(sub_dt[colname],<span class="number">2</span>))+<span class="string">')'</span></span><br><span class="line">                line = line + group_sd</span><br><span class="line">    print(x +<span class="string">',mean(sd)'</span> + line + <span class="string">'\t%.2e'</span> % dt.loc[x][<span class="string">'pvalue'</span>], file = out) <span class="comment">#科学计数法</span></span><br><span class="line">out.close()</span><br></pre></td></tr></table></figure>
+
+<p>完结撒花，整理是个好习惯，保持进步的首要前提是让自己不要后退；</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/03/15/categorical-phenotype-test/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2439,326 +2593,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2020/01/04/still-walking/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/01/04/still-walking/" itemprop="url">读书笔记-步履不停</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-01-04T17:20:52+08:00">
-                2020-01-04
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  5.3k 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  17 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>这本书是去年（2019 年，是啊，19 年已经是过去的一年了…） 9 月份看完的书，当时的感受同样已经忘光了，不过我把我的苹果耳机命名成了步履不停，每次连接的时候都能看到。<strong>人生路上，步履不停，总有那么一点来不及。</strong>回头看很重要，对书对人对事都是如此。</p>
-<blockquote>
-<p>而关于我接下来要讲的那一天，其实也没有发生什么决定性的事件，<strong>我只是隐隐约约地感觉到，许多事情已经在水面下悄悄酝酿。但即便如此，我却故意装作什么都不知道。</strong>直到我真的搞清楚的时候，我的人生已经往后翻了好几页，再也无法回头挽救什么。因为，那时，我已经失去了我的父母。</p>
-</blockquote>
-<p>路过：大家或者说我似乎有回避某些事情的倾向，虽然潜意识里知道迟早会发生。</p>
-<blockquote>
-<p>在这段不断失去的日子中，如果说我还得到过一点什么，应该就是：<strong>人生总是有那么一点来不及——这么一种近似于认命的教训吧。</strong></p>
-</blockquote>
-<p>路过：芒格说，我们总是成长得太慢，而又老得太快… 我也发现似乎总有一些事情来不及处理…事后才觉得自己做得很糟糕…</p>
-<blockquote>
-<p>顺着眼前的状况随波逐流，事后却反悔不已……这是我的坏习惯。</p>
-</blockquote>
-<p>路过：一个朋友说，她妈妈教给她的处理方法是「顺其自然」「船到桥头自然直」，是，随着时间的推移，所有事情都会塌缩成一个可能性，也就意味着「解决」。但是这取决于你想要什么吧，如果不想有可能被弄得措手不及的话或者不愿意承受可能发生的糟糕结果的话，我觉得还是多考虑一些事情比较好。</p>
-<blockquote>
-<p>是的，眼前这位少年，在这个年纪就经历了丧父之痛。哀伤的深度和年龄是无关的。他所失去的不是我能轻易理解的。</p>
-</blockquote>
-<p>路过：我发现「大人」总是「看不起」孩子，觉得孩子什么不懂，动不动拿自己吃过的盐举例子教育小孩子，但是吃了那么多盐，你都无法体察小孩子的心意，足以证明那么多盐白给你吃了。 是啊，哀伤的深度和年龄是无关的，不管是孩子还是老人都需要发自心底的尊重。</p>
-<blockquote>
-<p>说实在的，我想都没想到过了四十岁，还会有写简历这一天。</p>
-</blockquote>
-<p>路过：这是芒格说的反例，如果你不想到了四十岁还写简历，那你在之前就好好丰富履历。</p>
-<blockquote>
-<p>只是，一个没有任何证照，也没有任何资历的四十岁男人要找工作，远比想象中困难得多。</p>
-</blockquote>
-<blockquote>
-<p>会对她这样的准备心存感激，是在很久以后了。曾经，母亲的一举一动，都只让我觉得她好施小惠而令我心烦。</p>
-</blockquote>
-<p>路过：刚看完《最好的告别》，写了书评，其中一部分刚好符合这句话：<br>书中有句话说 “我们如何使用时间取决于我们觉得自己还有多少时间。”  “当未来以几十年计算时（对人来说这几乎就是等于永远），我们最想要的是马斯洛金字塔顶端的那些东西（成就，创造力，以及自我实现等）。但是当我们觉得时日无多时，就会更加关注身边的人和事情。从而会变得欣赏日常生活的愉快和亲密关系。”<br>问题在于，为什么非得时间把我们推到那个地步，我们才会领悟到这些东西，而不是一开始就好好珍惜。诚然，每个时间段应该有其重点的事情要做，但是，既然可以有两者兼顾的可能性，又何乐而不为呢？</p>
-<blockquote>
-<p>她的尾音上扬，似乎有些不情愿。</p>
-</blockquote>
-<blockquote>
-<p>父亲像是现在才发现似的，举起手打了招呼。<br>“好啊……”我也在形式上打了个招呼。其实他应该是听到笑声才跑出来看的，但不好意思承认，于是演了一出刚好经过起居室要到和室￼拿东西，却被我们叫住的无聊戏码。</p>
-</blockquote>
-<p>路过：不大好的关系…</p>
-<blockquote>
-<p>我用右手握了一下扶手。（说的是发现父母家里洗脸镜旁边的扶手…）<br>金属光滑而又冰冷的触感传进了我的手心。</p>
-</blockquote>
-<blockquote>
-<p>的确，那句话像是我哥而不是我会说的，但也就因为这样，我记得很清楚那句话是我说出来的。这是件微不足道的小事，而且我也可以理解母亲为什么要把它记成是我哥说的。所以，每当这种时候我就会默默地装作没听到他们在说什么。</p>
-</blockquote>
-<blockquote>
-<p>“不太可能吧？已经很不错啦，你还配不上人家呢。”<br>她把之前对我说过的话一字不差地又说了一次。</p>
-</blockquote>
-<p>路过：一些看似日常，但是伤人的话… 敏感的人会记下来吧…</p>
-<blockquote>
-<p>“不行不行，他已经老年痴呆了，根本记不住客人点了什么。上次还重复捏了好几个金枪鱼腹寿司给同一个客人呢。”</p>
-</blockquote>
-<p>路过：今年，哦，不，是去年，我一直在观察人的老年状态…</p>
-<blockquote>
-<p>“完全是个成熟的大人了……”姐姐说，“以前很坏的呢。”<br>据说小松高中毕业后曾经堕落过一阵子。</p>
-</blockquote>
-<p>路过：我也发现，对于大多数普通人而言，无论小时候多么「坏」，长大后却也慢慢承担了一些责任，而且只要你去观察，就总能发现一些做得还算不错的地方。真是神奇呢，另一方面，也提醒自己不能轻易批评别人。</p>
-<blockquote>
-<p>“人生啊，真是难捉摸……”</p>
-</blockquote>
-<p>路过：是啊，谁说不是呢…</p>
-<blockquote>
-<p>父亲自尊心很强，非常不喜欢被人担心或当作老人看。他是那种在电车上被让座，反而还会不高兴的人。</p>
-</blockquote>
-<blockquote>
-<p>“我跟金枪鱼一样啦，不一直动就会死掉的。” （这里是姐夫的话）</p>
-</blockquote>
-<blockquote>
-<p>记得当母亲住院时，我去探望她，她反而还担心起我的牙齿。蛛网膜下出血的母亲在手术成功后，开始慢慢出现痴呆症状。明明那时父亲已经过世，她有时还会问起：“你爸今天怎么没来？”有时她会把医院跟自己家搞错。听到隔壁病床的家属来了，还会突然问：“家里有客人吗？”然后坐起身子很慌乱地想要去泡茶。又过了一段时间后，不要说是由香里，连姐姐的名字她都记不起来了。</p>
-</blockquote>
-<blockquote>
-<p>“我最近好像有蛀牙呢。”<br>听到这个的母亲突然恢复正常似的皱起眉头。<br>“要快去看牙医啊。等到非拔不可才去就太迟了。一颗牙齿蛀掉的话，隔壁那颗也很快就不行了。”<br>母亲把以前对我说过的话一字不漏地又说了一次。<br><strong>我好高兴。</strong><br><strong>那是我所熟悉的母亲，如假包换。</strong><br><strong>然后我开始感觉到，那样的母亲正一点一滴地从我眼前消失。这想法令我不寒而栗。</strong></p>
-</blockquote>
-<blockquote>
-<p>母亲过世之后，我才开始去看牙医。<br>“你如果早一点来的话就用不着拔了。”<br>牙医这么告诉我。我花了一年的时间才把蛀牙全部治好。</p>
-<p>那一次我也没有回应母亲的问话。<br>“你一定都没去看牙医对不对？”<br>她又问了一次。<br>“工作太忙了。”<br>我很不耐烦地说，然后从衬衫口袋里拿出手机。我以为有来电。</p>
-</blockquote>
-<blockquote>
-<p>在大哥过世之后，她还说：“果然是那个媳妇娶得不好。”<br>她把责任推给跟意外完全无关的大嫂，深深叹了一口气。我想如果不这么想，母亲大概没有办法继续过日子吧。</p>
-</blockquote>
-<p>路过：这样不好…</p>
-<blockquote>
-<p>我把盛西瓜的盘子放在桌上后，粗暴地将手中的作文揉成一团，头也不回地走出房间。<br><strong>每个人都有一两个不愿意想起的童年回忆吧，就算是家人，也没有权力不经允许就打开人家的回忆来看。</strong></p>
-</blockquote>
-<blockquote>
-<p>家里太多不再使用的旧东西，压缩着现在的生活空间。在置物间里，三个小孩小学时的成绩单、练毛笔的纸张、我的棒球衣和大哥的学生服，等等，都保存得完好如初。当小孩都离家独立了之后，她大概是不时把我们的“回忆”拿出来，沉浸在过去之中吧。想到她那离不开孩子的模样，与其说是令人怜悯，倒不如说是令人脊背发凉。</p>
-<p>如此舍不得丢东西的母亲，竟然会在父亲过世后没多久就把他所有的衣物丢掉，老实说还真令我大吃一惊。还不到四十九天，她就把父亲的内衣裤拿出来装进垃圾袋内，在收可燃垃圾的日子全部丢掉了。一起生活了五十多年，也不过如此而已吗？</p>
-</blockquote>
-<p>路过：我不得不怀疑，这种想法哪里可能有些问题… 这也是我后来不大喜欢看纯文学，小说类的东西，他们总是看到表面的东西，并且借此肆意发挥自己的情绪，更加可怕的是，还会有其他人附和他的情绪，这样就更难知道自己是对的还是错的了…  有可能在错误的道路上一去不复返，现实生活有时候会给错误的做法带来「奖励」，需要小心一些。 这又和当下的好多公众号是类似的。我个人更喜欢经过时间沉淀的，带有生活智慧的体验，以及更加偏理性的做法。 要说这些人的想法有什么用处的话，大概就是可以作为一个反例鞭策自己吧。 毕竟，我更喜欢好好地活着。</p>
-<blockquote>
-<p>对于那样的我来说，小时候“想当医生”的那个自己，成为了我最想抹掉的过去。我非常惊讶自己虽然年过四十，却还没有走出那阴影，至今还遗留着某些负面情绪在身上。然而，我想要否定这个事实，眼前那团揉成一团的作文却又不允许我这么做。（这里是说作者父亲在他小时候说他不适合当医生。）</p>
-</blockquote>
-<blockquote>
-<p>后来才发现，这天竟成了我们全家人聚在一起拍照的最后一次机会。之后那年阿睦因感冒没能来，再隔一年则是姐姐他们一家四口去了夏威夷。接着第三年的春天，父亲就骤然过世了。</p>
-</blockquote>
-<blockquote>
-<p> 大哥因拯救溺水的小孩而丧命的事迹，当初被当作美谈广为传颂，甚至连报纸上都登有照片报道。<strong>但无论他死得多么崇高，对家人来说，心中的缺憾都是一样的。</strong></p>
-</blockquote>
-<blockquote>
-<p>人家说儿子是母亲一辈子的情人，我想对母亲来说，大哥正是那样的存在吧。尤其是在失去对父亲的爱意与信赖之后，她的那种感情似乎更加强烈了。</p>
-</blockquote>
-<blockquote>
-<p>“来扫自己儿子的墓……没有比这个更心酸的了吧……我明明没做过什么坏事……”</p>
-</blockquote>
-<p>路过：是啊，这个世界就是如此，即使你没做错什么，也会有坏的事情发生….</p>
-<blockquote>
-<p>在我单身的时候，她每次打电话来都嚷着结婚、结婚。最后竟然开始恳求我，说“跟谁都可以”“就算结了再离婚也行”。那已经不是在为我的幸福着想了，我觉得她在意的只是世俗的眼光。我终于受不了地回她：“既然那么想要我结婚，你们就让我看看结了婚的夫妻能幸福成什么样啊。”没想到母亲说了句“你这话太过分了……”就突然沉默了下来。那时的母亲，让我感觉到她打从心底在后悔自己的婚姻。而对于那错误婚姻的结晶的我来说，打击就更大了。</p>
-</blockquote>
-<blockquote>
-<p>母亲边说边笑。当时我觉得自己真是傻，居然还感动了一小下。现在回想起来我才明白，其实不管看上去如何，母亲实际上都是想念过世的父亲的。（这里是说母亲把一只蝴蝶当做爸爸…）</p>
-</blockquote>
-<blockquote>
-<p>“喂，这是横山家。”<br>竟然是母亲接的。我先是吃了一惊。“怎么了？”“没事，被绊了一跤。感觉好冷。”母亲的语调比平常的要缓慢，一直重复着一样的话，不得要领。“好冷，动不了了。怎么回事啊？”我什么都做不了，只能握着话筒。随后我听到电话那头救护车的警鸣声由远及近。</p>
-</blockquote>
-<blockquote>
-<p>后来我才知道，当时母亲还亲手把健保卡交给了救护队员。她明明坐在走廊连站都站不起来，到底是如何把放在电视上的健保卡交给救护队员的？我和姐姐都百思不解，但的确像是能干的母亲的作风。</p>
-</blockquote>
-<blockquote>
-<p>我昨天还和她通电话呢，她好好的啊。”<br>对于我的回答，父亲却说：“其实并没有……”<br>“是吗？”<br>父亲严肃的语气，让我开始不安。<br>“嗯，我觉得差不多会在二十八日左右吧……”父亲清清楚楚地说道。</p>
-<p>就在这时，我醒了。那是一场过于真实的梦，梦里父亲的声音还言犹在耳。父亲其实前一年就过世了。在梦里面的我，感觉也是在知道这一点的状况下跟他对话的。我起床洗完脸后，二十八这个数字还清楚地留在脑海里。十二月二十八日是我的工作最终收尾的日子。我原本的计划是和编辑部的同人小小地庆祝一下，然后回家大扫除，写贺年卡，三十一日再和由香里、淳史一起回母亲住的老家过年。虽然我不想太在意那个梦，但一直到二十八日，我还是每天发短信给母亲。她也一如往常地回我的短信，关心我的身体和蛀牙。于是我就松了一口气，也没有回去看看状况。明明父亲已经预先警告了我，我却觉得反正再过三天就要回去了。若现在回去就应该会一直待到过完年吧，这是我想避免的。我已经没有多余的精神和体力花这么多时间在母亲身上了，那时的我是这么想的。后悔，或说是罪恶感，一直到现在都还没消失。说实话，我也不知道当她倒下的时候，若我在旁边到底能帮上什么忙。但在那之后，我不知道梦到了多少次抱着母亲等待救护车来的梦。这个梦一直纠缠了我三年才终于消散。我从这里面学到的教训是：<strong>人生总会犯下不管付出多少代价都无法挽回的过错。但我真正领悟到这点，又是更以后的事情了。</strong></p>
-</blockquote>
-<blockquote>
-<p>“说是医生，实际就是个乡下的小大夫……”<br>母亲还不放过，故意伤害父亲的自尊。父亲的说法是，在小诊所当医生可以拉近和病患间的距离，能使人与人之间产生联系的医疗，才是正道。可是母亲只用“他是在升职的竞争路上败下来了”这句话轻易地下了结论。</p>
-</blockquote>
-<p>路过：总是在彼此在的时候互相贬损对方，然后不在的时候又在怀念，难道说这也是幸福的一种体现形式？</p>
-<blockquote>
-<p>不过现在想起来，我也会有些怜悯每次都不得不说到这份上的父亲。父亲终究是父亲，对于无法见到儿子最后一面这事，无论身为父亲或医生都一定是后悔且自责的。一直到死为止，在他心里都会是个无可弥补的缺憾吧。</p>
-</blockquote>
-<blockquote>
-<p>自从父亲不得不停止工作之后，这家里的权力关系似乎完全逆转了。问题是父亲并没有老到可以接受这件事，也没有那样的包容心。然而母亲又很缺乏温柔。<strong>我不知道这对夫妻之间到底是从何时，在哪里开始出错的。虽说是通过相亲认识的，但也是接受了彼此才结婚的，应该不是一开始就不对付吧。</strong></p>
-</blockquote>
-<blockquote>
-<p>那是我第一次，也是最后一次给母亲零用钱。而且严格说来，那还不是我的钱。那天我现金不够，是由香里从她的皮包里拿出来给我的，真是丢人。</p>
-</blockquote>
-<blockquote>
-<p>从椅子上站起来的母亲一边将杯子从餐橱里拿出来，一边从抽屉里取出父亲要吃的药，嘴里还不忘念叨父亲的坏话。</p>
-</blockquote>
-<blockquote>
-<p>我一个人在东京生活时，偶尔返乡，她都会准备一些浅色系运动服，或是老头子爱穿的那种钻石图样的开衫之类的衣服。当然，母亲只是为了它们的功能性而买的，但那品位实在是差到令人不得不怀疑她是故意要耍我。这种东西，母亲通常是在站前一家超市二楼的衣服大卖场买的。至少也要去横滨买吧，真是的。</p>
-</blockquote>
-<p>路过：儿子对妈妈也是如此… </p>
-<blockquote>
-<p>母亲对儿子的爱会令媳妇嫉妒，这种情节我常在电视节目上看到，但从没想过有一天会发生在自己身上。</p>
-</blockquote>
-<blockquote>
-<p>“你看，牙刷她都准备好了，三支。”<br>我指着洗手间说。<br>原来如此，为人母亲，就是会在意这些小细节，我真的是上了一堂课。然而，对于她在乎的仍是淳史而不是我这件事，说实话也让我稍微有些失落。</p>
-</blockquote>
-<blockquote>
-<p>“你啊……”<br>被父亲这么一叫，我停下了正要脱裤子的手，回头看他。<br><strong>“偶尔也该打个电话，至少让你妈听到你的声音。”</strong><br>这种话从父亲嘴里说出来是很难得的。我忍不住看着他的脸。他的眼神不像平常那样充满威严，而是带着些许的迟疑和怯懦。</p>
-</blockquote>
-<blockquote>
-<p>有时候母亲在留言中说有要紧事，结果担心地打过去，她却说了半小时邻居的坏话或以前的事，那真的很令人受不了。<br><strong>“你就听听又能怎么样？”</strong><br>父亲像是有些生气。对于他的反复无常，我还真有点恼怒。</p>
-</blockquote>
-<blockquote>
-<p>我去探病，却要看到母亲被当作东西看，实在是很痛苦的事情。</p>
-</blockquote>
-<blockquote>
-<p>在这期间，父亲慢慢地超过了我。他为了要赶上淳史拼了老命，但又不想被人察觉到这一点，让我看得更加心疼。我静静地将手机放回口袋里，然后看着父亲的背影，用不会追赶上他的速度慢慢走。</p>
-</blockquote>
-<blockquote>
-<p>成了我和父亲的最后一次散步。来年他的腿开始麻了，别说爬楼梯，连走平地都会跌倒。无法出门的父亲突然老了许多。也许男人就是这种生物。</p>
-</blockquote>
-<blockquote>
-<p>这时，公交车终于转过弯出现在我们眼前，响了一声喇叭。<br><strong>“唉，这就来了……”</strong><br>母亲很失望地叹了一口气。</p>
-</blockquote>
-<blockquote>
-<p>我还是不好意思握母亲的手。<br>“喏。”母亲把手伸得离我更近。我把自己的手藏到了背后。<br>“为什么要握啊？”<br><strong>“为了什么都好啊。”</strong></p>
-</blockquote>
-<p>路过：要多陪陪家里人喔。</p>
-<blockquote>
-<p>人生，总有那么一点来不及。那就是我失去父亲还有母亲之后，我最真实的感受。</p>
-</blockquote>
-<p>结束语：<br>刚看完《最好的告别》，又整理这个，心情彻底 down 下去了….<br>我在想，人究竟成长到什么地步才能游刃有余，足够智慧地处理生活中发生的各种意外。就我目前观察的结果来看，几乎没有可能达到这么一种状态，也就是永远没有终点，唯一的解法就是保证自己在路上，一直前行…<br>这么一讲，似乎人生是一场会让人很疲惫的旅途呢…<br>写到这里忽然想起了小林一茶的俳句：<br>「我知这世界，本如露水般短暂，然而，然而。」</p>
-<p>2020 年 1 月 4 号 </p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2816,7 +2650,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">82</span>
+                  <span class="site-state-item-count">83</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -2838,7 +2672,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">47</span>
+                  <span class="site-state-item-count">49</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2896,7 +2730,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">138.5k</span>
+    <span title="Site words total count">139k</span>
   
 </div>
 
