@@ -81,18 +81,18 @@
 
 
 
-<meta name="description" content="写在开头之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：做到持续维护和更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情； 简单记录下代码。 代码12345678910111213141516171819202122232425262728from bs4 import BeautifulSoupfrom selen">
+<meta name="description" content="写在开头之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：两篇加起来做到获取和维护更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情； 简单记录下代码。 代码12345678910111213141516171819202122232425262728from bs4 import BeautifulSoupfrom">
 <meta name="keywords" content="python,爬虫,微信公众号">
 <meta property="og:type" content="article">
 <meta property="og:title" content="关键字爬取公众号最新文章">
 <meta property="og:url" content="http://nonewood.github.io/2022/02/20/sougou-weixin/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
-<meta property="og:description" content="写在开头之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：做到持续维护和更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情； 简单记录下代码。 代码12345678910111213141516171819202122232425262728from bs4 import BeautifulSoupfrom selen">
+<meta property="og:description" content="写在开头之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：两篇加起来做到获取和维护更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情； 简单记录下代码。 代码12345678910111213141516171819202122232425262728from bs4 import BeautifulSoupfrom">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-02-20T10:16:39.110Z">
+<meta property="og:updated_time" content="2022-02-20T10:28:07.312Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="关键字爬取公众号最新文章">
-<meta name="twitter:description" content="写在开头之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：做到持续维护和更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情； 简单记录下代码。 代码12345678910111213141516171819202122232425262728from bs4 import BeautifulSoupfrom selen">
+<meta name="twitter:description" content="写在开头之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：两篇加起来做到获取和维护更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情； 简单记录下代码。 代码12345678910111213141516171819202122232425262728from bs4 import BeautifulSoupfrom">
 
 
 
@@ -329,7 +329,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  506 字
+                  511 字
                 </span>
               
 
@@ -366,12 +366,12 @@
       
 
       
-        <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：做到持续维护和更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情；</p>
+        <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：两篇加起来做到获取和维护更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情；</p>
 <p>简单记录下代码。</p>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line"><span class="comment"># 火狐的驱动， 因为只需要最新的， 因此不需要登陆， 登陆的方法之前的文章也有介绍</span></span><br><span class="line">opt = webdriver.FirefoxOptions()</span><br><span class="line"><span class="comment"># 设置无界面， 不然每次都会打开浏览器</span></span><br><span class="line">opt.add_argument(<span class="string">"--headless"</span>)</span><br><span class="line">driver = webdriver.Firefox(options=opt)</span><br><span class="line"></span><br><span class="line">keyword = <span class="string">'20220218冬奥会'</span></span><br><span class="line">url = <span class="string">'https://weixin.sogou.com/weixin?query='</span>+keyword+<span class="string">'&amp;s_from=input&amp;_sug_=y&amp;type=2&amp;page='</span>+str(page_number)+<span class="string">'&amp;ie=utf8'</span></span><br><span class="line">driver.get(url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选取检索到的第一个链接</span></span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//*[@id="sogou_vr_11002601_title_%s"]'</span>%<span class="number">0</span>).click()</span><br><span class="line">soup = BeautifulSoup(driver.page_source, <span class="string">"html.parser"</span>)</span><br><span class="line"><span class="comment"># 跳到因为点击打开的第二个窗口</span></span><br><span class="line">driver.switch_to.window(driver.window_handles[<span class="number">1</span>]) </span><br><span class="line"><span class="comment"># 标题</span></span><br><span class="line">title = soup.find(id = <span class="string">"activity-name"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 发布时间</span></span><br><span class="line">time = soup.find(id = <span class="string">"publish_time"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 公众号</span></span><br><span class="line">name = soup.find(id = <span class="string">"js_name"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 文章内容内容，拿到内容后直接用正则匹配获取自己想要的文本内容就行</span></span><br><span class="line">content = soup.find(id = <span class="string">"js_content"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 关闭浏览器释放资源</span></span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483921&idx=1&sn=0ae5c8268a1bb9fbe139fcb14a0c805f&chksm=e94bbdb6de3c34a0f2b030c1082f2e5ed9434e292fa999f1dccf750132b5e0029c723bd6f9bb&token=457106403&lang=zh_CN#rd" target="_blank" rel="noopener">基于另类数据对ETF进行回测</a><br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483974&idx=1&sn=5f32ada53a3865bc0c739ca36a206328&chksm=e94bbde1de3c34f7c58a625aa13fd27de65e49d2fe4de1d6c90a5d6efb011ebc2b80c7a0ac1f&token=457106403&lang=zh_CN#rd" target="_blank" rel="noopener">一年前看过某个公众号的某个文章，但是我忘了…</a><br><a href="https://segmentfault.com/a/1190000040517845" target="_blank" rel="noopener">python+selenium+firefox使用与部署详解</a><br><a href="https://blog.csdn.net/m0_46521785/article/details/113776386" target="_blank" rel="noopener">python爬取搜狗微信指定关键词的全部内容_一条小黑龙的博客-CSDN博客</a></p>
-<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>整理笔记的时候翻到了19 年在北京的时候写的一句话，在租的房子里，保洁阿姨在打扫客厅，我在房间里工作：</p>
+<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>整理笔记的时候翻到了 19 年在北京的时候写的一句话，在租的房子里，保洁阿姨在打扫客厅，我在房间里工作：</p>
 <blockquote>
 <p>2019年8月17日 下午12:29<br>门外阿姨在工作，我也在工作.. 大家都在生活着；</p>
 </blockquote>
@@ -443,6 +443,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/05/16/eastmoney-s2n/" rel="prev" title="东财北向资金">
+                东财北向资金 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -526,7 +530,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">85</span>
+                  <span class="site-state-item-count">86</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -548,7 +552,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">51</span>
+                  <span class="site-state-item-count">53</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -622,7 +626,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">140.2k</span>
+    <span title="Site words total count">140.8k</span>
   
 </div>
 

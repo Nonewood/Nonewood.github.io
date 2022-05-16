@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>东财北向资金</title>
+    <url>/2022/05/16/eastmoney-s2n/</url>
+    <content><![CDATA[<h3 id="想要实现的"><a href="#想要实现的" class="headerlink" title="想要实现的"></a>想要实现的</h3><p> <a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a><br>[图片见参考链接]</p>
+<h3 id="部分代码"><a href="#部分代码" class="headerlink" title="部分代码"></a>部分代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, json, re</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">cookies = &#123;</span><br><span class="line">    your cookies here&#125;</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">    your headers here</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">params = (</span><br><span class="line">    (<span class="string">'fields1'</span>, <span class="string">'f1,f2,f3,f4'</span>),</span><br><span class="line">    (<span class="string">'fields2'</span>, <span class="string">'f51,f54,f52,f58,f53,f62,f56,f57,f60,f61'</span>),</span><br><span class="line">    (<span class="string">'ut'</span>, <span class="string">'b2884a393a59ad64002292a3e90d46a5'</span>),</span><br><span class="line">    (<span class="string">'cb'</span>, <span class="string">'jQuery1123041352981668377664_1652237769597'</span>),</span><br><span class="line">    (<span class="string">'_'</span>, <span class="string">'1652237769600'</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = requests.get(<span class="string">'https://push2.eastmoney.com/api/qt/kamtbs.rtmin/get'</span>, headers=headers, params=params, cookies=cookies)</span><br><span class="line"></span><br><span class="line">res = response.content</span><br><span class="line">match = re.search(<span class="string">"\((.*)\)"</span>, str(res))</span><br><span class="line">data = json.loads(match.group(<span class="number">1</span>))[<span class="string">'data'</span>][<span class="string">'s2n'</span>]</span><br><span class="line"><span class="comment"># 略去简单处理得到</span></span><br><span class="line">df.head()</span><br><span class="line">df[<span class="string">'北向资金净买额(亿)'</span>] = df[<span class="string">'北向资金净买额'</span>].astype(float)/<span class="number">10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 画图</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.dates <span class="keyword">as</span> mdates</span><br><span class="line">date_fmt = mdates.DateFormatter(<span class="string">'%H:%M'</span>)</span><br><span class="line"><span class="comment"># plot your data</span></span><br><span class="line">df[<span class="string">'time'</span>] = pd.to_datetime(df[<span class="string">'time'</span>])</span><br><span class="line">ax = df.plot.line(x=<span class="string">'time'</span>, y=<span class="string">'北向资金净买额(亿)'</span>)</span><br><span class="line"><span class="comment"># add the date formatter as the x axis tick formatter</span></span><br><span class="line">ax.xaxis.set_major_formatter(date_fmt)</span><br></pre></td></tr></table></figure>
+
+<h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>[图片见参考链接]</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483936&idx=1&sn=591b365a131fc0492ca2a18a929678a5&chksm=e94bbd87de3c3491dfc875d468e7120cfe18c53a1daa95bcf06d22ea3c34ca70a984b6c78fe5&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合脚本化调仓</a><br><a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a></p>
+<h3 id="读书笔记"><a href="#读书笔记" class="headerlink" title="读书笔记"></a>读书笔记</h3><blockquote>
+<p><strong>不用就忘倾向</strong></p>
+<p>所有技能都会因为不用而退化。</p>
+<p><strong>明智的人会终身操练他全部有用然而很少用得上的、大多数来自其他学科的技能，并把这当作是一种自我提高的责任。</strong>如果他减少了他操练的技能的种数，进而减少了他掌握的技能的种数，那么他自然会陷入“铁锤人倾向”引起的错误之中。</p>
+<p>他的学习能力也会下降，因为他需要用来理解新经验的理论框架已经出现了裂缝。<strong>对于一个善于思考的人而言，把他的技能编排成一张检查清单，并常常将这张清单派上用场，也是很重要的。</strong>其他操作模式将会让他错过许多重要的事物。</p>
+<p><strong>许多技能唯有天天练习，才能维持在非常高的水平。</strong>钢琴演奏家帕德雷夫斯基（Ignacy Jan Paderewski，1860—1941，波兰钢琴家、作曲家、外交家和政治家，曾任波兰总理）曾经说过，<strong>如果他有一天不练琴，他就会发现自己的演奏技巧下降，如果连续一个星期不练，那就连听众都能察觉了。</strong></p>
+<p>人们只要勤奋就能降低不用就忘倾向的影响。</p>
+</blockquote>
+]]></content>
+      <tags>
+        <tag>爬虫</tag>
+        <tag>东方财富</tag>
+        <tag>北向资金</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>关键字爬取公众号最新文章</title>
     <url>/2022/02/20/sougou-weixin/</url>
-    <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：做到持续维护和更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情；</p>
+    <content><![CDATA[<h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>之前一篇文章实现了爬取公众号历史文章，这篇实现通过关键字爬取最新的文章，这样做的目的是：两篇加起来做到获取和维护更新，特别是弄成自动化脚本的话，就只需要检查数据就行，还是为了节省时间，不想做重复无聊的事情；</p>
 <p>简单记录下代码。</p>
 <h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> bs4 <span class="keyword">import</span> BeautifulSoup</span><br><span class="line"><span class="keyword">from</span> selenium <span class="keyword">import</span> webdriver</span><br><span class="line"></span><br><span class="line"><span class="comment"># 火狐的驱动， 因为只需要最新的， 因此不需要登陆， 登陆的方法之前的文章也有介绍</span></span><br><span class="line">opt = webdriver.FirefoxOptions()</span><br><span class="line"><span class="comment"># 设置无界面， 不然每次都会打开浏览器</span></span><br><span class="line">opt.add_argument(<span class="string">"--headless"</span>)</span><br><span class="line">driver = webdriver.Firefox(options=opt)</span><br><span class="line"></span><br><span class="line">keyword = <span class="string">'20220218冬奥会'</span></span><br><span class="line">url = <span class="string">'https://weixin.sogou.com/weixin?query='</span>+keyword+<span class="string">'&amp;s_from=input&amp;_sug_=y&amp;type=2&amp;page='</span>+str(page_number)+<span class="string">'&amp;ie=utf8'</span></span><br><span class="line">driver.get(url)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 选取检索到的第一个链接</span></span><br><span class="line">driver.find_element_by_xpath(<span class="string">'//*[@id="sogou_vr_11002601_title_%s"]'</span>%<span class="number">0</span>).click()</span><br><span class="line">soup = BeautifulSoup(driver.page_source, <span class="string">"html.parser"</span>)</span><br><span class="line"><span class="comment"># 跳到因为点击打开的第二个窗口</span></span><br><span class="line">driver.switch_to.window(driver.window_handles[<span class="number">1</span>]) </span><br><span class="line"><span class="comment"># 标题</span></span><br><span class="line">title = soup.find(id = <span class="string">"activity-name"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 发布时间</span></span><br><span class="line">time = soup.find(id = <span class="string">"publish_time"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 公众号</span></span><br><span class="line">name = soup.find(id = <span class="string">"js_name"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 文章内容内容，拿到内容后直接用正则匹配获取自己想要的文本内容就行</span></span><br><span class="line">content = soup.find(id = <span class="string">"js_content"</span>).get_text().strip()</span><br><span class="line"><span class="comment"># 关闭浏览器释放资源</span></span><br><span class="line">driver.quit()</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483921&idx=1&sn=0ae5c8268a1bb9fbe139fcb14a0c805f&chksm=e94bbdb6de3c34a0f2b030c1082f2e5ed9434e292fa999f1dccf750132b5e0029c723bd6f9bb&token=457106403&lang=zh_CN#rd" target="_blank" rel="noopener">基于另类数据对ETF进行回测</a><br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483974&idx=1&sn=5f32ada53a3865bc0c739ca36a206328&chksm=e94bbde1de3c34f7c58a625aa13fd27de65e49d2fe4de1d6c90a5d6efb011ebc2b80c7a0ac1f&token=457106403&lang=zh_CN#rd" target="_blank" rel="noopener">一年前看过某个公众号的某个文章，但是我忘了…</a><br><a href="https://segmentfault.com/a/1190000040517845" target="_blank" rel="noopener">python+selenium+firefox使用与部署详解</a><br><a href="https://blog.csdn.net/m0_46521785/article/details/113776386" target="_blank" rel="noopener">python爬取搜狗微信指定关键词的全部内容_一条小黑龙的博客-CSDN博客</a></p>
-<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>整理笔记的时候翻到了19 年在北京的时候写的一句话，在租的房子里，保洁阿姨在打扫客厅，我在房间里工作：</p>
+<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>整理笔记的时候翻到了 19 年在北京的时候写的一句话，在租的房子里，保洁阿姨在打扫客厅，我在房间里工作：</p>
 <blockquote>
 <p>2019年8月17日 下午12:29<br>门外阿姨在工作，我也在工作.. 大家都在生活着；</p>
 </blockquote>
@@ -113,8 +136,8 @@
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p>通达信公式<br><a href="https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html" target="_blank" rel="noopener">https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html</a><br>公众号文章链接<br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483958&idx=1&sn=aa7b875e3a31dbbdc146fd73a776b856&chksm=e94bbd91de3c3487b3dbc769890c90a6284b5607b400716c068032e86d32585829ee572c0a6f&token=1620949572&lang=zh_CN#rd" target="_blank" rel="noopener">朋友说他有个致富公式… 让我给看看</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>量化</tag>
+        <tag>python</tag>
         <tag>通达信</tag>
         <tag>bigquant</tag>
       </tags>
@@ -128,8 +151,8 @@
 <h3 id="补充阅读"><a href="#补充阅读" class="headerlink" title="补充阅读"></a>补充阅读</h3><p>windows 定时脚本设置<br><a href="https://www.cnblogs.com/sui776265233/p/13602893.html" target="_blank" rel="noopener">https://www.cnblogs.com/sui776265233/p/13602893.html</a><br>linux 定时脚本设置<br><a href="https://www.jianshu.com/p/d93e2b177814" target="_blank" rel="noopener">https://www.jianshu.com/p/d93e2b177814</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>量化</tag>
+        <tag>python</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -142,8 +165,8 @@
 <h2 id="公众号链接（贴图）"><a href="#公众号链接（贴图）" class="headerlink" title="公众号链接（贴图）"></a>公众号链接（贴图）</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483943&idx=1&sn=f0095ba9f133f9805bfcffe3b97f61c9&chksm=e94bbd80de3c3496948fe638bc832f0ff359a281362b47c23e26320f46a47ea2e951459fe7ea&token=2018691164&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合查询和交易脚本-python</a></p>
 ]]></content>
       <tags>
-        <tag>python</tag>
         <tag>量化</tag>
+        <tag>python</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -268,8 +291,8 @@
 <p>摘录自《量化投资-技术与策略》</p>
 ]]></content>
       <tags>
-        <tag>读书笔记，传记</tag>
         <tag>量化</tag>
+        <tag>读书笔记，传记</tag>
       </tags>
   </entry>
   <entry>
@@ -1280,9 +1303,9 @@
 ]]></content>
       <tags>
         <tag>python</tag>
-        <tag>文献</tag>
-        <tag>linux</tag>
         <tag>爬虫</tag>
+        <tag>linux</tag>
+        <tag>文献</tag>
       </tags>
   </entry>
   <entry>
@@ -1356,7 +1379,7 @@
     <url>/2020/06/04/MetaPhlAn/</url>
     <content><![CDATA[<h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 ]]></content>
