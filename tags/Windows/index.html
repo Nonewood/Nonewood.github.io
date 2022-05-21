@@ -340,7 +340,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-count">87</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -362,7 +362,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -420,7 +420,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">140.8k</span>
+    <span title="Site words total count">141.1k</span>
   
 </div>
 
@@ -655,6 +655,25 @@
     var ages = moment.preciseDiff(moment(),moment(20190801,"YYYYMMDD"));
     ages = ages.replace(/years?/, "年");
     ages = ages.replace(/months?/, "月");
+    ages = ages.replace(/days?/, "天");
+    ages = ages.replace(/hours?/, "小时");
+    ages = ages.replace(/minutes?/, "分");
+    ages = ages.replace(/seconds?/, "秒𓃗𓃵𓆉𓇼𓆡");
+    ages = ages.replace(/\d+/g, '<span style="color:">$&</span>');
+    div.innerHTML = `𓃠𓃰𓃱𓃲𓃟 ${ages}`;
+  }
+  var div = document.createElement("div");
+  //插入到copyright之后
+  var copyright = document.querySelector(".copyright");
+  document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
+  timer();
+  setInterval("timer()",1000)
+</script>
+
+
+</body>
+</html>
+es.replace(/months?/, "月");
     ages = ages.replace(/days?/, "天");
     ages = ages.replace(/hours?/, "小时");
     ages = ages.replace(/minutes?/, "分");

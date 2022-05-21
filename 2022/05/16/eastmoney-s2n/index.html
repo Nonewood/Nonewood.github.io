@@ -89,7 +89,7 @@
 <meta property="og:site_name" content="朝简单处想 往认真处行">
 <meta property="og:description" content="想要实现的 沪深港通资金流向 _ 数据中心 _ 东方财富网 北向神器[图片见参考链接] 部分代码1234567891011121314151617181920212223242526272829303132333435import requests, json, reimport pandas as pdcookies = &amp;#123;    your cookies here&amp;#125;head">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2022-05-16T13:47:33.830Z">
+<meta property="og:updated_time" content="2022-05-16T14:00:07.971Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="东财北向资金">
 <meta name="twitter:description" content="想要实现的 沪深港通资金流向 _ 数据中心 _ 东方财富网 北向神器[图片见参考链接] 部分代码1234567891011121314151617181920212223242526272829303132333435import requests, json, reimport pandas as pdcookies = &amp;#123;    your cookies here&amp;#125;head">
@@ -329,7 +329,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  579 字
+                  585 字
                 </span>
               
 
@@ -370,7 +370,7 @@
 <h3 id="部分代码"><a href="#部分代码" class="headerlink" title="部分代码"></a>部分代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, json, re</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">cookies = &#123;</span><br><span class="line">    your cookies here&#125;</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">    your headers here</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">params = (</span><br><span class="line">    (<span class="string">'fields1'</span>, <span class="string">'f1,f2,f3,f4'</span>),</span><br><span class="line">    (<span class="string">'fields2'</span>, <span class="string">'f51,f54,f52,f58,f53,f62,f56,f57,f60,f61'</span>),</span><br><span class="line">    (<span class="string">'ut'</span>, <span class="string">'b2884a393a59ad64002292a3e90d46a5'</span>),</span><br><span class="line">    (<span class="string">'cb'</span>, <span class="string">'jQuery1123041352981668377664_1652237769597'</span>),</span><br><span class="line">    (<span class="string">'_'</span>, <span class="string">'1652237769600'</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = requests.get(<span class="string">'https://push2.eastmoney.com/api/qt/kamtbs.rtmin/get'</span>, headers=headers, params=params, cookies=cookies)</span><br><span class="line"></span><br><span class="line">res = response.content</span><br><span class="line">match = re.search(<span class="string">"\((.*)\)"</span>, str(res))</span><br><span class="line">data = json.loads(match.group(<span class="number">1</span>))[<span class="string">'data'</span>][<span class="string">'s2n'</span>]</span><br><span class="line"><span class="comment"># 略去简单处理得到</span></span><br><span class="line">df.head()</span><br><span class="line">df[<span class="string">'北向资金净买额(亿)'</span>] = df[<span class="string">'北向资金净买额'</span>].astype(float)/<span class="number">10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 画图</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.dates <span class="keyword">as</span> mdates</span><br><span class="line">date_fmt = mdates.DateFormatter(<span class="string">'%H:%M'</span>)</span><br><span class="line"><span class="comment"># plot your data</span></span><br><span class="line">df[<span class="string">'time'</span>] = pd.to_datetime(df[<span class="string">'time'</span>])</span><br><span class="line">ax = df.plot.line(x=<span class="string">'time'</span>, y=<span class="string">'北向资金净买额(亿)'</span>)</span><br><span class="line"><span class="comment"># add the date formatter as the x axis tick formatter</span></span><br><span class="line">ax.xaxis.set_major_formatter(date_fmt)</span><br></pre></td></tr></table></figure>
 
 <h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>[图片见参考链接]</p>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483936&idx=1&sn=591b365a131fc0492ca2a18a929678a5&chksm=e94bbd87de3c3491dfc875d468e7120cfe18c53a1daa95bcf06d22ea3c34ca70a984b6c78fe5&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合脚本化调仓</a><br><a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a></p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483936&idx=1&sn=591b365a131fc0492ca2a18a929678a5&chksm=e94bbd87de3c3491dfc875d468e7120cfe18c53a1daa95bcf06d22ea3c34ca70a984b6c78fe5&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合脚本化调仓</a><br><a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a><br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483996&idx=1&sn=6d6787a453b796a500291755a4448094&chksm=e94bbdfbde3c34edf5ba57719808130e9685b2e39a85e471abe99ef13200677c12c46f160305&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">东财北向资金</a></p>
 <h3 id="读书笔记"><a href="#读书笔记" class="headerlink" title="读书笔记"></a>读书笔记</h3><blockquote>
 <p><strong>不用就忘倾向</strong></p>
 <p>所有技能都会因为不用而退化。</p>
@@ -446,6 +446,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2022/05/21/Periodical-Tasks/" rel="prev" title="Windows/Linux 定时任务">
+                Windows/Linux 定时任务 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -529,7 +533,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">86</span>
+                  <span class="site-state-item-count">87</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -551,7 +555,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">53</span>
+                  <span class="site-state-item-count">55</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -625,7 +629,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">140.8k</span>
+    <span title="Site words total count">141.1k</span>
   
 </div>
 

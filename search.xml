@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Windows/Linux 定时任务</title>
+    <url>/2022/05/21/Periodical-Tasks/</url>
+    <content><![CDATA[<h2 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h2><h3 id="Windows-定时执行-bat-脚本"><a href="#Windows-定时执行-bat-脚本" class="headerlink" title="Windows 定时执行 bat 脚本"></a>Windows 定时执行 bat 脚本</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 每天8:00执行test脚本</span><br><span class="line">schtasks /create /tn restart_task /tr D:\test.bat /sc DAILY /st 8:00:00</span><br><span class="line"></span><br><span class="line"># 每天8:00执行test脚本</span><br><span class="line">schtasks /create /tn restart_task /tr C:\Users\user1\Documents\radmin_rerun.bat /sc DAILY /st 18:30:00</span><br><span class="line"></span><br><span class="line"># 查看, 也可以在 任务计划程序 查看创建好的定时任务，如下图所示</span><br><span class="line">schtasks /query /tn restart_task </span><br><span class="line"></span><br><span class="line"># 其他的见参考链接</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://blog.csdn.net/qq_22690765/article/details/113889009" target="_blank" rel="noopener">windows中添加bat定时任务且bat文件中是cmd命令时_前进的小白的博客-CSDN博客_bat设置定时任务</a><br><a href="https://blog.csdn.net/weixin_40300139/article/details/108121804" target="_blank" rel="noopener">windows下之定时执行bat脚本_码厚炮的博客-CSDN博客_定时执行bat脚本</a></p>
+<h3 id="Windows-定时执行-python-脚本"><a href="#Windows-定时执行-python-脚本" class="headerlink" title="Windows 定时执行 python 脚本"></a>Windows 定时执行 python 脚本</h3><p>1 创建，然后一路按需设置<br>图片见参考链接<br>2 在这个页面设置 python 脚本相关的东西，红框1是 python 解释器路径（包含python.exe)， 红框2是 python 脚本路径，红框3是 python 解释是解释器目录.<br>[image:2DABAE27-8BC5-407B-A5B0-EF59F697BB6E-6620-000023AFE1B68D85/asynccode.png]<br>3 完结撒花</p>
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><p>Linux 的更简单，详细见参考链接</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 每天 5:00和17:00执行任务</span></span><br><span class="line">0 5,17 * * * /scripts/script.sh</span><br></pre></td></tr></table></figure>
+
+<p><a href="https://www.jianshu.com/p/d93e2b177814" target="_blank" rel="noopener">关于定时执行任务：Crontab的20个例子 - 简书</a></p>
+]]></content>
+      <tags>
+        <tag>定时任务</tag>
+        <tag>Linux</tag>
+        <tag>Windows</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>东财北向资金</title>
     <url>/2022/05/16/eastmoney-s2n/</url>
     <content><![CDATA[<h3 id="想要实现的"><a href="#想要实现的" class="headerlink" title="想要实现的"></a>想要实现的</h3><p> <a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a><br>[图片见参考链接]</p>
 <h3 id="部分代码"><a href="#部分代码" class="headerlink" title="部分代码"></a>部分代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> requests, json, re</span><br><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line">cookies = &#123;</span><br><span class="line">    your cookies here&#125;</span><br><span class="line"></span><br><span class="line">headers = &#123;</span><br><span class="line">    your headers here</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">params = (</span><br><span class="line">    (<span class="string">'fields1'</span>, <span class="string">'f1,f2,f3,f4'</span>),</span><br><span class="line">    (<span class="string">'fields2'</span>, <span class="string">'f51,f54,f52,f58,f53,f62,f56,f57,f60,f61'</span>),</span><br><span class="line">    (<span class="string">'ut'</span>, <span class="string">'b2884a393a59ad64002292a3e90d46a5'</span>),</span><br><span class="line">    (<span class="string">'cb'</span>, <span class="string">'jQuery1123041352981668377664_1652237769597'</span>),</span><br><span class="line">    (<span class="string">'_'</span>, <span class="string">'1652237769600'</span>),</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">response = requests.get(<span class="string">'https://push2.eastmoney.com/api/qt/kamtbs.rtmin/get'</span>, headers=headers, params=params, cookies=cookies)</span><br><span class="line"></span><br><span class="line">res = response.content</span><br><span class="line">match = re.search(<span class="string">"\((.*)\)"</span>, str(res))</span><br><span class="line">data = json.loads(match.group(<span class="number">1</span>))[<span class="string">'data'</span>][<span class="string">'s2n'</span>]</span><br><span class="line"><span class="comment"># 略去简单处理得到</span></span><br><span class="line">df.head()</span><br><span class="line">df[<span class="string">'北向资金净买额(亿)'</span>] = df[<span class="string">'北向资金净买额'</span>].astype(float)/<span class="number">10000</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 画图</span></span><br><span class="line"><span class="keyword">import</span> matplotlib.dates <span class="keyword">as</span> mdates</span><br><span class="line">date_fmt = mdates.DateFormatter(<span class="string">'%H:%M'</span>)</span><br><span class="line"><span class="comment"># plot your data</span></span><br><span class="line">df[<span class="string">'time'</span>] = pd.to_datetime(df[<span class="string">'time'</span>])</span><br><span class="line">ax = df.plot.line(x=<span class="string">'time'</span>, y=<span class="string">'北向资金净买额(亿)'</span>)</span><br><span class="line"><span class="comment"># add the date formatter as the x axis tick formatter</span></span><br><span class="line">ax.xaxis.set_major_formatter(date_fmt)</span><br></pre></td></tr></table></figure>
 
 <h3 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h3><p>[图片见参考链接]</p>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483936&idx=1&sn=591b365a131fc0492ca2a18a929678a5&chksm=e94bbd87de3c3491dfc875d468e7120cfe18c53a1daa95bcf06d22ea3c34ca70a984b6c78fe5&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合脚本化调仓</a><br><a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a></p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483936&idx=1&sn=591b365a131fc0492ca2a18a929678a5&chksm=e94bbd87de3c3491dfc875d468e7120cfe18c53a1daa95bcf06d22ea3c34ca70a984b6c78fe5&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合脚本化调仓</a><br><a href="https://data.eastmoney.com/hsgt/index.html" target="_blank" rel="noopener">沪深港通资金流向 _ 数据中心 _ 东方财富网</a><br> <a href="http://zmzh666.cn/gpsq/gpsq_index222.html?sj_type=6&hs_m=0&hs_h=15&sx_type=3&sjl_type=2" target="_blank" rel="noopener">北向神器</a><br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483996&idx=1&sn=6d6787a453b796a500291755a4448094&chksm=e94bbdfbde3c34edf5ba57719808130e9685b2e39a85e471abe99ef13200677c12c46f160305&token=64403077&lang=zh_CN#rd" target="_blank" rel="noopener">东财北向资金</a></p>
 <h3 id="读书笔记"><a href="#读书笔记" class="headerlink" title="读书笔记"></a>读书笔记</h3><blockquote>
 <p><strong>不用就忘倾向</strong></p>
 <p>所有技能都会因为不用而退化。</p>
@@ -136,8 +154,8 @@
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p>通达信公式<br><a href="https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html" target="_blank" rel="noopener">https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html</a><br>公众号文章链接<br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483958&idx=1&sn=aa7b875e3a31dbbdc146fd73a776b856&chksm=e94bbd91de3c3487b3dbc769890c90a6284b5607b400716c068032e86d32585829ee572c0a6f&token=1620949572&lang=zh_CN#rd" target="_blank" rel="noopener">朋友说他有个致富公式… 让我给看看</a></p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>python</tag>
+        <tag>量化</tag>
         <tag>通达信</tag>
         <tag>bigquant</tag>
       </tags>
@@ -151,8 +169,8 @@
 <h3 id="补充阅读"><a href="#补充阅读" class="headerlink" title="补充阅读"></a>补充阅读</h3><p>windows 定时脚本设置<br><a href="https://www.cnblogs.com/sui776265233/p/13602893.html" target="_blank" rel="noopener">https://www.cnblogs.com/sui776265233/p/13602893.html</a><br>linux 定时脚本设置<br><a href="https://www.jianshu.com/p/d93e2b177814" target="_blank" rel="noopener">https://www.jianshu.com/p/d93e2b177814</a></p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>python</tag>
+        <tag>量化</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -165,8 +183,8 @@
 <h2 id="公众号链接（贴图）"><a href="#公众号链接（贴图）" class="headerlink" title="公众号链接（贴图）"></a>公众号链接（贴图）</h2><p><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483943&idx=1&sn=f0095ba9f133f9805bfcffe3b97f61c9&chksm=e94bbd80de3c3496948fe638bc832f0ff359a281362b47c23e26320f46a47ea2e951459fe7ea&token=2018691164&lang=zh_CN#rd" target="_blank" rel="noopener">雪球模拟组合查询和交易脚本-python</a></p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>python</tag>
+        <tag>量化</tag>
         <tag>雪球</tag>
       </tags>
   </entry>
@@ -291,8 +309,8 @@
 <p>摘录自《量化投资-技术与策略》</p>
 ]]></content>
       <tags>
-        <tag>量化</tag>
         <tag>读书笔记，传记</tag>
+        <tag>量化</tag>
       </tags>
   </entry>
   <entry>
@@ -1379,7 +1397,7 @@
     <url>/2020/06/04/MetaPhlAn/</url>
     <content><![CDATA[<h3 id="官方链接"><a href="#官方链接" class="headerlink" title="官方链接"></a>官方链接</h3><p><a href="https://github.com/biobakery/MetaPhlAn/tree/3.0" target="_blank" rel="noopener">https://github.com/biobakery/MetaPhlAn/tree/3.0</a></p>
 <p>按照官方教程使用 conda 进行安装。</p>
-<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span> 需要能够连接网络的集群环境</span><br><span class="line"><span class="meta">#</span> 安装命令，指定安装目录</span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None for url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
+<h3 id="安装代码"><a href="#安装代码" class="headerlink" title="安装代码"></a>安装代码</h3><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 需要能够连接网络的集群环境</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 安装命令，指定安装目录</span></span><br><span class="line">conda install -c bioconda metaphlan --prefix=yourpath/ </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 由于某些原因，会发生报错：ondaHTTPError: HTTP None None <span class="keyword">for</span> url &lt;https://conda.anaconda.org/bioconda/linux-64/repodata.json&gt;</span></span><br><span class="line">Elapsed: None</span><br><span class="line"></span><br><span class="line">An HTTP error occurred when trying to retrieve this URL.</span><br><span class="line">HTTP errors are often intermittent, and a simple retry will get you on your way.</span><br><span class="line">ProxyError(MaxRetryError("HTTPSConnectionPool(host='conda.anaconda.org', port=443): Max retries exceeded with url: /bioconda/linux-64/repodata.json (Caused by ProxyError('Cannot connect to proxy.', timeout('timed out',)))",),)</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 解决办法如下：修改 home 目录下的 .condarc 文件如下，详细参考下边的链接</span></span><br><span class="line">channels:</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/</span><br><span class="line">  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/bioconda/</span><br><span class="line">show_channel_urls: true</span><br><span class="line"></span><br><span class="line">如果不行，按照参考链接设置其他的镜像链接</span><br></pre></td></tr></table></figure>
 
 <h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://blog.csdn.net/fang1192801693/article/details/73810654" target="_blank" rel="noopener">CondaHTTPError: HTTP None None for url</a><br> <a href="http://www.lqkweb.com/conda" target="_blank" rel="noopener">conda httperror http none none for url none Anaconda更新失败</a> </p>
 ]]></content>
@@ -4210,8 +4228,8 @@
         <category>Mac</category>
       </categories>
       <tags>
-        <tag>Mac</tag>
         <tag>Windows</tag>
+        <tag>Mac</tag>
         <tag>Trados</tag>
       </tags>
   </entry>
