@@ -259,6 +259,160 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/15/xueqiu-performance-accum-rate/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/01/15/xueqiu-performance-accum-rate/" itemprop="url">雪球模拟组合收益率爬取</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-15T10:33:56+08:00">
+                2022-01-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  559 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  2 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="实现的功能："><a href="#实现的功能：" class="headerlink" title="实现的功能："></a>实现的功能：</h3><p>1）爬取雪球组合六个月以内，每天的累积收益率值（时间比六个月长就不给提供每天的累积收益率了）；<br>2）每天收盘后爬取当天的累积收益率；<br>3）延伸 1：把上边两点加起来就能一直跟踪组合的收益率了；<br>4）延伸 2：设置定时脚本，写程序定时执行上边的三个步骤，就可以每天只看一眼，时间变得简单一点点；</p>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> requests,json</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取六个月内的每天累计收益率</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_return_rate_six_month</span><span class="params">(gid, cookie)</span>:</span></span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">'authority'</span>: <span class="string">'tc.xueqiu.com'</span>,</span><br><span class="line">        <span class="string">'sec-ch-ua'</span>: <span class="string">'" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"'</span>,</span><br><span class="line">        <span class="string">'accept'</span>: <span class="string">'application/json, text/plain, */*'</span>,</span><br><span class="line">        <span class="string">'sec-ch-ua-mobile'</span>: <span class="string">'?0'</span>,</span><br><span class="line">        <span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'</span>,</span><br><span class="line">        <span class="string">'sec-ch-ua-platform'</span>: <span class="string">'"Windows"'</span>,</span><br><span class="line">        <span class="string">'origin'</span>: <span class="string">'https://xueqiu.com'</span>,</span><br><span class="line">        <span class="string">'sec-fetch-site'</span>: <span class="string">'same-site'</span>,</span><br><span class="line">        <span class="string">'sec-fetch-mode'</span>: <span class="string">'cors'</span>,</span><br><span class="line">        <span class="string">'sec-fetch-dest'</span>: <span class="string">'empty'</span>,</span><br><span class="line">        <span class="string">'referer'</span>: <span class="string">'https://xueqiu.com/performance'</span>,</span><br><span class="line">        <span class="string">'accept-language'</span>: <span class="string">'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7'</span>,</span><br><span class="line">        <span class="string">'cookie'</span>: cookie,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    params = ( </span><br><span class="line">        (<span class="string">'gid'</span>, gid),  </span><br><span class="line">        (<span class="string">'period'</span>, <span class="string">'6m'</span>), <span class="comment"># 每次取最大就行, 时间再长不给返回每天的累计收益率...</span></span><br><span class="line">        (<span class="string">'market'</span>, <span class="string">'ALL'</span>),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    response = requests.get(<span class="string">'https://tc.xueqiu.com/tc/snowx/MONI/forchart/roa.json'</span>, headers=headers, params=params)</span><br><span class="line">    content = json.loads(response.text)</span><br><span class="line">    <span class="keyword">return</span> content[<span class="string">'result_data'</span>][<span class="string">'list'</span>]</span><br><span class="line"></span><br><span class="line">res= pd.DataFrame()</span><br><span class="line">gid = <span class="string">'your gid'</span></span><br><span class="line">cookie = <span class="string">'your cookies'</span></span><br><span class="line">data = get_return_rate(gid)</span><br><span class="line"><span class="keyword">for</span> element <span class="keyword">in</span> data:</span><br><span class="line">    value_dict = dict()</span><br><span class="line">    value_dict[<span class="string">'return_rate'</span>] = element[<span class="string">'value'</span>]</span><br><span class="line">    value_dict[<span class="string">'date'</span>] = element[<span class="string">'date'</span>]  </span><br><span class="line">    res= ers.append(value_dict, ignore_index = <span class="literal">True</span>)</span><br><span class="line">res.head()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取每天的累积收益率</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get_accum_rate_each_day</span><span class="params">(gid, cookie)</span>:</span></span><br><span class="line">    headers = &#123;</span><br><span class="line">        <span class="string">'authority'</span>: <span class="string">'tc.xueqiu.com'</span>,</span><br><span class="line">        <span class="string">'sec-ch-ua'</span>: <span class="string">'" Not A;Brand";v="99", "Chromium";v="96", "Google Chrome";v="96"'</span>,</span><br><span class="line">        <span class="string">'accept'</span>: <span class="string">'application/json, text/plain, */*'</span>,</span><br><span class="line">        <span class="string">'sec-ch-ua-mobile'</span>: <span class="string">'?0'</span>,</span><br><span class="line">        <span class="string">'user-agent'</span>: <span class="string">'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'</span>,</span><br><span class="line">        <span class="string">'sec-ch-ua-platform'</span>: <span class="string">'"Windows"'</span>,</span><br><span class="line">        <span class="string">'origin'</span>: <span class="string">'https://xueqiu.com'</span>,</span><br><span class="line">        <span class="string">'sec-fetch-site'</span>: <span class="string">'same-site'</span>,</span><br><span class="line">        <span class="string">'sec-fetch-mode'</span>: <span class="string">'cors'</span>,</span><br><span class="line">        <span class="string">'sec-fetch-dest'</span>: <span class="string">'empty'</span>,</span><br><span class="line">        <span class="string">'referer'</span>: <span class="string">'https://xueqiu.com/performance'</span>,</span><br><span class="line">        <span class="string">'accept-language'</span>: <span class="string">'zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7'</span>,</span><br><span class="line">        <span class="string">'cookie'</span>: cookie,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    params = (</span><br><span class="line">        (<span class="string">'gid'</span>, gid),</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">    response = requests.get(<span class="string">'https://tc.xueqiu.com/tc/snowx//MONI/performances.json'</span>, headers=headers, params=params)</span><br><span class="line"></span><br><span class="line">    response.encoding = <span class="string">"utf-8"</span></span><br><span class="line">    content = json.loads(response.text)</span><br><span class="line">    <span class="keyword">if</span> content[<span class="string">'msg'</span>] == <span class="string">'请求超时，请检查网络并重试'</span>:</span><br><span class="line">        print(<span class="string">"请求错误...需要更新 cookies... "</span>)</span><br><span class="line">        <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">    accum_rate = content[<span class="string">'result_data'</span>][<span class="string">'performances'</span>][<span class="number">1</span>][<span class="string">'accum_rate'</span>]</span><br><span class="line">    <span class="keyword">return</span> accum_rate</span><br><span class="line"></span><br><span class="line">value = get_accum_rate_each_day(gid, cookie)</span><br></pre></td></tr></table></figure>
+
+<h3 id="补充阅读"><a href="#补充阅读" class="headerlink" title="补充阅读"></a>补充阅读</h3><p>windows 定时脚本设置<br><a href="https://www.cnblogs.com/sui776265233/p/13602893.html" target="_blank" rel="noopener">https://www.cnblogs.com/sui776265233/p/13602893.html</a><br>linux 定时脚本设置<br><a href="https://www.jianshu.com/p/d93e2b177814" target="_blank" rel="noopener">https://www.jianshu.com/p/d93e2b177814</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/11/xueqiu-performancev1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1746,180 +1900,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2021/01/03/Bodhi1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2021/01/03/Bodhi1/" itemprop="url">心若菩提</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-01-03T21:00:38+08:00">
-                2021-01-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  812 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  2 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>曹德旺的自传，是我比较敬佩的企业家，摘录一些。</p>
-<blockquote>
-<p>记得那时母亲常说: “<strong>穷不可怕，最怕的是没志气。</strong>”“<strong>要摆脱贫穷，只有靠你自己的努力和拼搏。</strong>”做人最重要的是人格的完整，最需要的是取得他人的信任。要做到：<strong>穷要穷得清，富要富得明。</strong>所以，在外面要把胸挺起来，头抬起来，不要被别人看不起。”</p>
-</blockquote>
-<blockquote>
-<p>记得父亲说过:“<strong>做事要用心，有多少心就能办多少事</strong>。你数一数，有多少个心啊?”<br>“用心、真心、爱心、决心、专心、恒心、耐心、怜悯心….我掰着手指，有那么多心吗?</p>
-</blockquote>
-<blockquote>
-<p>我有早起的习惯。</p>
-<p>我起早是少时随我父亲做水果生意落下的。<strong>那时觉多，每天凌晨2点，母亲总是坐在床前，不断地喊着推着酣睡的我，才起的床。</strong>就是到现在，我都时常会闪过，母亲坐在床沿边，含着眼泪喊着“德旺，起床了”，一手轻轻地推在被子里的我， 一手抹着止不住的泪 。 往事幕幕在眼前浮过…..</p>
-</blockquote>
-<blockquote>
-<p>学徒的第一年，父亲所做的，就是煮饭、煮菜、挑水、倒马桶、倒尿壶，吃的则是布店老板一家的剩饭剩菜。到了晚上，布店老板要 求父亲不断地对着镜子练习走路，练习微笑，练习鞠躬，练习说话的口型，并告诉他要一直练， 直至自己满意为止。 </p>
-<p>学徒的第二年，布店老板叫父亲把店里的货担着带到乡下去销售，就像我们现在还能看到的货郎担，挑着担子货，边走边叫卖，时而，将担子搁在路边，边卖边吆喝。 </p>
-<p>学徒的第三年，父亲才回到店里，学习怎么站在柜台内，接待客人，进货出货。三年一到，店老板告诉父亲，<strong>“我教给你的，你已经都学会了，现在你可以离开我的店，去开自己的店了”</strong>。</p>
-<p>我爸说，他的前半生，很感谢日本老板:“<strong>三年出师后，我才知日本老板用心良苦。他第一年是练我身骨，第二年教我吃苦，第三年才授我真技。</strong>”</p>
-</blockquote>
-<p>路过：这里记录他父亲年轻时候去日本打工当学徒的经历。</p>
-<blockquote>
-<p>我以前无法理解，父亲第一年的学徒生活，为什么只做粗话脏活甚至连帮佣都不如。但父亲向我叙述他的这段学徒生活时，从来也没抱怨过，似乎理所当然。</p>
-<p>在我自己经历了苦难的人生后，才明白日本布店老板的苦心：他是“苦其心智，劳其筋骨”，就像习武之人挑柴担水一样，是让父亲练好身板，扎好“马步”，从基础开始一步一步累积经验啊。难怪父亲说起生意经来，一套一套的。 </p>
-</blockquote>
-<h3 id="写在末尾"><a href="#写在末尾" class="headerlink" title="写在末尾"></a>写在末尾</h3><p>因为是直白的文字，不需要做什么注解，看起来有大段摘抄的嫌疑，但我又觉得好不想删除，就这样吧，只是做些记录。</p>
-<p>2021年1月3日 下午8:55 @XA</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1977,7 +1957,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">88</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1999,7 +1979,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">56</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2057,7 +2037,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">141.6k</span>
+    <span title="Site words total count">144.2k</span>
   
 </div>
 

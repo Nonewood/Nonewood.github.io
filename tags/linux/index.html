@@ -83,7 +83,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="朝简单处想 往认真处行">
-<meta property="og:url" content="http://nonewood.github.io/tags/Linux/index.html">
+<meta property="og:url" content="http://nonewood.github.io/tags/linux/index.html">
 <meta property="og:site_name" content="朝简单处想 往认真处行">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -117,7 +117,7 @@
 
 
 
-  <link rel="canonical" href="http://nonewood.github.io/tags/Linux/">
+  <link rel="canonical" href="http://nonewood.github.io/tags/linux/">
 
 
 
@@ -131,7 +131,7 @@
      });
 </script>
 
-  <title>标签: Linux | 朝简单处想 往认真处行</title>
+  <title>标签: linux | 朝简单处想 往认真处行</title>
   
 
 
@@ -251,7 +251,7 @@
 
     <div id="posts" class="posts-collapse">
       <div class="collection-title">
-        <h1>Linux<small>标签</small>
+        <h1>linux<small>标签</small>
         </h1>
       </div>
 
@@ -263,17 +263,43 @@
 
       <h2 class="post-title">
         
-            <a class="post-title-link" href="/2022/05/21/Periodical-Tasks/" itemprop="url">
+            <a class="post-title-link" href="/2020/06/13/paper-informational/" itemprop="url">
               
-                <span itemprop="name">Windows/Linux 定时任务</span>
+                <span itemprop="name">Linux 集群上文献信息的爬虫和下载</span>
               
             </a>
         
       </h2>
 
       <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated" datetime="2022-05-21T08:42:19+08:00" content="2022-05-21">
-          05-21
+        <time class="post-time" itemprop="dateCreated" datetime="2020-06-13T10:43:36+08:00" content="2020-06-13">
+          06-13
+        </time>
+      </div>
+
+    </header>
+  </article>
+
+
+      
+        
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      <h2 class="post-title">
+        
+            <a class="post-title-link" href="/2019/09/05/mac-linux/" itemprop="url">
+              
+                <span itemprop="name">Mac 下远程使用终端</span>
+              
+            </a>
+        
+      </h2>
+
+      <div class="post-meta">
+        <time class="post-time" itemprop="dateCreated" datetime="2019-09-05T23:37:21+08:00" content="2019-09-05">
+          09-05
         </time>
       </div>
 
@@ -340,7 +366,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">88</span>
+                  <span class="site-state-item-count">89</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -362,7 +388,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">55</span>
+                  <span class="site-state-item-count">56</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -420,7 +446,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">141.6k</span>
+    <span title="Site words total count">144.2k</span>
   
 </div>
 
@@ -654,26 +680,6 @@
   function timer() {
     var ages = moment.preciseDiff(moment(),moment(20190801,"YYYYMMDD"));
     ages = ages.replace(/years?/, "年");
-    ages = ages.replace(/months?/, "月");
-    ages = ages.replace(/days?/, "天");
-    ages = ages.replace(/hours?/, "小时");
-    ages = ages.replace(/minutes?/, "分");
-    ages = ages.replace(/seconds?/, "秒𓃗𓃵𓆉𓇼𓆡");
-    ages = ages.replace(/\d+/g, '<span style="color:">$&</span>');
-    div.innerHTML = `𓃠𓃰𓃱𓃲𓃟 ${ages}`;
-  }
-  var div = document.createElement("div");
-  //插入到copyright之后
-  var copyright = document.querySelector(".copyright");
-  document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
-  timer();
-  setInterval("timer()",1000)
-</script>
-
-
-</body>
-</html>
-");
     ages = ages.replace(/months?/, "月");
     ages = ages.replace(/days?/, "天");
     ages = ages.replace(/hours?/, "小时");
