@@ -673,22 +673,3 @@
 
 </body>
 </html>
-es.replace(/months?/, "月");
-    ages = ages.replace(/days?/, "天");
-    ages = ages.replace(/hours?/, "小时");
-    ages = ages.replace(/minutes?/, "分");
-    ages = ages.replace(/seconds?/, "秒𓃗𓃵𓆉𓇼𓆡");
-    ages = ages.replace(/\d+/g, '<span style="color:">$&</span>');
-    div.innerHTML = `𓃠𓃰𓃱𓃲𓃟 ${ages}`;
-  }
-  var div = document.createElement("div");
-  //插入到copyright之后
-  var copyright = document.querySelector(".copyright");
-  document.querySelector(".footer-inner").insertBefore(div, copyright.nextSibling);
-  timer();
-  setInterval("timer()",1000)
-</script>
-
-
-</body>
-</html>
