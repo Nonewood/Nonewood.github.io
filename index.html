@@ -259,6 +259,165 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/11/21/jupyter-schedule/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Nonewood">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="朝简单处想 往认真处行">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2022/11/21/jupyter-schedule/" itemprop="url">定时运行jupyter, 并且将结果发送至邮箱</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-11-21T22:11:18+08:00">
+                2022-11-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  276 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  1 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="目的："><a href="#目的：" class="headerlink" title="目的："></a>目的：</h3><p>1）定时运行 jupyter-notebook/lab 的内容；<br>2）将生成的结果方式发送到邮件</p>
+<h3 id="安装mljar-mercury"><a href="#安装mljar-mercury" class="headerlink" title="安装mljar-mercury"></a>安装mljar-mercury</h3><p><a href="https://mljar.com/mercury/" target="_blank" rel="noopener">Build web app from Python Notebook | MLJAR</a></p>
+<p>几个注意的点：<br>1）安装最好用 python3.8 进行安装，不然安装时候会报错；<br>2）安装路径中不要有中文字符；<br>3）时区配置不影响定时运行的结果；<br>4）邮箱发送使用的是 Django，可以查相应的教程，不同邮箱的设置稍微不太一样；</p>
+<p>安装过程的一些代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">pip3 install mljar-mercury -i https://pypi.tuna.tsinghua.edu.cn/simple </span><br><span class="line"></span><br><span class="line"><span class="comment"># Mac版本邮箱配置，Windows 包括linux都是类似的思路</span></span><br><span class="line">export EMAIL_HOST=smtp.qq.com</span><br><span class="line">export EMAIL_HOST_USER=<span class="number">1234567</span>@qq.com(你的qq邮箱)</span><br><span class="line">export EMAIL_HOST_PASSWORD=xxxxxx(授权码)</span><br><span class="line">export EMAIL_PORT=<span class="number">25</span></span><br><span class="line">export DEFAULT_FROM_EMAIL=<span class="number">1234567</span>@qq.com(你的qq邮箱)</span><br></pre></td></tr></table></figure>
+
+<p>最后效果图<br>图见文末链接</p>
+<p>收件箱（测试每分钟发一次）<br>图见文末链接</p>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p> <a href="https://stackoverflow.com/questions/70436935/error-could-not-build-wheels-for-gevent-which-is-required-to-install-pyproject" target="_blank" rel="noopener">ERROR: Could not build wheels for gevent, which is required to install pyproject.toml-based projects</a><br><a href="https://www.ujcms.com/documentation/351.html" target="_blank" rel="noopener">使用QQ邮箱发送邮件，QQ邮箱的smtp设置 - 使用心得 - UJCMS</a><br><a href="https://www.jianshu.com/p/5c30ff053381" target="_blank" rel="noopener">Python Django 使用 QQ / 新浪邮箱发送邮件配置 - 简书</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/06/14/buy-house/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -382,14 +541,14 @@
 <blockquote>
 <p>参考链接：<a href="https://xa.lianjia.com/tool.html" target="_blank" rel="noopener">房贷计算器</a> </p>
 </blockquote>
-<p>举例：180w的房子，收费30%，剩下 120w 等额本息还款 6151.73<br>[image:D7DCBB97-8833-46A5-8C5D-A9F370000B9C-6620-000071B36D4CF6DE/asynccode.png]</p>
+<p>举例：180w的房子，首付 30%，剩下 120w 等额本息还款 6151.73<br>[image:D7DCBB97-8833-46A5-8C5D-A9F370000B9C-6620-000071B36D4CF6DE/asynccode.png]</p>
 <p><strong>等额本息和等额本金</strong><br>等额本息：本金利息一块算然后取平均数，总金额相对高；<br>等额本金：就是本金先取平均然后剩下的记利息，前期还贷压力大；<br>固定工资且资金紧张推荐<strong>本额等息</strong>;</p>
 <blockquote>
 <p>参考链接：<a href="https://m.bilibili.com/video/BV1i4411i72t?p=1&share_medium=iphone&share_plat=ios&share_session_id=373FA7C7-2894-4F43-9379-8EDD65072766&share_source=WEIXIN&share_tag=s_i&timestamp=1646915856&unique_k=FPgKfBW" target="_blank" rel="noopener">一分钟教你读懂什么是等额本息与等额本金</a> </p>
 </blockquote>
 <p><strong>中介费</strong><br>新房没有中介费；<br>二手房一般是总房款的 0.88%-2.5%； </p>
 <p><strong>税费</strong><br>网签价百分比缴纳；</p>
-<p><strong>个人所得税</strong><br>卖家购房满5年， 本地唯一，免征； 不满交 1%；</p>
+<p><strong>个人所得税</strong><br>卖家购房满5年，本地唯一，免征；不满交 1%；</p>
 <p><strong>增值税</strong><br>卖家购房满2年， 普通住宅免征；<br>未满2年网签价格/(1+5%)x5.65%;</p>
 <p><strong>买房涉及的费用总结</strong><br>[image:B8DEBE72-C38D-4527-8DA8-0D83C58D0232-6620-000071B36CFCF962/asynccode.png]<br>1）契税：分三类1%-1.5%-3%<br>2）增值税 产权不满两年需要交5%，满两年不交<br>3）个人所得税 产权不满5年 差额的20%<br>产权满5年唯一住宅 免税<br>4）继承赠予税 3%<br>5）土地出让金  二手房是国企宿舍福利房80-100/平米<br>6）中介费  二手房1.5%-3%<br>7）交易手续费 4元每平米<br>8）权属登记费 80元每套<br>9）印花税  5元<br>买二手房注意在购房合同上写清楚这些税费是由哪一方承担</p>
 <blockquote>
@@ -1735,171 +1894,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://nonewood.github.io/2022/01/16/tdx-to-python/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Nonewood">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="朝简单处想 往认真处行">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2022/01/16/tdx-to-python/" itemprop="url">朋友说他有个致富公式… 让我给看看</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2022-01-16T10:35:26+08:00">
-                2022-01-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-            <div class="post-wordcount">
-              
-                
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-file-word-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">字数统计&#58;</span>
-                
-                <span title="字数统计">
-                  731 字
-                </span>
-              
-
-              
-                <span class="post-meta-divider">|</span>
-              
-
-              
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-clock-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
-                
-                <span title="阅读时长">
-                  3 分钟
-                </span>
-              
-            </div>
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="写在开头"><a href="#写在开头" class="headerlink" title="写在开头"></a>写在开头</h3><p>主要实现的东西是：<br>1）朋友给了个通达信公式，想看能不能致富；<br>2）手动去执行选股肉眼观察，效果还行；<br>3）有文化的我们知道只凭肉眼看肯定不靠谱，就想回测看看效果，就去测了；</p>
-<p>涉及知识点：通达信的公式编辑，选股，以及bigquant上的回测</p>
-<h3 id="通达信看效果貌似还行"><a href="#通达信看效果貌似还行" class="headerlink" title="通达信看效果貌似还行"></a>通达信看效果貌似还行</h3><p>选股公式是这样子的：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);</span><br><span class="line">DEA:= EMA(DIFF,9);</span><br><span class="line">MACD:= 2*(DIFF-DEA);</span><br><span class="line">REF(C&lt;=O,2) AND REF(H&lt;REF(H,1) AND L&lt;REF(L,1),1) AND L&gt;REF(L,1) AND C&gt;O AND C&gt;REF(H,2) AND REF(EVERY(C/REF(C,1)&lt;1,3),3) AND DIFF&gt;0 AND DEA&gt;0;</span><br></pre></td></tr></table></figure>
-
-<p>打开通达信，Ctrl + F , 条件选股， 新建公式<br>把这个公式粘贴进去， 测试公式， 保存<br>[图片见文末参考链接]</p>
-<p>Ctrl  T,  选择刚建好的公式，执行选股，多试几个日期，发现，哎呦不错；<br>[图片见文末参考链接]</p>
-<h3 id="那么回测试试呢？"><a href="#那么回测试试呢？" class="headerlink" title="那么回测试试呢？"></a>那么回测试试呢？</h3><p>首先需要将通达信公式语言转化成 python 语言；<br>回测平台选的是 bigquant, 因为我自己相对比较熟；<br>翻译的过程中要是有不懂的语句，网上查下（文末附链接）；<br>然后核对的时候看选出的股票能不能对上，就能知道有没有转化正确；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 通达信公式</span><br><span class="line">DIFF:=EMA(CLOSE,12) - EMA(CLOSE,26);</span><br><span class="line">DEA:= EMA(DIFF,9);</span><br><span class="line">MACD:= 2*(DIFF-DEA);</span><br><span class="line">REF(C&lt;=O,2) AND REF(H&lt;REF(H,1) AND L&lt;REF(L,1),1) AND L&gt;REF(L,1) AND C&gt;O AND C&gt;REF(H,2) AND REF(EVERY(C/REF(C,1)&lt;1,3),3) AND DIFF&gt;0 AND DEA&gt;0;</span><br><span class="line"></span><br><span class="line"># python</span><br><span class="line">x.close_2 &lt;= x.open_2 and (x.high_1 &lt; x.high_2 and x.low_1 &lt; x.low_2) and x.low_0 &gt; x.low_1 and x.close_0 &gt; x.open_0 and x.close_0 &gt; x.high_2 and x.close_5 &lt; x.close_6 and x.close_4 &lt; x.close_5 and x.close_3 &lt; x.close_4 and (x.dif &gt; 0 and x.dea &gt;0)</span><br></pre></td></tr></table></figure>
-
-<p><strong>Bigquant 实现</strong><br>Bigquant最后实现的效果如下，下边挑重点的截图简单说一下<br>[图片见文末参考链接]</p>
-<p>1）特征列表，需要把公式里涉及的特征都体现在特征列表里边<br>[图片见文末参考链接]<br>2）自定义python模块中生成一下信号<br>[图片见文末参考链接]<br>3）回测函数中定义好自己的回测逻辑就可以回测了</p>
-<p><strong>回测结果</strong><br>[图片见文末参考链接]</p>
-<h3 id="写在后边"><a href="#写在后边" class="headerlink" title="写在后边"></a>写在后边</h3><p>真正能拿到财富代码的公式肯定不会这么简单，这篇只是方法的记录文章罢了；<br>转化公式的时候发现貌似没有通达信公式-&gt; python语言的现成工具，感觉可以做一个；</p>
-<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><p>通达信公式<br><a href="https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html" target="_blank" rel="noopener">https://www.agudashi.cn/doc/5bffb706e7de95c78c41dd3c.html</a><br>公众号文章链接<br><a href="https://mp.weixin.qq.com/s?__biz=MzI0NTY3MjY0OA==&mid=2247483958&idx=1&sn=aa7b875e3a31dbbdc146fd73a776b856&chksm=e94bbd91de3c3487b3dbc769890c90a6284b5607b400716c068032e86d32585829ee572c0a6f&token=1620949572&lang=zh_CN#rd" target="_blank" rel="noopener">朋友说他有个致富公式… 让我给看看</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -1957,7 +1951,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">89</span>
+                  <span class="site-state-item-count">90</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1979,7 +1973,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">56</span>
+                  <span class="site-state-item-count">59</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
@@ -2037,7 +2031,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">144.2k</span>
+    <span title="Site words total count">144.4k</span>
   
 </div>
 
